@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Panel del equipo · FoodMatch</title>
+  <meta name="theme-color" content="#1F5F8B">
+  <link rel="icon" type="image/png" href="app/icon-192.png">
+  <!-- Sin medidor: esta página no debe contar visitas. -->
+  <style>
+    :root {
+      color-scheme: light;
+      --fondo: #FAF6EE;
+      --superficie: #FFFFFF;
+      --azul-claro: #D6EAF8;
+      --azul: #1F5F8B;
+      --azul-oscuro: #174A6C;
+      --texto: #1E2A36;
+      --texto-2: #4A5866;
+      --borde: #E3DDD0;
+      --error: #9B1C1C;
+      --radio: 12px;
+      --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.5 var(--fuente); }
+    :focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 4px; }
+    [hidden] { display: none !important; }
+    .contenedor { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+    .cabecera { border-bottom: 1px solid var(--borde); }
+    .cabecera .contenedor { display: flex; align-items: center; justify-content: space-between; min-height: 56px; gap: 12px; }
+    .marca { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: var(--texto); text-decoration: none; }
+    .marca img { width: 32px; height: 32px; border-radius: 8px; }
+
+    main { padding: 24px 0 40px; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 6px; }
+    h2 { font-size: 1.2rem; margin: 0 0 12px; }
+    .intro { color: var(--texto-2); margin: 0 0 20px; }
+    section { margin-top: 28px; }
+
+    .tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px; }
+
+    form { display: grid; gap: 14px; max-width: 26em; }
+    label { font-weight: 600; display: block; margin-bottom: 4px; }
+    input {
+      width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--texto);
+      border: 2px solid #8A97A5; border-radius: 10px; background: #fff;
+    }
+    input:focus { border-color: var(--azul); }
+    .ayuda { font-size: .9rem; color: var(--texto-2); margin: 0; }
+    .error { color: var(--error); font-weight: 600; margin: 0; }
+
+    .boton {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px; padding: 10px 20px; border-radius: 999px;
+      background: var(--azul); color: #fff; border: 2px solid var(--azul);
+      font: 600 1rem/1.2 var(--fuente); cursor: pointer;
+    }
+    .boton:hover { background: var(--azul-oscuro); border-color: var(--azul-oscuro); }
+    .boton.secundario { background: transparent; color: var(--azul); }
+    .boton.secundario:hover { background: var(--azul-claro); }
+    .boton[disabled] { opacity: .6; cursor: wait; }
+
+    .barra-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .estado { font-size: .9rem; color: var(--texto-2); margin: 0; }
+
+    .cifras { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .cifra { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 14px 16px; }
+    .cifra .valor { display: block; font-size: 2.2rem; font-weight: 800; line-height: 1.1; color: var(--azul-oscuro); }
+    .cifra .nombre { display: block; color: var(--texto-2); font-weight: 600; margin-top: 4px; }
+    .cifra.conversion { background: var(--azul-claro); border-color: transparent; }
+    .cifra .detalle { display: block; font-size: .85rem; color: var(--texto-2); }
+
+    .tabla-envoltorio { overflow-x: auto; border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { text-align: right; padding: 10px 6px; border-bottom: 1px solid var(--borde); white-space: nowrap; }
+    thead th { white-space: normal; vertical-align: bottom; }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { background: var(--azul-claro); }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; }
+    dt { font-weight: 600; }
+    dd { margin: 0; color: var(--texto-2); }
+
+    .ruta { margin-top: 28px; padding: 12px 16px; border-left: 4px solid var(--azul); background: var(--superficie); border-radius: 8px; }
+
+    @media (min-width: 720px) {
+      .cifras { grid-template-columns: repeat(4, 1fr); }
+      .cifras.tres { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecera">
+    <div class="contenedor">
+      <a class="marca" href="./">
+        <img src="app/icon-192.png" alt="" width="32" height="32">
+        FoodMatch
+      </a>
+      <button class="boton secundario" type="button" id="salir" hidden>Salir</button>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <h1>Panel del equipo</h1>
+    <p class="intro">Datos del medidor del curso para esta web y su app.</p>
+
+    <!-- Acceso -->
+    <form id="acceso" class="tarjeta" novalidate>
+      <div>
+        <label for="equipo">Código de equipo</label>
+        <input id="equipo" name="equipo" value="ED-02" autocomplete="off" required>
+      </div>
+      <div>
+        <label for="pin">PIN</label>
+        <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required aria-describedby="pin-ayuda">
+        <p id="pin-ayuda" class="ayuda">El PIN solo se guarda en esta pestaña mientras esté abierta.</p>
+      </div>
+      <p id="error-acceso" class="error" role="alert"></p>
+      <div><button class="boton" type="submit">Ver datos</button></div>
+    </form>
+
+    <!-- Datos -->
+    <div id="datos" hidden>
+      <div class="barra-acciones">
+        <button class="boton" type="button" id="actualizar">Actualizar</button>
+        <p class="estado" id="estado" aria-live="polite"></p>
+      </div>
+      <p id="error-datos" class="error" role="alert" style="margin-top:10px;"></p>
+
+      <section aria-labelledby="t-totales">
+        <h2 id="t-totales">Totales</h2>
+        <div class="cifras">
+          <div class="cifra"><span class="valor" id="n-visita">—</span><span class="nombre">Visitas</span></div>
+          <div class="cifra"><span class="valor" id="n-cta">—</span><span class="nombre">Clics en el CTA</span></div>
+          <div class="cifra"><span class="valor" id="n-registro">—</span><span class="nombre">Registros</span></div>
+          <div class="cifra"><span class="valor" id="n-premium">—</span><span class="nombre">Clics en Premium</span></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="t-conversion">
+        <h2 id="t-conversion">Conversión</h2>
+        <div class="cifras tres">
+          <div class="cifra conversion"><span class="valor" id="c-conversion">—</span><span class="nombre">Conversión</span><span class="detalle">registros ÷ visitas</span></div>
+          <div class="cifra conversion"><span class="valor" id="c-cta">—</span><span class="nombre">Clic en el CTA</span><span class="detalle">clics en el CTA ÷ visitas</span></div>
+          <div class="cifra conversion"><span class="valor" id="c-clic-registro">—</span><span class="nombre">Clic → registro</span><span class="detalle">registros ÷ clics en el CTA</span></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="t-canales">
+        <h2 id="t-canales">Por canal (utm_source)</h2>
+        <div class="tabla-envoltorio">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Canal</th>
+                <th scope="col">Visitas</th>
+                <th scope="col">CTA</th>
+                <th scope="col">Registros</th>
+                <th scope="col">Conversión</th>
+              </tr>
+            </thead>
+            <tbody id="canales"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="t-fechas">
+        <h2 id="t-fechas">Eventos</h2>
+        <dl class="tarjeta">
+          <dt>Primer evento</dt><dd id="primero">—</dd>
+          <dt>Último evento</dt><dd id="ultimo">—</dd>
+        </dl>
+      </section>
+    </div>
+
+    <p class="ruta">Estos datos también se traen a la Ruta (estación 11).</p>
+  </main>
+
+  <script>
+    var URL_MEDIDOR = 'https://script.google.com/macros/s/AKfycbyPAD6pdiuWpwpiuSMKTE3Vze-vOokFalj1_R_TRq3Ydb8WS7nG2eUll4J2ky0XAlG3/exec';
+    var CLAVE_EQUIPO = 'panel-equipo';
+    var CLAVE_PIN = 'panel-pin';
+    var REFRESCO_MS = 60000;
+    var temporizador = null;
+
+    // sessionStorage puede fallar (navegación privada estricta): entonces el panel funciona sin recordar el PIN.
+    function leer(clave) { try { return sessionStorage.getItem(clave); } catch (e) { return null; } }
+    function guardar(clave, valor) { try { sessionStorage.setItem(clave, valor); } catch (e) {} }
+    function borrar(clave) { try { sessionStorage.removeItem(clave); } catch (e) {} }
+
+    var acceso = document.getElementById('acceso');
+    var datos = document.getElementById('datos');
+    var credenciales = null;
+
+    function numero(v) { return typeof v === 'number' && isFinite(v) ? v : Number(v) || 0; }
+    function porcentaje(a, b) {
+      if (!b) return '—';
+      return (a / b * 100).toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' %';
+    }
+    function fecha(v) {
+      if (!v) return '—';
+      var d = new Date(v);
+      return isNaN(d) ? String(v) : d.toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+    function poner(id, texto) { document.getElementById(id).textContent = texto; }
+
+    function pintar(r) {
+      var t = r.total || {};
+      var visita = numero(t.visita), cta = numero(t.cta), registro = numero(t.registro), premium = numero(t.premium);
+      poner('n-visita', visita.toLocaleString('es-ES'));
+      poner('n-cta', cta.toLocaleString('es-ES'));
+      poner('n-registro', registro.toLocaleString('es-ES'));
+      poner('n-premium', premium.toLocaleString('es-ES'));
+      poner('c-conversion', porcentaje(registro, visita));
+      poner('c-cta', porcentaje(cta, visita));
+      poner('c-clic-registro', porcentaje(registro, cta));
+
+      var cuerpo = document.getElementById('canales');
+      cuerpo.innerHTML = '';
+      var canales = Object.keys(r.porCanal || {}).sort(function (a, b) {
+        return numero(r.porCanal[b].visita) - numero(r.porCanal[a].visita);
+      });
+      if (!canales.length) {
+        var vacia = document.createElement('tr');
+        var celda = document.createElement('td');
+        celda.colSpan = 5;
+        celda.textContent = 'Todavía no hay datos por canal.';
+        vacia.appendChild(celda);
+        cuerpo.appendChild(vacia);
+      }
+      canales.forEach(function (canal) {
+        var c = r.porCanal[canal] || {};
+        var fila = document.createElement('tr');
+        [canal, numero(c.visita), numero(c.cta), numero(c.registro), porcentaje(numero(c.registro), numero(c.visita))]
+          .forEach(function (valor) {
+            var td = document.createElement('td');
+            td.textContent = typeof valor === 'number' ? valor.toLocaleString('es-ES') : valor;
+            fila.appendChild(td);
+          });
+        cuerpo.appendChild(fila);
+      });
+
+      poner('primero', fecha(r.primero));
+      poner('ultimo', fecha(r.ultimo));
+    }
+
+    function cargar() {
+      if (!credenciales) return;
+      var boton = document.getElementById('actualizar');
+      boton.disabled = true;
+      poner('estado', 'Cargando…');
+      poner('error-datos', '');
+      // Sin cabeceras: el cuerpo va como texto plano y no hay cookies.
+      return fetch(URL_MEDIDOR, { method: 'POST', body: JSON.stringify({ a: 'stats', team: credenciales.team, pin: credenciales.pin }) })
+        .then(function (res) { return res.json(); })
+        .then(function (r) {
+          if (!r.ok) {
+            if (r.error === 'pin') { salir('El PIN no coincide'); return; }
+            throw new Error(r.error || 'respuesta no válida');
+          }
+          pintar(r);
+          poner('estado', 'Actualizado a las ' + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '. Se actualiza solo cada minuto.');
+        })
+        .catch(function (err) {
+          poner('estado', '');
+          poner('error-datos', 'No se han podido cargar los datos (' + err.message + '). Prueba de nuevo con «Actualizar».');
+        })
+        .then(function () { boton.disabled = false; });
+    }
+
+    function entrar(team, pin) {
+      credenciales = { team: team, pin: pin };
+      guardar(CLAVE_EQUIPO, team);
+      guardar(CLAVE_PIN, pin);
+      acceso.hidden = true;
+      datos.hidden = false;
+      document.getElementById('salir').hidden = false;
+      clearInterval(temporizador);
+      temporizador = setInterval(cargar, REFRESCO_MS);
+      cargar();
+    }
+
+    function salir(mensaje) {
+      credenciales = null;
+      clearInterval(temporizador);
+      borrar(CLAVE_PIN);
+      datos.hidden = true;
+      document.getElementById('salir').hidden = true;
+      acceso.hidden = false;
+      document.getElementById('pin').value = '';
+      poner('error-acceso', mensaje || '');
+      document.getElementById('pin').focus();
+    }
+
+    acceso.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var team = document.getElementById('equipo').value.trim();
+      var pin = document.getElementById('pin').value.trim();
+      if (!team || !pin) { poner('error-acceso', 'Escribe el código de equipo y el PIN.'); return; }
+      poner('error-acceso', '');
+      entrar(team, pin);
+    });
+    document.getElementById('actualizar').addEventListener('click', cargar);
+    document.getElementById('salir').addEventListener('click', function () { salir(''); });
+
+    // Si la pestaña ya tenía el PIN guardado, entra directamente.
+    var equipoGuardado = leer(CLAVE_EQUIPO);
+    var pinGuardado = leer(CLAVE_PIN);
+    if (equipoGuardado) document.getElementById('equipo').value = equipoGuardado;
+    if (equipoGuardado && pinGuardado) entrar(equipoGuardado, pinGuardado);
+  </script>
+</body>
+</html>

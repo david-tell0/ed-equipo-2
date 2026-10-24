@@ -142,6 +142,20 @@
       .rejilla.tres { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
+<!-- Medidor del curso (Ruta ED): cuenta visitas, clics y registros. Sin cookies. No lo modifiques. -->
+<script>
+(function(){
+  var URL_MEDIDOR = "https://script.google.com/macros/s/AKfycbyPAD6pdiuWpwpiuSMKTE3Vze-vOokFalj1_R_TRq3Ydb8WS7nG2eUll4J2ky0XAlG3/exec", EQUIPO = "ED-02";
+  var q = new URLSearchParams(location.search);
+  window.medir = function(evento, extra){
+    if (q.get("prueba")) { console.log("Medidor (prueba, no cuenta):", evento, extra || ""); return; }
+    var b = { a: "ev", team: EQUIPO, ev: evento, v: window.VERSION_AB || "a", src: q.get("utm_source") || "directo", camp: q.get("utm_campaign") || "" };
+    for (var k in (extra || {})) b[k] = extra[k];
+    try { fetch(URL_MEDIDOR, { method: "POST", mode: "no-cors", keepalive: true, body: JSON.stringify(b) }); } catch (e) {}
+  };
+  document.addEventListener("DOMContentLoaded", function(){ medir("visita"); });
+})();
+</script>
 </head>
 <body>
   <a class="salto" href="#contenido">Saltar al contenido</a>
@@ -153,7 +167,7 @@
         FoodMatch
       </a>
       <nav aria-label="Principal">
-        <a href="#lista-espera" data-medir="ir_lista_espera" data-origen="cabecera">Lista de espera</a>
+        <a href="#lista-espera">Lista de espera</a>
       </nav>
     </div>
   </header>
@@ -170,8 +184,8 @@
         <div class="cta-bloque">
           <p class="cta-texto">Encuentra tu restaurante ideal</p>
           <div class="botones">
-            <a class="boton" href="app/" data-medir="cta_probar_app" data-origen="hero">Probar la app</a>
-            <a class="boton secundario" href="#lista-espera" data-medir="ir_lista_espera" data-origen="hero">Apuntarme a la lista de espera</a>
+            <a class="boton" href="app/" data-medir="cta" data-origen="hero">Probar la app</a>
+            <a class="boton secundario" href="#lista-espera">Apuntarme a la lista de espera</a>
           </div>
         </div>
       </div>
@@ -328,7 +342,7 @@
             </ol>
           </article>
         </div>
-        <p style="margin-top: 16px;"><a class="boton secundario" href="app/" data-medir="cta_probar_app" data-origen="instalar">Probar la app</a></p>
+        <p style="margin-top: 16px;"><a class="boton secundario" href="app/" data-medir="cta" data-origen="instalar">Probar la app</a></p>
       </div>
     </section>
 
@@ -336,26 +350,25 @@
     <section id="lista-espera" aria-labelledby="t-lista">
       <div class="contenedor">
         <h2 id="t-lista">Apúntate a la lista de espera</h2>
-        <p class="intro">Te avisamos cuando FoodMatch esté disponible en tu ciudad. Solo te pedimos el correo.</p>
+        <p class="intro">Te avisamos si FoodMatch sale adelante.</p>
         <form id="form-lista" novalidate>
           <div>
             <label for="correo">Correo electrónico</label>
             <input id="correo" name="correo" type="email" autocomplete="email" required aria-describedby="correo-ayuda correo-error">
-            <p id="correo-ayuda" class="ayuda">Solo lo usaremos para avisarte del lanzamiento.</p>
+            <p id="correo-ayuda" class="ayuda">Solo te pedimos el email.</p>
             <p id="correo-error" class="ayuda" role="alert" style="color:#9B1C1C;"></p>
           </div>
           <label class="casilla" for="acepto">
             <input id="acepto" name="acepto" type="checkbox" required>
-            <span>Acepto que me escribáis solo para avisarme del lanzamiento.</span>
+            <span>Acepto que se use mi email para este experimento y para avisarme si el proyecto sale adelante.</span>
           </label>
           <div>
             <button class="boton" type="submit">Apuntarme</button>
           </div>
-          <p class="ayuda">Prototipo: de momento no se guarda ni se envía ningún dato.</p>
+          <p class="ayuda">Privacidad: tu email solo se usa para este experimento, solo lo ve el profesor y se borra al terminar el curso.</p>
         </form>
         <div id="gracias-lista" class="gracias" hidden tabindex="-1">
-          <h3>¡Gracias por apuntarte!</h3>
-          <p>Te avisaremos cuando FoodMatch esté listo. Mientras tanto, prueba el prototipo.</p>
+          <p>¡Gracias! Esto es un prototipo de un proyecto de clase del Máster en Marketing Digital (CEU). Si sale adelante, te avisaremos.</p>
         </div>
       </div>
     </section>
@@ -365,7 +378,7 @@
       <div class="contenedor">
         <h2 id="t-final">Encuentra tu restaurante ideal</h2>
         <p class="intro">Come bien, ve a lo seguro.</p>
-        <a class="boton" href="app/" data-medir="cta_probar_app" data-origen="final">Probar la app</a>
+        <a class="boton" href="app/" data-medir="cta" data-origen="final">Probar la app</a>
       </div>
     </section>
   </main>
@@ -373,30 +386,24 @@
   <footer class="pie">
     <div class="contenedor">
       <p>FoodMatch · Prototipo del LAB (sesión 2) · Equipo 2 <span class="revisar">[REVISAR]</span></p>
-      <p>Esta web no usa cookies ni servicios de terceros. Los restaurantes de la app son ejemplos ficticios.</p>
+      <p>Esta web no usa cookies. Solo contamos visitas y clics con el medidor del curso. Los restaurantes de la app son ejemplos ficticios.</p>
+      <p><a href="panel.html" style="color: var(--texto-2);">Panel del equipo</a></p>
     </div>
   </footer>
 
   <script>
-    /* Medidor: [DATO PENDIENTE] el script del medidor del curso se pega aquí.
-       Mientras tanto, medir() guarda los eventos en window.medidorEventos y en la consola,
-       y se los pasará a window.medidorCurso(evento, datos) cuando exista. */
-    window.medidorEventos = window.medidorEventos || [];
-    function medir(evento, datos) {
-      var registro = { evento: evento, datos: datos || {}, pagina: location.pathname, hora: new Date().toISOString() };
-      window.medidorEventos.push(registro);
-      if (typeof window.medidorCurso === 'function') window.medidorCurso(evento, datos || {});
-      console.info('[medidor]', evento, datos || {});
-    }
-
+    // medir() viene del medidor del curso (en <head>).
     document.addEventListener('click', function (e) {
       var el = e.target.closest('[data-medir]');
       if (el) medir(el.dataset.medir, { origen: el.dataset.origen || '' });
     });
 
-    medir('visita_landing', { referencia: document.referrer ? 'externa' : 'directa' });
+    // Los enlaces a la app conservan ?prueba=1 y los utm_*, para que la app cuente bien el canal y las pruebas.
+    if (location.search) {
+      document.querySelectorAll('a[href="app/"]').forEach(function (a) { a.setAttribute('href', 'app/' + location.search); });
+    }
 
-    // Lista de espera: en el Sprint B se conectará al medidor del curso.
+    // Lista de espera
     var form = document.getElementById('form-lista');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -416,7 +423,7 @@
       }
       error.textContent = '';
       correo.removeAttribute('aria-invalid');
-      medir('registro_lista_espera', {}); // sin el correo: no enviamos datos personales al medidor
+      medir('registro', { email: correo.value.trim() });
       form.hidden = true;
       var gracias = document.getElementById('gracias-lista');
       gracias.hidden = false;

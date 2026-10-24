@@ -196,6 +196,20 @@
 
     .pie-pantalla { padding: 0 16px 16px; display: grid; gap: 10px; }
   </style>
+<!-- Medidor del curso (Ruta ED): cuenta visitas, clics y registros. Sin cookies. No lo modifiques. -->
+<script>
+(function(){
+  var URL_MEDIDOR = "https://script.google.com/macros/s/AKfycbyPAD6pdiuWpwpiuSMKTE3Vze-vOokFalj1_R_TRq3Ydb8WS7nG2eUll4J2ky0XAlG3/exec", EQUIPO = "ED-02";
+  var q = new URLSearchParams(location.search);
+  window.medir = function(evento, extra){
+    if (q.get("prueba")) { console.log("Medidor (prueba, no cuenta):", evento, extra || ""); return; }
+    var b = { a: "ev", team: EQUIPO, ev: evento, v: window.VERSION_AB || "a", src: q.get("utm_source") || "directo", camp: q.get("utm_campaign") || "" };
+    for (var k in (extra || {})) b[k] = extra[k];
+    try { fetch(URL_MEDIDOR, { method: "POST", mode: "no-cors", keepalive: true, body: JSON.stringify(b) }); } catch (e) {}
+  };
+  document.addEventListener("DOMContentLoaded", function(){ medir("visita"); });
+})();
+</script>
 </head>
 <body>
   <div class="app">
@@ -206,7 +220,7 @@
         <img class="logo" src="logo.png" width="220" height="220" alt="Logo de FoodMatch">
         <h1 id="p1-titulo" class="lema">Come bien, ve a lo seguro</h1>
         <div class="acciones">
-          <button class="boton" type="button" data-ir="p5" data-medir="app_empezar">Encuentra tu restaurante ideal</button>
+          <button class="boton" type="button" data-ir="p5" data-medir="cta">Encuentra tu restaurante ideal</button>
         </div>
       </div>
     </section>
@@ -301,7 +315,7 @@
           </label>
 
           <button class="boton" type="submit">Buscar restaurantes</button>
-          <p class="nota">No guardamos nada: tus respuestas solo se usan en esta pantalla.</p>
+          <p class="nota">No te pedimos datos personales. Contamos tus elecciones de forma anónima para mejorar el prototipo.</p>
         </form>
       </div>
     </section>
@@ -473,7 +487,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no guarda ni envía lo que escribes, no usa cookies ni servicios de terceros. Los restaurantes son ejemplos ficticios.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión no se envía. Los restaurantes son ejemplos ficticios.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -515,17 +529,8 @@
   </div>
 
   <script>
-    /* Medidor: [DATO PENDIENTE] el script del medidor del curso se pega aquí.
-       Mientras tanto, medir() guarda los eventos en window.medidorEventos y en la consola,
-       y se los pasará a window.medidorCurso(evento, datos) cuando exista.
+    /* medir() viene del medidor del curso (en <head>).
        Eventos para H1: peticion_recomendacion → (recomprobar_*) → voy_a_ir → visita_confirmada. */
-    window.medidorEventos = window.medidorEventos || [];
-    function medir(evento, datos) {
-      var registro = { evento: evento, datos: datos || {}, pagina: location.pathname, hora: new Date().toISOString() };
-      window.medidorEventos.push(registro);
-      if (typeof window.medidorCurso === 'function') window.medidorCurso(evento, datos || {});
-      console.info('[medidor]', evento, datos || {});
-    }
 
     // Restaurantes ficticios: sin datos reales.
     var RESTAURANTES = [
@@ -560,7 +565,6 @@
         titulo.setAttribute('tabindex', '-1');
         titulo.focus({ preventScroll: true });
       }
-      medir('ver_pantalla', { pantalla: id });
     }
     function ir(id) {
       if (location.hash === '#' + id) mostrar(id); else location.hash = id;
@@ -786,8 +790,6 @@
     });
 
     // --- Instalación y service worker ---
-    var instalada = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    medir('abrir_app', { instalada: instalada });
     window.addEventListener('appinstalled', function () { medir('app_instalada', {}); });
     if ('serviceWorker' in navigator) {
       // Si ya había una versión controlando la app y entra una nueva, recargamos una vez para mostrarla.
