@@ -1,0 +1,23 @@
+# Datos de investigación (encuestas, entrevistas, transcripciones)
+datos/
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*transcripci*
+*entrevista*
+*encuesta*
+
+# Secretos y credenciales
+.env
+.env.*
+*.pem
+*.key
+*secret*
+*password*
+*contrasen*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
