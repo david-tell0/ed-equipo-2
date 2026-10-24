@@ -134,12 +134,6 @@
     .tarjeta-boton .simbolo { font-size: 1.6rem; width: 40px; text-align: center; flex: none; }
     .tarjeta-boton strong { display: block; font-size: 1.05rem; }
     .tarjeta-boton span.detalle { color: var(--texto-2); font-size: .92rem; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--azul);
-      background: var(--superficie); color: var(--azul); font: 600 .95rem var(--fuente); cursor: pointer;
-    }
-    .chip[aria-pressed="true"] { background: var(--azul); color: #fff; }
     .etiqueta {
       display: inline-block; font-size: .8rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
       background: var(--azul-claro); color: var(--azul-oscuro);
@@ -340,37 +334,7 @@
       </div>
     </section>
 
-    <!-- Pantalla 2 -->
-    <section class="pantalla" id="p2" aria-labelledby="p2-titulo" hidden>
-      <header class="barra">
-        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
-        <h1 id="p2-titulo">FoodMatch</h1>
-        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
-      </header>
-      <div class="cuerpo">
-        <h2>¿Qué te apetece hoy?</h2>
-        <div class="tarjetas">
-          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="lista-restaurantes" id="t-restaurantes">
-            <span class="simbolo" aria-hidden="true">🍽️</span>
-            <span><strong>Restaurantes</strong><span class="detalle">Los que encajan con lo que nos has contado</span></span>
-          </button>
-          <div id="lista-restaurantes" class="tarjetas" hidden></div>
-
-          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="tipos-comida" id="t-tipos">
-            <span class="simbolo" aria-hidden="true">🥗</span>
-            <span><strong>Tipo de comida</strong><span class="detalle">Filtra por lo que te apetece</span></span>
-          </button>
-          <div id="tipos-comida" class="tarjeta" hidden>
-            <div class="chips" id="filtro-tipo"></div>
-          </div>
-
-          <button class="tarjeta-boton" type="button" data-ir="p3">
-            <span class="simbolo" aria-hidden="true">📍</span>
-            <span><strong>Ubicación</strong><span class="detalle">Ver restaurantes cerca de ti en el mapa</span></span>
-          </button>
-        </div>
-      </div>
-    </section>
+    <!-- Pantalla 2 («FoodMatch») retirada a petición del equipo: el formulario lleva directo a la pantalla 3. -->
 
     <!-- Pantalla 3 -->
     <section class="pantalla" id="p3" aria-labelledby="p3-titulo" hidden>
@@ -562,7 +526,6 @@
         <ol>
           <li><button type="button" data-ir="p1">Inicio</button></li>
           <li><button type="button" data-ir="p5">Tus gustos y alergias</button></li>
-          <li><button type="button" data-ir="p2">Buscar</button></li>
           <li><button type="button" data-ir="p3">Cerca de ti</button></li>
           <li><button type="button" data-ir="p6">Tu opinión</button></li>
           <li><button type="button" data-ir="p7">About us</button></li>
@@ -588,21 +551,20 @@
 
     // sinAntojo: no hay ejemplos del tipo de comida elegido y se enseñan los demás que encajan.
     // ubicacion: null hasta que el usuario permite la ubicación o busca una zona; las coordenadas no se guardan.
-    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null, sinAntojo: false, ubicacion: null, popupUbicacionVisto: false };
-    var FLUJO = ['p1', 'p5', 'p2', 'p3', 'p4', 'p6', 'p7'];
+    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, elegido: null, sinAntojo: false, ubicacion: null, popupUbicacionVisto: false };
+    var FLUJO = ['p1', 'p5', 'p3', 'p4', 'p6', 'p7'];
     var actual = null;
 
     // --- Navegación: una pantalla visible a la vez ---
     function mostrar(id, sinFoco) {
       if (!document.getElementById(id)) id = 'p1';
-      if (id === 'p4' && !estado.elegido) id = 'p2';
+      if (id === 'p4' && !estado.elegido) id = 'p3';
       document.querySelectorAll('.pantalla').forEach(function (s) { s.hidden = s.id !== id; });
       document.querySelectorAll('#menu [data-ir]').forEach(function (b) {
         if (b.dataset.ir === id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
       });
       actual = id;
       window.scrollTo(0, 0);
-      if (id === 'p2') pintarListas();
       if (id === 'p3') pintarCerca();
       if (!sinFoco) {
         var titulo = document.getElementById(id + '-titulo');
@@ -667,7 +629,6 @@
       estado.antojo = f.antojo.value ? [f.antojo.value] : [];
       estado.dieta = f.dieta.value;
       estado.noTuristico = f['no-turistico'].checked;
-      estado.tipo = null;
       medir('peticion_recomendacion', {
         antojo: estado.antojo.join(',') || 'cualquiera',
         presupuesto: f.presupuesto.value,
@@ -677,7 +638,7 @@
         personas: f.grupo.value === 'grupo' ? Number(f.personas.value) : 1,
         no_turistico: estado.noTuristico
       });
-      ir('p2');
+      ir('p3');
     });
 
     function coinciden() {
@@ -687,11 +648,10 @@
         return true;
       });
       estado.sinAntojo = false;
-      var tipos = estado.tipo ? [estado.tipo] : estado.antojo;
-      if (!tipos.length) return base;
-      var porTipo = base.filter(function (r) { return tipos.indexOf(r.tipo) !== -1; });
+      if (!estado.antojo.length) return base;
+      var porTipo = base.filter(function (r) { return estado.antojo.indexOf(r.tipo) !== -1; });
       // Solo hay 3 restaurantes de ejemplo: si ninguno es del tipo elegido en el formulario, enseñamos el resto.
-      if (!porTipo.length && !estado.tipo) { estado.sinAntojo = true; return base; }
+      if (!porTipo.length) { estado.sinAntojo = true; return base; }
       return porTipo;
     }
 
@@ -720,45 +680,12 @@
       return b;
     }
 
-    function pintarListas() {
-      var lista = document.getElementById('lista-restaurantes');
-      lista.innerHTML = '';
-      var rs = coinciden();
-      if (!rs.length) {
-        var vacio = document.createElement('p');
-        vacio.className = 'nota';
-        vacio.textContent = 'Ningún restaurante de ejemplo encaja con estos filtros. Prueba a cambiar la dieta o el tipo de comida.';
-        lista.appendChild(vacio);
-      }
-      rs.forEach(function (r) { lista.appendChild(tarjetaResto(r)); });
-      avisoSinAntojo(lista);
-
-      var filtro = document.getElementById('filtro-tipo');
-      filtro.innerHTML = '';
-      ['Mediterránea', 'Asiática', 'Tapas'].forEach(function (t) {
-        var c = document.createElement('button');
-        c.type = 'button';
-        c.className = 'chip';
-        c.textContent = t;
-        c.setAttribute('aria-pressed', estado.tipo === t ? 'true' : 'false');
-        c.addEventListener('click', function () {
-          estado.tipo = estado.tipo === t ? null : t;
-          pintarListas();
-          abrir(document.getElementById('t-restaurantes'), true);
-          filtro.querySelectorAll('.chip')[['Mediterránea', 'Asiática', 'Tapas'].indexOf(t)].focus();
-        });
-        filtro.appendChild(c);
-      });
-    }
-
-    function abrir(boton, forzar) {
+    function abrir(boton) {
       var panel = document.getElementById(boton.getAttribute('aria-controls'));
-      var abierto = forzar ? true : boton.getAttribute('aria-expanded') !== 'true';
+      var abierto = boton.getAttribute('aria-expanded') !== 'true';
       boton.setAttribute('aria-expanded', String(abierto));
       panel.hidden = !abierto;
     }
-    document.getElementById('t-restaurantes').addEventListener('click', function () { abrir(this); });
-    document.getElementById('t-tipos').addEventListener('click', function () { abrir(this); });
 
     // --- Pantalla 3: ubicación ---
     var popupUbicacion = document.getElementById('popup-ubicacion');
@@ -848,7 +775,7 @@
         lista.appendChild(tarjetaResto(r));
       });
       if (!lista.children.length) {
-        lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros.</p>';
+        lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros. Prueba a cambiar la dieta o el tipo de comida.</p>';
       }
       avisoSinAntojo(lista);
     }
