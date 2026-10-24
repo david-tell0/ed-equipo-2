@@ -1,30 +1,41 @@
-// Service worker mínimo: guarda la app para que abra sin conexión.
-// Primero intenta la red (para ver siempre la última versión publicada) y, si falla, usa la copia guardada.
-const CACHE = 'foodmatch-v1';
+// Service worker mínimo en modo «red primero»:
+// siempre descarga la última versión publicada y solo usa la copia guardada si no hay conexión.
+const CACHE = 'foodmatch-v2';
 const ARCHIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ARCHIVOS)));
+  // La versión nueva se activa en cuanto se instala, sin esperar a que se cierre la app.
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.addAll(ARCHIVOS.map((a) => new Request(a, { cache: 'reload' }))))
+  );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((claves) => Promise.all(claves.filter((c) => c !== CACHE).map((c) => caches.delete(c))))
+    caches.keys()
+      .then((claves) => Promise.all(claves.filter((c) => c !== CACHE).map((c) => caches.delete(c))))
+      .then(() => self.clients.claim()) // toma el control de las pestañas abiertas
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   const peticion = event.request;
   if (peticion.method !== 'GET' || new URL(peticion.url).origin !== self.location.origin) return;
   event.respondWith(
-    fetch(peticion)
+    // cache: 'no-cache' obliga a preguntar al servidor, aunque el navegador tenga una copia reciente.
+    fetch(peticion, { cache: 'no-cache' })
       .then((respuesta) => {
-        const copia = respuesta.clone();
-        caches.open(CACHE).then((cache) => cache.put(peticion, copia));
+        if (respuesta.ok) {
+          const copia = respuesta.clone();
+          caches.open(CACHE).then((cache) => cache.put(peticion, copia));
+        }
         return respuesta;
       })
-      .catch(() => caches.match(peticion).then((guardada) => guardada || caches.match('./index.html')))
+      .catch(() =>
+        caches.match(peticion, { ignoreSearch: true })
+          .then((guardada) => guardada || (peticion.mode === 'navigate' ? caches.match('./index.html') : undefined))
+          .then((guardada) => guardada || Response.error())
+      )
   );
 });

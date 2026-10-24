@@ -746,8 +746,22 @@
     medir('abrir_app', { instalada: instalada });
     window.addEventListener('appinstalled', function () { medir('app_instalada', {}); });
     if ('serviceWorker' in navigator) {
+      // Si ya había una versión controlando la app y entra una nueva, recargamos una vez para mostrarla.
+      var habiaVersion = !!navigator.serviceWorker.controller;
+      var recargando = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!habiaVersion || recargando) return;
+        recargando = true;
+        location.reload();
+      });
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').catch(function (err) { console.warn('Service worker no registrado:', err); });
+        // updateViaCache: 'none' → el navegador nunca usa una copia antigua de sw.js al buscar actualizaciones.
+        navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) {
+          // Al volver a abrir la app instalada (desde segundo plano), busca si hay versión nueva.
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') reg.update();
+          });
+        }).catch(function (err) { console.warn('Service worker no registrado:', err); });
       });
     }
 
