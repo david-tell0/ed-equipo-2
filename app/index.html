@@ -11,6 +11,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="FoodMatch">
   <link rel="manifest" href="manifest.webmanifest">
+  <!-- Mapa real de la pantalla 3: Leaflet + teselas de OpenStreetMap (excepción aprobada a «sin servicios externos») -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <style>
@@ -144,7 +147,7 @@
 
     /* Pantalla 3 — mapa */
     .mapa { position: relative; border-radius: var(--radio); overflow: hidden; border: 1px solid var(--borde); background: #EAF3FA; }
-    .mapa svg { display: block; width: 100%; height: auto; }
+    #mapa-ilustrativo > svg { display: block; width: 100%; height: auto; }
     .pin {
       position: absolute; transform: translate(-50%, -100%);
       width: 44px; height: 44px; border-radius: 50% 50% 50% 0; rotate: -45deg;
@@ -200,6 +203,15 @@
     }
     input[type="search"]:focus { border-color: var(--azul); }
     #ubi-estado:empty { display: none; }
+    #mapa-ilustrativo { position: relative; }
+    #mapa-real { height: 340px; z-index: 0; font: inherit; }
+    .pin-mapa {
+      width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      background: var(--azul); border: 3px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pin-mapa span { transform: rotate(45deg); color: #fff; font: 700 1rem var(--fuente); }
+    .leaflet-marker-icon:focus-visible .pin-mapa { outline: 3px solid var(--texto); outline-offset: 2px; }
     .menu.modal { align-items: center; padding: 16px; }
     .popup-panel {
       width: 100%; max-width: 360px; background: var(--fondo); border-radius: 16px;
@@ -355,6 +367,9 @@
         <p class="nota" id="ubi-estado" role="status"></p>
 
         <div class="mapa">
+          <div id="mapa-real" hidden></div>
+          <!-- Mapa ilustrativo: se ve antes de tener ubicación y si el mapa real no carga (sin conexión) -->
+          <div id="mapa-ilustrativo">
           <svg viewBox="0 0 360 300" role="img" aria-labelledby="mapa-desc">
             <title id="mapa-desc">Mapa ilustrativo, no real, con tres restaurantes de ejemplo marcados</title>
             <rect width="360" height="300" fill="#EAF3FA"/>
@@ -368,8 +383,9 @@
             </g>
           </svg>
           <div id="pines"></div>
+          </div>
         </div>
-        <p class="nota">Mapa ilustrativo: los restaurantes son ejemplos ficticios.</p>
+        <p class="nota" id="nota-mapa">Mapa ilustrativo: los restaurantes son ejemplos ficticios.</p>
         <div class="tarjetas" id="lista-cerca"></div>
       </div>
     </section>
@@ -483,7 +499,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían. Los restaurantes son ejemplos ficticios.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Los restaurantes son ejemplos ficticios.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -509,7 +525,7 @@
     <div class="popup-panel">
       <span class="popup-icono" aria-hidden="true">📍</span>
       <h2 id="ubi-titulo">¿Nos dejas usar tu ubicación?</h2>
-      <p id="ubi-desc">Para enseñarte en el mapa los restaurantes que encajan con tus preferencias necesitamos saber dónde estás. Tu ubicación solo se usa en tu móvil: no la guardamos ni la enviamos.</p>
+      <p id="ubi-desc">Para enseñarte en el mapa los restaurantes que encajan con tus preferencias necesitamos saber dónde estás. Solo la usamos para centrar el mapa: no la guardamos ni la enviamos al medidor.</p>
       <button class="boton" type="button" id="ubi-permitir">Permitir ubicación</button>
       <button class="boton secundario" type="button" id="ubi-ahora-no">Ahora no</button>
     </div>
@@ -539,10 +555,11 @@
        Eventos para H1: peticion_recomendacion → (recomprobar_*) → voy_a_ir → visita_confirmada. */
 
     // Restaurantes ficticios: sin datos reales.
+    // x, y: posición (%) en el mapa ilustrativo. dLat, dLng: desplazamiento respecto al centro en el mapa real (unos 200 m).
     var RESTAURANTES = [
-      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 22, y: 72 },
-      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 72, y: 30 },
-      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana', 'comida-rapida'], turistico: true, x: 78, y: 82 }
+      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 22, y: 72, dLat: -0.0016, dLng: -0.0022 },
+      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 72, y: 30, dLat: 0.0015, dLng: 0.0018 },
+      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana', 'comida-rapida'], turistico: true, x: 78, y: 82, dLat: -0.0018, dLng: 0.0020 }
     ];
     var NOMBRES_DIETA = {
       vegetariana: 'Vegetariana', vegana: 'Vegana', pescetariana: 'Pescetariana', halal: 'Halal',
@@ -707,9 +724,9 @@
         return;
       }
       avisoUbicacion('Buscando tu ubicación…');
-      // Solo comprobamos que el usuario la comparte: las coordenadas no se guardan ni se envían.
-      navigator.geolocation.getCurrentPosition(function () {
-        estado.ubicacion = { tipo: 'gps' };
+      // Las coordenadas solo sirven para centrar el mapa: no se guardan ni se envían al medidor.
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        estado.ubicacion = { tipo: 'gps', lat: pos.coords.latitude, lng: pos.coords.longitude };
         medir('ubicacion_permitida', {});
         avisoUbicacion('');
         pintarCerca();
@@ -742,16 +759,75 @@
         document.getElementById('buscar-zona').focus();
         return;
       }
-      estado.ubicacion = { tipo: 'busqueda', texto: zona };
       medir('buscar_zona', {}); // sin el texto: puede ser una dirección
-      avisoUbicacion('');
-      pintarCerca();
+      var boton = e.target.querySelector('button[type="submit"]');
+      boton.disabled = true; // el buscador de OpenStreetMap admite como mucho una búsqueda por segundo
+      avisoUbicacion('Buscando «' + zona + '»…');
+      fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=es&q=' + encodeURIComponent(zona))
+        .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
+        .then(function (resultados) {
+          if (!resultados.length) {
+            avisoUbicacion('No hemos encontrado «' + zona + '». Prueba con otra dirección, barrio o ciudad.');
+            return;
+          }
+          var r = resultados[0];
+          estado.ubicacion = { tipo: 'busqueda', texto: r.name || zona, lat: Number(r.lat), lng: Number(r.lon) };
+          avisoUbicacion('');
+          pintarCerca();
+        })
+        .catch(function () {
+          // Sin conexión con el buscador: seguimos con el mapa ilustrativo.
+          estado.ubicacion = { tipo: 'busqueda', texto: zona };
+          avisoUbicacion('No hemos podido cargar el mapa de «' + zona + '». Te enseñamos un mapa ilustrativo.');
+          pintarCerca();
+        })
+        .then(function () { setTimeout(function () { boton.disabled = false; }, 1000); });
     });
+
+    // Mapa real (Leaflet + OpenStreetMap). Si Leaflet no ha cargado (sin conexión), se usa el ilustrativo.
+    var mapa = null;
+    var capaMarcas = null;
+    function pintarMapaReal(rs) {
+      var u = estado.ubicacion;
+      var centro = [u.lat, u.lng];
+      if (!mapa) {
+        mapa = L.map('mapa-real');
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mapa);
+        capaMarcas = L.layerGroup().addTo(mapa);
+      }
+      mapa.invalidateSize();
+      capaMarcas.clearLayers();
+      // Encuadra tu posición y todos los restaurantes, con margen para los pines.
+      var puntos = [centro].concat(rs.map(function (r) { return [u.lat + r.dLat, u.lng + r.dLng]; }));
+      mapa.fitBounds(L.latLngBounds(puntos), { padding: [48, 48], maxZoom: 17 });
+      var etiqueta = document.createElement('span'); // textContent: el nombre viene del buscador
+      etiqueta.textContent = u.tipo === 'gps' ? 'Estás aquí' : u.texto;
+      L.circleMarker(centro, { radius: 9, color: '#fff', weight: 3, fillColor: '#1F5F8B', fillOpacity: 1 })
+        .bindTooltip(etiqueta, { permanent: true, direction: 'right', offset: [10, 0] })
+        .addTo(capaMarcas);
+      rs.forEach(function (r) {
+        L.marker([u.lat + r.dLat, u.lng + r.dLng], {
+          icon: L.divIcon({ className: '', html: '<div class="pin-mapa"><span>' + r.id.toUpperCase() + '</span></div>', iconSize: [40, 40], iconAnchor: [20, 48] }),
+          title: r.nombre,
+          alt: r.nombre,
+          keyboard: true
+        }).on('click', function () { elegir(r.id); }).addTo(capaMarcas);
+      });
+    }
 
     function pintarCerca() {
       var pines = document.getElementById('pines');
       var lista = document.getElementById('lista-cerca');
       var marca = document.getElementById('marca-aqui');
+      var usarReal = !!(estado.ubicacion && estado.ubicacion.lat != null && window.L);
+      document.getElementById('mapa-real').hidden = !usarReal;
+      document.getElementById('mapa-ilustrativo').hidden = usarReal;
+      document.getElementById('nota-mapa').textContent = usarReal
+        ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
+        : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
       pines.innerHTML = '';
       lista.innerHTML = '';
       if (!estado.ubicacion) {
@@ -759,21 +835,26 @@
         lista.innerHTML = '<p class="nota">Permite usar tu ubicación o busca una zona para ver en el mapa los restaurantes que encajan con tus preferencias.</p>';
         return;
       }
-      marca.setAttribute('display', 'inline');
-      document.getElementById('marca-aqui-texto').textContent =
-        estado.ubicacion.tipo === 'gps' ? 'Estás aquí' : estado.ubicacion.texto.slice(0, 22);
-      coinciden().forEach(function (r) {
-        var p = document.createElement('button');
-        p.type = 'button';
-        p.className = 'pin';
-        p.style.left = r.x + '%';
-        p.style.top = r.y + '%';
-        p.setAttribute('aria-label', r.nombre);
-        p.innerHTML = '<span aria-hidden="true">' + r.id.toUpperCase() + '</span>';
-        p.addEventListener('click', function () { elegir(r.id); });
-        pines.appendChild(p);
-        lista.appendChild(tarjetaResto(r));
-      });
+      var rs = coinciden();
+      if (usarReal) {
+        pintarMapaReal(rs);
+      } else {
+        marca.setAttribute('display', 'inline');
+        document.getElementById('marca-aqui-texto').textContent =
+          estado.ubicacion.tipo === 'gps' ? 'Estás aquí' : estado.ubicacion.texto.slice(0, 22);
+        rs.forEach(function (r) {
+          var p = document.createElement('button');
+          p.type = 'button';
+          p.className = 'pin';
+          p.style.left = r.x + '%';
+          p.style.top = r.y + '%';
+          p.setAttribute('aria-label', r.nombre);
+          p.innerHTML = '<span aria-hidden="true">' + r.id.toUpperCase() + '</span>';
+          p.addEventListener('click', function () { elegir(r.id); });
+          pines.appendChild(p);
+        });
+      }
+      rs.forEach(function (r) { lista.appendChild(tarjetaResto(r)); });
       if (!lista.children.length) {
         lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros. Prueba a cambiar la dieta o el tipo de comida.</p>';
       }
