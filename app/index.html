@@ -172,7 +172,8 @@
     }
     .opcion input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: var(--azul); }
     .opciones.en-fila { grid-template-columns: repeat(3, 1fr); }
-    .opciones.en-fila .opcion { justify-content: center; text-align: center; padding: 8px 6px; }
+    .opciones.en-fila .opcion { justify-content: center; text-align: center; padding: 8px 6px; gap: 8px; }
+    .opcion small { display: block; font-size: .8rem; font-weight: 400; color: var(--texto-2); white-space: nowrap; }
     select, textarea {
       width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--texto);
       border: 2px solid #8A97A5; border-radius: 10px; background: #fff;
@@ -220,24 +221,42 @@
       <div class="cuerpo">
         <h2>Cuéntanos tus gustos y necesidades</h2>
         <form id="form-gustos">
-          <fieldset>
-            <legend>¿Qué te apetece hoy?</legend>
-            <div class="chips" id="gustos-antojo">
-              <button class="chip" type="button" aria-pressed="false" data-valor="Mediterránea">Mediterránea</button>
-              <button class="chip" type="button" aria-pressed="false" data-valor="Asiática">Asiática</button>
-              <button class="chip" type="button" aria-pressed="false" data-valor="Tapas">Tapas</button>
-              <button class="chip" type="button" aria-pressed="false" data-valor="Me da igual">Me da igual</button>
-            </div>
-          </fieldset>
+          <div>
+            <label for="antojo">¿Qué te apetece hoy?</label>
+            <select id="antojo" name="antojo">
+              <option value="">Me da igual</option>
+              <option>Hamburguesas</option>
+              <option>Pizza</option>
+              <option>Italiana</option>
+              <option>Sushi y japonesa</option>
+              <option>China</option>
+              <option>Asiática</option>
+              <option>Tailandesa</option>
+              <option>Coreana</option>
+              <option>India</option>
+              <option>Mexicana</option>
+              <option>Kebab y turca</option>
+              <option>Árabe y libanesa</option>
+              <option>Pollo</option>
+              <option>Mediterránea</option>
+              <option>Tapas</option>
+              <option>Griega</option>
+              <option>Peruana</option>
+              <option>Poke</option>
+              <option>Ensaladas</option>
+              <option>Bocadillos y sándwiches</option>
+              <option>Desayunos y brunch</option>
+              <option>Café y postres</option>
+            </select>
+          </div>
 
           <fieldset>
             <legend>Presupuesto por persona</legend>
             <div class="opciones en-fila">
-              <label class="opcion"><input type="radio" name="presupuesto" value="bajo" checked> Bajo</label>
-              <label class="opcion"><input type="radio" name="presupuesto" value="medio"> Medio</label>
-              <label class="opcion"><input type="radio" name="presupuesto" value="alto"> Alto</label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="bajo" checked> <span>Bajo<small>5-10 €</small></span></label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="medio"> <span>Medio<small>10-25 €</small></span></label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="alto"> <span>Alto<small>+25 €</small></span></label>
             </div>
-            <p class="nota" style="margin-top:6px;">Rangos en euros: <span class="pendiente">[DATO PENDIENTE]</span></p>
           </fieldset>
 
           <div>
@@ -246,6 +265,11 @@
               <option value="ninguna">Sin restricciones</option>
               <option value="vegetariana">Vegetariana</option>
               <option value="vegana">Vegana</option>
+              <option value="pescetariana">Pescetariana</option>
+              <option value="halal">Halal</option>
+              <option value="kosher">Kosher</option>
+              <option value="saludable">Saludable</option>
+              <option value="comida-rapida">Comida rápida</option>
             </select>
           </div>
 
@@ -502,13 +526,17 @@
 
     // Restaurantes ficticios: sin datos reales.
     var RESTAURANTES = [
-      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana'], turistico: false, x: 22, y: 72 },
-      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana'], turistico: false, x: 72, y: 30 },
-      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana'], turistico: true, x: 78, y: 82 }
+      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 22, y: 72 },
+      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 72, y: 30 },
+      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana', 'comida-rapida'], turistico: true, x: 78, y: 82 }
     ];
-    var NOMBRES_DIETA = { vegetariana: 'Vegetariana', vegana: 'Vegana' };
+    var NOMBRES_DIETA = {
+      vegetariana: 'Vegetariana', vegana: 'Vegana', pescetariana: 'Pescetariana', halal: 'Halal',
+      kosher: 'Kosher', saludable: 'Saludable', 'comida-rapida': 'Comida rápida'
+    };
 
-    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null };
+    // sinAntojo: no hay ejemplos del tipo de comida elegido y se enseñan los demás que encajan.
+    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null, sinAntojo: false };
     var FLUJO = ['p1', 'p5', 'p2', 'p3', 'p4', 'p6', 'p7'];
     var actual = null;
 
@@ -566,12 +594,6 @@
     menu.addEventListener('click', function (e) { if (e.target === menu) cerrarMenu(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
 
-    // --- Chips de "¿Qué te apetece hoy?" ---
-    document.getElementById('gustos-antojo').addEventListener('click', function (e) {
-      var chip = e.target.closest('.chip');
-      if (!chip) return;
-      chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
-    });
     document.querySelectorAll('input[name="grupo"]').forEach(function (r) {
       r.addEventListener('change', function () { document.getElementById('nota-grupo').hidden = r.value !== 'grupo' || !r.checked; });
     });
@@ -580,8 +602,7 @@
     document.getElementById('form-gustos').addEventListener('submit', function (e) {
       e.preventDefault();
       var f = e.target;
-      estado.antojo = Array.prototype.map.call(document.querySelectorAll('#gustos-antojo [aria-pressed="true"]'), function (c) { return c.dataset.valor; })
-        .filter(function (v) { return v !== 'Me da igual'; });
+      estado.antojo = f.antojo.value ? [f.antojo.value] : [];
       estado.dieta = f.dieta.value;
       estado.noTuristico = f['no-turistico'].checked;
       estado.tipo = null;
@@ -597,13 +618,26 @@
     });
 
     function coinciden() {
-      return RESTAURANTES.filter(function (r) {
+      var base = RESTAURANTES.filter(function (r) {
         if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
         if (estado.noTuristico && r.turistico) return false;
-        var tipos = estado.tipo ? [estado.tipo] : estado.antojo;
-        if (tipos.length && tipos.indexOf(r.tipo) === -1) return false;
         return true;
       });
+      estado.sinAntojo = false;
+      var tipos = estado.tipo ? [estado.tipo] : estado.antojo;
+      if (!tipos.length) return base;
+      var porTipo = base.filter(function (r) { return tipos.indexOf(r.tipo) !== -1; });
+      // Solo hay 3 restaurantes de ejemplo: si ninguno es del tipo elegido en el formulario, enseñamos el resto.
+      if (!porTipo.length && !estado.tipo) { estado.sinAntojo = true; return base; }
+      return porTipo;
+    }
+
+    function avisoSinAntojo(contenedor) {
+      if (!estado.sinAntojo || !contenedor.children.length) return;
+      var aviso = document.createElement('p');
+      aviso.className = 'nota';
+      aviso.textContent = 'Aún no hay ejemplos de «' + estado.antojo[0] + '». Te enseñamos otros que encajan con el resto de lo que nos has contado.';
+      contenedor.insertBefore(aviso, contenedor.firstChild);
     }
 
     function tarjetaResto(r) {
@@ -630,10 +664,11 @@
       if (!rs.length) {
         var vacio = document.createElement('p');
         vacio.className = 'nota';
-        vacio.textContent = 'Ningún restaurante de ejemplo encaja con estos filtros. Prueba con otro tipo de comida.';
+        vacio.textContent = 'Ningún restaurante de ejemplo encaja con estos filtros. Prueba a cambiar la dieta o el tipo de comida.';
         lista.appendChild(vacio);
       }
       rs.forEach(function (r) { lista.appendChild(tarjetaResto(r)); });
+      avisoSinAntojo(lista);
 
       var filtro = document.getElementById('filtro-tipo');
       filtro.innerHTML = '';
@@ -682,6 +717,7 @@
       if (!lista.children.length) {
         lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros.</p>';
       }
+      avisoSinAntojo(lista);
     }
 
     // --- Pantalla 4 ---
@@ -757,7 +793,7 @@
         navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) {
           // Al volver a abrir la app instalada (desde segundo plano), busca si hay versión nueva.
           document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible') reg.update();
+            if (document.visibilityState === 'visible') reg.update().catch(function () { /* sin conexión: se reintenta la próxima vez */ });
           });
         }).catch(function (err) { console.warn('Service worker no registrado:', err); });
       });
