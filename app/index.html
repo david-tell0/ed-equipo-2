@@ -174,7 +174,7 @@
     .opciones.en-fila { grid-template-columns: repeat(3, 1fr); }
     .opciones.en-fila .opcion { justify-content: center; text-align: center; padding: 8px 6px; gap: 8px; }
     .opcion small { display: block; font-size: .8rem; font-weight: 400; color: var(--texto-2); white-space: nowrap; }
-    select, textarea {
+    select, textarea, input[type="number"] {
       width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--texto);
       border: 2px solid #8A97A5; border-radius: 10px; background: #fff;
     }
@@ -289,7 +289,11 @@
               <label class="opcion"><input type="radio" name="grupo" value="solo" checked> Solo</label>
               <label class="opcion"><input type="radio" name="grupo" value="grupo"> En grupo</label>
             </div>
-            <p class="nota" id="nota-grupo" style="margin-top:6px;" hidden>En la versión final podrás añadir la dieta de cada persona del grupo. <span class="revisar">[REVISAR]</span></p>
+            <div id="detalle-grupo" style="margin-top:10px; display:grid; gap:6px;" hidden>
+              <label for="personas">Número de personas</label>
+              <input id="personas" name="personas" type="number" inputmode="numeric" min="2" max="20" value="2" required disabled aria-describedby="nota-grupo">
+              <p class="nota" id="nota-grupo">En la versión final podrás añadir la dieta de cada persona del grupo. <span class="revisar">[REVISAR]</span></p>
+            </div>
           </fieldset>
 
           <label class="opcion">
@@ -595,7 +599,13 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
 
     document.querySelectorAll('input[name="grupo"]').forEach(function (r) {
-      r.addEventListener('change', function () { document.getElementById('nota-grupo').hidden = r.value !== 'grupo' || !r.checked; });
+      r.addEventListener('change', function () {
+        var enGrupo = r.value === 'grupo' && r.checked;
+        document.getElementById('detalle-grupo').hidden = !enGrupo;
+        // Desactivado cuando va solo, para que no cuente ni bloquee el envío del formulario.
+        document.getElementById('personas').disabled = !enGrupo;
+        if (enGrupo) document.getElementById('personas').focus();
+      });
     });
 
     // --- Pantalla 5: la petición de recomendación (H1) ---
@@ -612,6 +622,7 @@
         dieta: estado.dieta,
         alergias: Array.prototype.filter.call(f.alergias, function (c) { return c.checked; }).length,
         grupo: f.grupo.value,
+        personas: f.grupo.value === 'grupo' ? Number(f.personas.value) : 1,
         no_turistico: estado.noTuristico
       });
       ir('p2');
