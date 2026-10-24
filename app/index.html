@@ -195,6 +195,26 @@
     details.tarjeta h4 { margin: 0; color: var(--texto); font-size: 1rem; }
 
     .pie-pantalla { padding: 0 16px 16px; display: grid; gap: 10px; }
+
+    /* Pantalla 3 — buscador de ubicación y pop-up de permiso */
+    #form-zona { gap: 10px; }
+    .fila-busqueda { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+    .fila-busqueda .boton { width: auto; }
+    input[type="search"] {
+      width: 100%; min-height: 52px; padding: 10px 12px; font: inherit; color: var(--texto);
+      border: 2px solid #8A97A5; border-radius: 10px; background: #fff;
+    }
+    input[type="search"]:focus { border-color: var(--azul); }
+    #ubi-estado:empty { display: none; }
+    .menu.modal { align-items: center; padding: 16px; }
+    .popup-panel {
+      width: 100%; max-width: 360px; background: var(--fondo); border-radius: 16px;
+      padding: 24px 20px 20px; display: grid; gap: 12px; text-align: center;
+      box-shadow: 0 12px 32px rgba(0,0,0,.25);
+    }
+    .popup-panel h2 { font-size: 1.25rem; }
+    .popup-panel p { color: var(--texto-2); }
+    .popup-icono { font-size: 2.2rem; line-height: 1; }
   </style>
 <!-- Medidor del curso (Ruta ED): cuenta visitas, clics y registros. Sin cookies. No lo modifiques. -->
 <script>
@@ -360,6 +380,16 @@
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
+        <form id="form-zona" role="search" novalidate>
+          <label for="buscar-zona">Busca tu ubicación</label>
+          <div class="fila-busqueda">
+            <input id="buscar-zona" name="zona" type="search" placeholder="Barrio, calle o ciudad" autocomplete="off" enterkeyhint="search" aria-describedby="ubi-estado">
+            <button class="boton" type="submit">Buscar</button>
+          </div>
+          <button class="boton secundario" type="button" id="usar-ubicacion"><span aria-hidden="true">📍</span> Usar mi ubicación</button>
+        </form>
+        <p class="nota" id="ubi-estado" role="status"></p>
+
         <div class="mapa">
           <svg viewBox="0 0 360 300" role="img" aria-labelledby="mapa-desc">
             <title id="mapa-desc">Mapa ilustrativo, no real, con tres restaurantes de ejemplo marcados</title>
@@ -368,12 +398,14 @@
             <rect x="220" y="190" width="120" height="90" rx="8" fill="#DCE9DD"/>
             <path d="M0 140 H360 M180 0 V300 M0 250 L360 60" stroke="#FFFFFF" stroke-width="18" fill="none"/>
             <path d="M0 140 H360 M180 0 V300 M0 250 L360 60" stroke="#C9D6E0" stroke-width="2" fill="none" stroke-dasharray="8 8"/>
-            <circle cx="180" cy="140" r="9" fill="#1F5F8B" stroke="#fff" stroke-width="3"/>
-            <text x="192" y="132" font-size="12" fill="#1E2A36" font-family="system-ui, sans-serif">Estás aquí</text>
+            <g id="marca-aqui" display="none">
+              <circle cx="180" cy="140" r="9" fill="#1F5F8B" stroke="#fff" stroke-width="3"/>
+              <text id="marca-aqui-texto" x="192" y="132" font-size="12" fill="#1E2A36" font-family="system-ui, sans-serif">Estás aquí</text>
+            </g>
           </svg>
           <div id="pines"></div>
         </div>
-        <p class="nota">Mapa ilustrativo. Ubicaciones reales: <span class="pendiente">[DATO PENDIENTE]</span></p>
+        <p class="nota">Mapa ilustrativo: los restaurantes son ejemplos ficticios.</p>
         <div class="tarjetas" id="lista-cerca"></div>
       </div>
     </section>
@@ -487,7 +519,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión no se envía. Los restaurantes son ejemplos ficticios.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían. Los restaurantes son ejemplos ficticios.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -506,6 +538,17 @@
       </div>
     </section>
 
+  </div>
+
+  <!-- Pop-up para pedir permiso de ubicación (pantalla 3) -->
+  <div class="menu modal" id="popup-ubicacion" role="dialog" aria-modal="true" aria-labelledby="ubi-titulo" aria-describedby="ubi-desc" hidden>
+    <div class="popup-panel">
+      <span class="popup-icono" aria-hidden="true">📍</span>
+      <h2 id="ubi-titulo">¿Nos dejas usar tu ubicación?</h2>
+      <p id="ubi-desc">Para enseñarte en el mapa los restaurantes que encajan con tus preferencias necesitamos saber dónde estás. Tu ubicación solo se usa en tu móvil: no la guardamos ni la enviamos.</p>
+      <button class="boton" type="button" id="ubi-permitir">Permitir ubicación</button>
+      <button class="boton secundario" type="button" id="ubi-ahora-no">Ahora no</button>
+    </div>
   </div>
 
   <!-- Menú de navegación (botones) -->
@@ -544,7 +587,8 @@
     };
 
     // sinAntojo: no hay ejemplos del tipo de comida elegido y se enseñan los demás que encajan.
-    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null, sinAntojo: false };
+    // ubicacion: null hasta que el usuario permite la ubicación o busca una zona; las coordenadas no se guardan.
+    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null, sinAntojo: false, ubicacion: null, popupUbicacionVisto: false };
     var FLUJO = ['p1', 'p5', 'p2', 'p3', 'p4', 'p6', 'p7'];
     var actual = null;
 
@@ -565,6 +609,7 @@
         titulo.setAttribute('tabindex', '-1');
         titulo.focus({ preventScroll: true });
       }
+      if (id === 'p3' && !estado.ubicacion && !estado.popupUbicacionVisto) abrirPopupUbicacion();
     }
     function ir(id) {
       if (location.hash === '#' + id) mostrar(id); else location.hash = id;
@@ -599,7 +644,11 @@
     }
     document.getElementById('cerrar-menu').addEventListener('click', cerrarMenu);
     menu.addEventListener('click', function (e) { if (e.target === menu) cerrarMenu(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      cerrarMenu();
+      if (!popupUbicacion.hidden) cerrarPopupUbicacion();
+    });
 
     document.querySelectorAll('input[name="grupo"]').forEach(function (r) {
       r.addEventListener('change', function () {
@@ -711,11 +760,81 @@
     document.getElementById('t-restaurantes').addEventListener('click', function () { abrir(this); });
     document.getElementById('t-tipos').addEventListener('click', function () { abrir(this); });
 
+    // --- Pantalla 3: ubicación ---
+    var popupUbicacion = document.getElementById('popup-ubicacion');
+    function avisoUbicacion(texto) { document.getElementById('ubi-estado').textContent = texto; }
+
+    function abrirPopupUbicacion() {
+      estado.popupUbicacionVisto = true;
+      popupUbicacion.hidden = false;
+      document.getElementById('ubi-permitir').focus();
+    }
+    function cerrarPopupUbicacion() {
+      popupUbicacion.hidden = true;
+      document.getElementById('usar-ubicacion').focus();
+    }
+
+    function pedirUbicacion() {
+      if (!('geolocation' in navigator)) {
+        avisoUbicacion('Tu navegador no permite compartir la ubicación. Escribe tu zona en el buscador.');
+        return;
+      }
+      avisoUbicacion('Buscando tu ubicación…');
+      // Solo comprobamos que el usuario la comparte: las coordenadas no se guardan ni se envían.
+      navigator.geolocation.getCurrentPosition(function () {
+        estado.ubicacion = { tipo: 'gps' };
+        medir('ubicacion_permitida', {});
+        avisoUbicacion('');
+        pintarCerca();
+      }, function (err) {
+        if (err.code === err.PERMISSION_DENIED) {
+          medir('ubicacion_denegada', {});
+          avisoUbicacion('Sin permiso no podemos saber dónde estás. Escribe tu zona en el buscador o activa la ubicación en los ajustes del navegador.');
+        } else {
+          avisoUbicacion('No hemos podido obtener tu ubicación. Prueba de nuevo o escribe tu zona en el buscador.');
+        }
+      }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+    }
+
+    document.getElementById('ubi-permitir').addEventListener('click', function () {
+      popupUbicacion.hidden = true;
+      pedirUbicacion();
+      document.getElementById('usar-ubicacion').focus();
+    });
+    document.getElementById('ubi-ahora-no').addEventListener('click', function () {
+      medir('ubicacion_ahora_no', {});
+      cerrarPopupUbicacion();
+    });
+    document.getElementById('usar-ubicacion').addEventListener('click', abrirPopupUbicacion);
+
+    document.getElementById('form-zona').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var zona = document.getElementById('buscar-zona').value.trim();
+      if (!zona) {
+        avisoUbicacion('Escribe un barrio, una calle o una ciudad.');
+        document.getElementById('buscar-zona').focus();
+        return;
+      }
+      estado.ubicacion = { tipo: 'busqueda', texto: zona };
+      medir('buscar_zona', {}); // sin el texto: puede ser una dirección
+      avisoUbicacion('');
+      pintarCerca();
+    });
+
     function pintarCerca() {
       var pines = document.getElementById('pines');
       var lista = document.getElementById('lista-cerca');
+      var marca = document.getElementById('marca-aqui');
       pines.innerHTML = '';
       lista.innerHTML = '';
+      if (!estado.ubicacion) {
+        marca.setAttribute('display', 'none');
+        lista.innerHTML = '<p class="nota">Permite usar tu ubicación o busca una zona para ver en el mapa los restaurantes que encajan con tus preferencias.</p>';
+        return;
+      }
+      marca.setAttribute('display', 'inline');
+      document.getElementById('marca-aqui-texto').textContent =
+        estado.ubicacion.tipo === 'gps' ? 'Estás aquí' : estado.ubicacion.texto.slice(0, 22);
       coinciden().forEach(function (r) {
         var p = document.createElement('button');
         p.type = 'button';
