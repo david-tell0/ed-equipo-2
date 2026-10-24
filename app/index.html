@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FoodMatch</title>
+  <meta name="description" content="FoodMatch: come bien, ve a lo seguro. Prototipo de app.">
+  <meta name="theme-color" content="#1F5F8B">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FoodMatch">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --fondo: #FAF6EE;
+      --superficie: #FFFFFF;
+      --azul-claro: #D6EAF8;
+      --azul: #1F5F8B;
+      --azul-oscuro: #174A6C;
+      --texto: #1E2A36;
+      --texto-2: #4A5866;
+      --verde: #2E7D4F;
+      --borde: #E3DDD0;
+      --aviso-fondo: #FFF1C2;
+      --aviso-texto: #5C4300;
+      --radio: 12px;
+      --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; background: #E9E3D6; color: var(--texto);
+      font: 16px/1.5 var(--fuente);
+    }
+    :focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; border-radius: 4px; }
+    [hidden] { display: none !important; }
+    .visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* Marco de móvil: 375 px a pantalla completa */
+    .app {
+      max-width: 430px; min-height: 100vh; min-height: 100dvh; margin: 0 auto;
+      background: var(--fondo); display: flex; flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .pantalla { flex: 1; display: flex; flex-direction: column; }
+    .cuerpo { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* Cabecera / menú */
+    .barra {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; align-items: center; gap: 4px;
+      min-height: 56px; padding: env(safe-area-inset-top) 4px 0;
+      background: var(--azul); color: #fff;
+    }
+    .barra h1 { flex: 1; margin: 0; font-size: 1.1rem; line-height: 1.2; padding: 0 4px; }
+    .icono {
+      width: 48px; height: 48px; flex: none; border: 0; border-radius: 999px;
+      background: transparent; color: #fff; font-size: 1.4rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .icono:hover { background: rgba(255,255,255,.15); }
+    .barra .icono:focus-visible { outline-color: #fff; }
+
+    /* Menú de navegación */
+    .menu {
+      position: fixed; inset: 0; z-index: 20; background: rgba(30,42,54,.45);
+      display: flex; justify-content: center; align-items: flex-start;
+    }
+    .menu-panel {
+      width: 100%; max-width: 430px; background: var(--fondo);
+      border-radius: 0 0 var(--radio) var(--radio); padding: 8px 16px 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    }
+    .menu-panel header { display: flex; align-items: center; justify-content: space-between; }
+    .menu-panel h2 { margin: 0; font-size: 1.1rem; }
+    .menu-panel .icono { color: var(--texto); }
+    .menu-panel ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+    .menu-panel button {
+      width: 100%; text-align: left; min-height: 48px; padding: 10px 12px;
+      border: 1px solid var(--borde); border-radius: 10px; background: var(--superficie);
+      font: 600 1rem var(--fuente); color: var(--texto); cursor: pointer;
+    }
+    .menu-panel button[aria-current="page"] { background: var(--azul-claro); border-color: var(--azul); }
+
+    /* Botones */
+    .boton {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 52px; padding: 12px 20px; border-radius: 999px;
+      background: var(--azul); color: #fff; border: 2px solid var(--azul);
+      font: 600 1rem/1.2 var(--fuente); cursor: pointer; text-decoration: none;
+    }
+    .boton:hover { background: var(--azul-oscuro); border-color: var(--azul-oscuro); }
+    .boton.secundario { background: var(--superficie); color: var(--azul); }
+    .boton.secundario:hover { background: var(--azul-claro); }
+
+    .revisar, .pendiente {
+      display: inline-block; font-size: .75rem; font-weight: 700;
+      background: var(--aviso-fondo); color: var(--aviso-texto);
+      padding: 1px 6px; border-radius: 4px; vertical-align: middle;
+    }
+    .nota { font-size: .9rem; color: var(--texto-2); margin: 0; }
+    h2 { font-size: 1.3rem; margin: 0; line-height: 1.25; }
+    h3 { font-size: 1.05rem; margin: 0 0 4px; }
+    p { margin: 0; }
+
+    /* Marcadores de imagen */
+    .marcador {
+      border: 2px dashed #9AA8B5; border-radius: var(--radio); background: var(--azul-claro);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      text-align: center; color: var(--texto-2); padding: 16px; min-height: 160px;
+    }
+
+    /* Pantalla 1 — Inicio */
+    #p1 .cuerpo { justify-content: center; align-items: center; text-align: center; gap: 24px; padding: 32px 24px; }
+    #p1 .logo { width: 140px; height: 140px; border-radius: 32px; box-shadow: 0 6px 18px rgba(31,95,139,.25); }
+    #p1 .lema { font-size: 1.9rem; font-weight: 800; line-height: 1.15; margin: 0; }
+    #p1 .acciones { width: 100%; display: grid; gap: 10px; margin-top: 8px; }
+
+    /* Tarjetas */
+    .tarjeta {
+      background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px;
+    }
+    .tarjetas { display: grid; gap: 12px; }
+    .tarjeta-boton {
+      display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+      background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);
+      padding: 16px; min-height: 64px; font: inherit; color: var(--texto); cursor: pointer;
+    }
+    .tarjeta-boton:hover { border-color: var(--azul); }
+    .tarjeta-boton .simbolo { font-size: 1.6rem; width: 40px; text-align: center; flex: none; }
+    .tarjeta-boton strong { display: block; font-size: 1.05rem; }
+    .tarjeta-boton span.detalle { color: var(--texto-2); font-size: .92rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--azul);
+      background: var(--superficie); color: var(--azul); font: 600 .95rem var(--fuente); cursor: pointer;
+    }
+    .chip[aria-pressed="true"] { background: var(--azul); color: #fff; }
+    .etiqueta {
+      display: inline-block; font-size: .8rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+      background: var(--azul-claro); color: var(--azul-oscuro);
+    }
+    .etiqueta.verificado { background: #DCEFE3; color: #1F5A38; }
+    .resto { display: grid; gap: 6px; }
+    .resto .fila { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    /* Pantalla 3 — mapa */
+    .mapa { position: relative; border-radius: var(--radio); overflow: hidden; border: 1px solid var(--borde); background: #EAF3FA; }
+    .mapa svg { display: block; width: 100%; height: auto; }
+    .pin {
+      position: absolute; transform: translate(-50%, -100%);
+      width: 44px; height: 44px; border-radius: 50% 50% 50% 0; rotate: -45deg;
+      background: var(--azul); border: 3px solid #fff; color: #fff; cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,.3); font: 700 1rem var(--fuente);
+    }
+    .pin span { display: inline-block; rotate: 45deg; }
+    .pin:focus-visible { outline: 3px solid var(--texto); }
+
+    /* Formularios */
+    form { display: grid; gap: 18px; }
+    fieldset { border: 0; padding: 0; margin: 0; }
+    legend { font-weight: 700; margin-bottom: 8px; padding: 0; }
+    label { font-weight: 600; }
+    .opciones { display: grid; gap: 8px; }
+    .opcion {
+      display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px;
+      background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; font-weight: 500;
+    }
+    .opcion input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: var(--azul); }
+    .opciones.en-fila { grid-template-columns: repeat(3, 1fr); }
+    .opciones.en-fila .opcion { justify-content: center; text-align: center; padding: 8px 6px; }
+    select, textarea {
+      width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--texto);
+      border: 2px solid #8A97A5; border-radius: 10px; background: #fff;
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    .gracias { background: #DCEFE3; border-radius: var(--radio); padding: 16px; }
+
+    /* Reseña de ejemplo */
+    blockquote.ejemplo {
+      margin: 0; background: var(--superficie); border-left: 4px solid var(--azul); border-radius: 8px; padding: 12px 14px;
+    }
+    blockquote.ejemplo p { font-size: 1.05rem; }
+    blockquote.ejemplo footer { font-size: .85rem; color: var(--texto-2); margin-top: 6px; }
+
+    /* About us */
+    details.tarjeta { padding: 0 16px; }
+    details.tarjeta summary { cursor: pointer; font-weight: 700; min-height: 56px; display: flex; align-items: center; }
+    details.tarjeta > div { padding-bottom: 16px; display: grid; gap: 10px; color: var(--texto-2); }
+    details.tarjeta h4 { margin: 0; color: var(--texto); font-size: 1rem; }
+
+    .pie-pantalla { padding: 0 16px 16px; display: grid; gap: 10px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Pantalla 1 — Inicio -->
+    <section class="pantalla" id="p1" aria-labelledby="p1-titulo">
+      <div class="cuerpo">
+        <img class="logo" src="icon-512.png" width="140" height="140" alt="Logo provisional de FoodMatch">
+        <span class="pendiente">[LOGO PENDIENTE]</span>
+        <h1 id="p1-titulo" class="lema">Come bien, ve a lo seguro</h1>
+        <div class="acciones">
+          <button class="boton" type="button" data-ir="p5" data-medir="app_empezar">Encuentra tu restaurante ideal</button>
+          <button class="boton secundario" type="button" data-ir="p7">Conócenos</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 5 — va justo después de la 1 (CLAUDE.md) -->
+    <section class="pantalla" id="p5" aria-labelledby="p5-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p5-titulo">Formulario de gustos y alergias</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <h2>Cuéntanos tus gustos y necesidades</h2>
+        <form id="form-gustos">
+          <fieldset>
+            <legend>¿Qué te apetece hoy?</legend>
+            <div class="chips" id="gustos-antojo">
+              <button class="chip" type="button" aria-pressed="false" data-valor="Mediterránea">Mediterránea</button>
+              <button class="chip" type="button" aria-pressed="false" data-valor="Asiática">Asiática</button>
+              <button class="chip" type="button" aria-pressed="false" data-valor="Tapas">Tapas</button>
+              <button class="chip" type="button" aria-pressed="false" data-valor="Me da igual">Me da igual</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Presupuesto por persona</legend>
+            <div class="opciones en-fila">
+              <label class="opcion"><input type="radio" name="presupuesto" value="bajo" checked> Bajo</label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="medio"> Medio</label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="alto"> Alto</label>
+            </div>
+            <p class="nota" style="margin-top:6px;">Rangos en euros: <span class="pendiente">[DATO PENDIENTE]</span></p>
+          </fieldset>
+
+          <div>
+            <label for="dieta">Dieta</label>
+            <select id="dieta" name="dieta">
+              <option value="ninguna">Sin restricciones</option>
+              <option value="vegetariana">Vegetariana</option>
+              <option value="vegana">Vegana</option>
+            </select>
+          </div>
+
+          <fieldset>
+            <legend>Alergias o intolerancias</legend>
+            <div class="opciones">
+              <label class="opcion"><input type="checkbox" name="alergias" value="gluten"> Gluten</label>
+              <label class="opcion"><input type="checkbox" name="alergias" value="lactosa"> Lactosa</label>
+              <label class="opcion"><input type="checkbox" name="alergias" value="frutos-secos"> Frutos secos</label>
+              <label class="opcion"><input type="checkbox" name="alergias" value="marisco"> Marisco</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Con quién vas?</legend>
+            <div class="opciones en-fila" style="grid-template-columns: repeat(2, 1fr);">
+              <label class="opcion"><input type="radio" name="grupo" value="solo" checked> Solo</label>
+              <label class="opcion"><input type="radio" name="grupo" value="grupo"> En grupo</label>
+            </div>
+            <p class="nota" id="nota-grupo" style="margin-top:6px;" hidden>En la versión final podrás añadir la dieta de cada persona del grupo. <span class="revisar">[REVISAR]</span></p>
+          </fieldset>
+
+          <label class="opcion">
+            <input type="checkbox" name="no-turistico" id="no-turistico">
+            Enséñame solo sitios que no son turísticos
+          </label>
+
+          <button class="boton" type="submit">Buscar restaurantes</button>
+          <p class="nota">No guardamos nada: tus respuestas solo se usan en esta pantalla.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Pantalla 2 -->
+    <section class="pantalla" id="p2" aria-labelledby="p2-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p2-titulo">FoodMatch</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <h2>¿Qué te apetece hoy?</h2>
+        <div class="tarjetas">
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="lista-restaurantes" id="t-restaurantes">
+            <span class="simbolo" aria-hidden="true">🍽️</span>
+            <span><strong>Restaurantes</strong><span class="detalle">Los que encajan con lo que nos has contado</span></span>
+          </button>
+          <div id="lista-restaurantes" class="tarjetas" hidden></div>
+
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="tipos-comida" id="t-tipos">
+            <span class="simbolo" aria-hidden="true">🥗</span>
+            <span><strong>Tipo de comida</strong><span class="detalle">Filtra por lo que te apetece</span></span>
+          </button>
+          <div id="tipos-comida" class="tarjeta" hidden>
+            <div class="chips" id="filtro-tipo"></div>
+          </div>
+
+          <button class="tarjeta-boton" type="button" data-ir="p3">
+            <span class="simbolo" aria-hidden="true">📍</span>
+            <span><strong>Ubicación</strong><span class="detalle">Ver restaurantes cerca de ti en el mapa</span></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 3 -->
+    <section class="pantalla" id="p3" aria-labelledby="p3-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p3-titulo">Restaurantes cerca de ti</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <div class="mapa">
+          <svg viewBox="0 0 360 300" role="img" aria-labelledby="mapa-desc">
+            <title id="mapa-desc">Mapa ilustrativo, no real, con tres restaurantes de ejemplo marcados</title>
+            <rect width="360" height="300" fill="#EAF3FA"/>
+            <rect x="20" y="20" width="120" height="90" rx="8" fill="#DCE9DD"/>
+            <rect x="220" y="190" width="120" height="90" rx="8" fill="#DCE9DD"/>
+            <path d="M0 140 H360 M180 0 V300 M0 250 L360 60" stroke="#FFFFFF" stroke-width="18" fill="none"/>
+            <path d="M0 140 H360 M180 0 V300 M0 250 L360 60" stroke="#C9D6E0" stroke-width="2" fill="none" stroke-dasharray="8 8"/>
+            <circle cx="180" cy="140" r="9" fill="#1F5F8B" stroke="#fff" stroke-width="3"/>
+            <text x="192" y="132" font-size="12" fill="#1E2A36" font-family="system-ui, sans-serif">Estás aquí</text>
+          </svg>
+          <div id="pines"></div>
+        </div>
+        <p class="nota">Mapa ilustrativo. Ubicaciones reales: <span class="pendiente">[DATO PENDIENTE]</span></p>
+        <div class="tarjetas" id="lista-cerca"></div>
+      </div>
+    </section>
+
+    <!-- Pantalla 4 -->
+    <section class="pantalla" id="p4" aria-labelledby="p4-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p4-titulo">Nombre del restaurante elegido</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <div class="marcador" role="img" aria-label="Foto del restaurante (marcador; foto pendiente)">
+          <span aria-hidden="true" style="font-size:2.4rem;">🏠</span>
+          <span>Foto del restaurante</span>
+          <span class="pendiente">[DATO PENDIENTE]</span>
+        </div>
+
+        <button class="boton secundario" type="button" id="b-enlaces" aria-expanded="false" aria-controls="enlaces">Enlaces a redes sociales y web</button>
+        <div id="enlaces" class="tarjeta" hidden>
+          <p>Redes sociales y web del local: <span class="pendiente">[DATO PENDIENTE]</span></p>
+          <p class="nota" style="margin-top:6px;">En el prototipo no hay enlaces reales.</p>
+        </div>
+
+        <div class="marcador" role="img" aria-labelledby="menu-desc" style="align-items: stretch; text-align: left;">
+          <span id="menu-desc" style="display:grid; gap:6px;">
+            <strong style="color: var(--texto);">Menú</strong>
+            <span>Platos y precios: <span class="pendiente">[DATO PENDIENTE]</span></span>
+            <span><span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span></span>
+            <span id="menu-dietas"></span>
+          </span>
+        </div>
+
+        <button class="boton secundario" type="button" data-ir="p6" data-medir="recomprobar_resenas">Reseñas</button>
+
+        <!-- Añadido para medir H1 (no está en el wireframe) -->
+        <button class="boton" type="button" id="b-voy">Voy a ir <span class="revisar">[REVISAR]</span></button>
+        <div id="voy-ok" class="gracias" hidden tabindex="-1">
+          <p><strong>¡Que aproveche!</strong> Cuando vuelvas, cuéntanos si fuiste.</p>
+          <button class="boton secundario" type="button" data-ir="p6" style="margin-top:10px;">Cuéntanos tu opinión</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pantalla 6 -->
+    <section class="pantalla" id="p6" aria-labelledby="p6-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p6-titulo">Cuéntanos tu opinión</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <h2>Reseñas</h2>
+        <blockquote class="ejemplo">
+          <p>«Me ha encantado!! Volvería sin duda»</p>
+          <footer>Texto de ejemplo del wireframe, no es una reseña real.</footer>
+        </blockquote>
+
+        <!-- Añadido para medir H1 (no está en el wireframe) -->
+        <form id="form-opinion" class="tarjeta">
+          <fieldset>
+            <legend>¿Fuiste a <span class="nombre-resto">este restaurante</span>? <span class="revisar">[REVISAR]</span></legend>
+            <div class="opciones en-fila" style="grid-template-columns: repeat(2, 1fr);">
+              <label class="opcion"><input type="radio" name="fuiste" value="si" required> Sí</label>
+              <label class="opcion"><input type="radio" name="fuiste" value="no"> No</label>
+            </div>
+          </fieldset>
+          <fieldset id="recomprobaste" hidden>
+            <legend>¿Lo volviste a comprobar en otra app antes de ir?</legend>
+            <div class="opciones en-fila" style="grid-template-columns: repeat(2, 1fr);">
+              <label class="opcion"><input type="radio" name="recomprobo" value="si"> Sí</label>
+              <label class="opcion"><input type="radio" name="recomprobo" value="no"> No</label>
+            </div>
+          </fieldset>
+          <div>
+            <label for="opinion">Tu opinión (opcional)</label>
+            <textarea id="opinion" name="opinion" maxlength="500"></textarea>
+          </div>
+          <p class="nota" id="opinion-error" role="alert"></p>
+          <button class="boton" type="submit">Enviar opinión</button>
+        </form>
+        <div id="opinion-ok" class="gracias" hidden tabindex="-1">
+          <p><strong>¡Gracias!</strong> Tu respuesta nos ayuda a saber si las recomendaciones funcionan.</p>
+        </div>
+
+        <button class="boton secundario" type="button" data-ir="p7">About us</button>
+      </div>
+    </section>
+
+    <!-- Pantalla 7 -->
+    <section class="pantalla" id="p7" aria-labelledby="p7-titulo" hidden>
+      <header class="barra">
+        <button class="icono" type="button" data-atras aria-label="Volver">←</button>
+        <h1 id="p7-titulo">About us</h1>
+        <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
+      </header>
+      <div class="cuerpo">
+        <div class="tarjetas">
+          <details class="tarjeta">
+            <summary>Quienes somos</summary>
+            <div>
+              <p>Somos el Equipo 2 del LAB. Nos pasó lo mismo que a ti: llegar a una ciudad nueva y no saber si fiarte del mapa. <span class="revisar">[REVISAR]</span></p>
+            </div>
+          </details>
+          <details class="tarjeta">
+            <summary>Por qué nosotros</summary>
+            <div>
+              <p>El problema no es que falten opciones, sino que no te puedes fiar de la información. Por eso contrastamos menú y precios con varias fuentes y te enseñamos la fecha y la fuente. <span class="revisar">[REVISAR]</span></p>
+            </div>
+          </details>
+          <details class="tarjeta">
+            <summary>Datos y privacidad</summary>
+            <div>
+              <p>Este prototipo no guarda ni envía lo que escribes, no usa cookies ni servicios de terceros. Los restaurantes son ejemplos ficticios.</p>
+            </div>
+          </details>
+          <details class="tarjeta">
+            <summary>Preguntas frecuentes</summary>
+            <div>
+              <h4>¿De dónde salen los menús y los precios?</h4>
+              <p>Los contrastamos con varias fuentes y te enseñamos cuándo y de dónde sale cada dato. <span class="revisar">[REVISAR]</span></p>
+              <h4>¿Y si voy con alguien vegano?</h4>
+              <p>Indicas la dieta de cada persona y solo ves sitios donde todos podéis comer. <span class="revisar">[REVISAR]</span></p>
+              <h4>¿Cuánto cuesta?</h4>
+              <p>Nada. Es gratis para ti.</p>
+            </div>
+          </details>
+        </div>
+        <button class="boton secundario" type="button" data-ir="p1">Volver al inicio</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Menú de navegación (botones) -->
+  <div class="menu" id="menu" role="dialog" aria-modal="true" aria-labelledby="menu-titulo" hidden>
+    <div class="menu-panel">
+      <header>
+        <h2 id="menu-titulo">Menú</h2>
+        <button class="icono" type="button" id="cerrar-menu" aria-label="Cerrar menú">✕</button>
+      </header>
+      <nav aria-label="Pantallas">
+        <ol>
+          <li><button type="button" data-ir="p1">Inicio</button></li>
+          <li><button type="button" data-ir="p5">Tus gustos y alergias</button></li>
+          <li><button type="button" data-ir="p2">Buscar</button></li>
+          <li><button type="button" data-ir="p3">Cerca de ti</button></li>
+          <li><button type="button" data-ir="p6">Tu opinión</button></li>
+          <li><button type="button" data-ir="p7">About us</button></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    /* Medidor: [DATO PENDIENTE] el script del medidor del curso se pega aquí.
+       Mientras tanto, medir() guarda los eventos en window.medidorEventos y en la consola,
+       y se los pasará a window.medidorCurso(evento, datos) cuando exista.
+       Eventos para H1: peticion_recomendacion → (recomprobar_*) → voy_a_ir → visita_confirmada. */
+    window.medidorEventos = window.medidorEventos || [];
+    function medir(evento, datos) {
+      var registro = { evento: evento, datos: datos || {}, pagina: location.pathname, hora: new Date().toISOString() };
+      window.medidorEventos.push(registro);
+      if (typeof window.medidorCurso === 'function') window.medidorCurso(evento, datos || {});
+      console.info('[medidor]', evento, datos || {});
+    }
+
+    // Restaurantes ficticios: sin datos reales.
+    var RESTAURANTES = [
+      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana'], turistico: false, x: 22, y: 72 },
+      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana'], turistico: false, x: 72, y: 30 },
+      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana'], turistico: true, x: 78, y: 82 }
+    ];
+    var NOMBRES_DIETA = { vegetariana: 'Vegetariana', vegana: 'Vegana' };
+
+    var estado = { antojo: [], dieta: 'ninguna', noTuristico: false, tipo: null, elegido: null };
+    var FLUJO = ['p1', 'p5', 'p2', 'p3', 'p4', 'p6', 'p7'];
+    var actual = null;
+
+    // --- Navegación: una pantalla visible a la vez ---
+    function mostrar(id, sinFoco) {
+      if (!document.getElementById(id)) id = 'p1';
+      if (id === 'p4' && !estado.elegido) id = 'p2';
+      document.querySelectorAll('.pantalla').forEach(function (s) { s.hidden = s.id !== id; });
+      document.querySelectorAll('#menu [data-ir]').forEach(function (b) {
+        if (b.dataset.ir === id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+      });
+      actual = id;
+      window.scrollTo(0, 0);
+      if (id === 'p2') pintarListas();
+      if (id === 'p3') pintarCerca();
+      if (!sinFoco) {
+        var titulo = document.getElementById(id + '-titulo');
+        titulo.setAttribute('tabindex', '-1');
+        titulo.focus({ preventScroll: true });
+      }
+      medir('ver_pantalla', { pantalla: id });
+    }
+    function ir(id) {
+      if (location.hash === '#' + id) mostrar(id); else location.hash = id;
+    }
+    window.addEventListener('hashchange', function () { mostrar(location.hash.slice(1)); });
+
+    document.addEventListener('click', function (e) {
+      var medible = e.target.closest('[data-medir]');
+      if (medible) medir(medible.dataset.medir, { pantalla: actual, restaurante: estado.elegido });
+      var destino = e.target.closest('[data-ir]');
+      if (destino) { cerrarMenu(); ir(destino.dataset.ir); return; }
+      if (e.target.closest('[data-atras]')) {
+        var i = FLUJO.indexOf(actual);
+        ir(FLUJO[Math.max(0, i - 1)]);
+        return;
+      }
+      if (e.target.closest('[data-menu]')) abrirMenu(e.target.closest('[data-menu]'));
+    });
+
+    // --- Menú ---
+    var menu = document.getElementById('menu');
+    var abridor = null;
+    function abrirMenu(boton) {
+      abridor = boton;
+      menu.hidden = false;
+      document.getElementById('cerrar-menu').focus();
+    }
+    function cerrarMenu() {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      if (abridor) abridor.focus();
+    }
+    document.getElementById('cerrar-menu').addEventListener('click', cerrarMenu);
+    menu.addEventListener('click', function (e) { if (e.target === menu) cerrarMenu(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
+
+    // --- Chips de "¿Qué te apetece hoy?" ---
+    document.getElementById('gustos-antojo').addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip');
+      if (!chip) return;
+      chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+    document.querySelectorAll('input[name="grupo"]').forEach(function (r) {
+      r.addEventListener('change', function () { document.getElementById('nota-grupo').hidden = r.value !== 'grupo' || !r.checked; });
+    });
+
+    // --- Pantalla 5: la petición de recomendación (H1) ---
+    document.getElementById('form-gustos').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target;
+      estado.antojo = Array.prototype.map.call(document.querySelectorAll('#gustos-antojo [aria-pressed="true"]'), function (c) { return c.dataset.valor; })
+        .filter(function (v) { return v !== 'Me da igual'; });
+      estado.dieta = f.dieta.value;
+      estado.noTuristico = f['no-turistico'].checked;
+      estado.tipo = null;
+      medir('peticion_recomendacion', {
+        antojo: estado.antojo.join(',') || 'cualquiera',
+        presupuesto: f.presupuesto.value,
+        dieta: estado.dieta,
+        alergias: Array.prototype.filter.call(f.alergias, function (c) { return c.checked; }).length,
+        grupo: f.grupo.value,
+        no_turistico: estado.noTuristico
+      });
+      ir('p2');
+    });
+
+    function coinciden() {
+      return RESTAURANTES.filter(function (r) {
+        if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
+        if (estado.noTuristico && r.turistico) return false;
+        var tipos = estado.tipo ? [estado.tipo] : estado.antojo;
+        if (tipos.length && tipos.indexOf(r.tipo) === -1) return false;
+        return true;
+      });
+    }
+
+    function tarjetaResto(r) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tarjeta-boton';
+      b.innerHTML =
+        '<span class="simbolo" aria-hidden="true">🍴</span>' +
+        '<span class="resto"><strong></strong>' +
+        '<span class="fila"><span class="etiqueta"></span>' +
+        r.dietas.map(function (d) { return '<span class="etiqueta">' + NOMBRES_DIETA[d] + '</span>'; }).join('') +
+        '<span class="etiqueta verificado">✓ Verificado</span></span>' +
+        '<span class="detalle">Precio medio: [DATO PENDIENTE]</span></span>';
+      b.querySelector('strong').textContent = r.nombre;
+      b.querySelector('.fila .etiqueta').textContent = r.tipo;
+      b.addEventListener('click', function () { elegir(r.id); });
+      return b;
+    }
+
+    function pintarListas() {
+      var lista = document.getElementById('lista-restaurantes');
+      lista.innerHTML = '';
+      var rs = coinciden();
+      if (!rs.length) {
+        var vacio = document.createElement('p');
+        vacio.className = 'nota';
+        vacio.textContent = 'Ningún restaurante de ejemplo encaja con estos filtros. Prueba con otro tipo de comida.';
+        lista.appendChild(vacio);
+      }
+      rs.forEach(function (r) { lista.appendChild(tarjetaResto(r)); });
+
+      var filtro = document.getElementById('filtro-tipo');
+      filtro.innerHTML = '';
+      ['Mediterránea', 'Asiática', 'Tapas'].forEach(function (t) {
+        var c = document.createElement('button');
+        c.type = 'button';
+        c.className = 'chip';
+        c.textContent = t;
+        c.setAttribute('aria-pressed', estado.tipo === t ? 'true' : 'false');
+        c.addEventListener('click', function () {
+          estado.tipo = estado.tipo === t ? null : t;
+          pintarListas();
+          abrir(document.getElementById('t-restaurantes'), true);
+          filtro.querySelectorAll('.chip')[['Mediterránea', 'Asiática', 'Tapas'].indexOf(t)].focus();
+        });
+        filtro.appendChild(c);
+      });
+    }
+
+    function abrir(boton, forzar) {
+      var panel = document.getElementById(boton.getAttribute('aria-controls'));
+      var abierto = forzar ? true : boton.getAttribute('aria-expanded') !== 'true';
+      boton.setAttribute('aria-expanded', String(abierto));
+      panel.hidden = !abierto;
+    }
+    document.getElementById('t-restaurantes').addEventListener('click', function () { abrir(this); });
+    document.getElementById('t-tipos').addEventListener('click', function () { abrir(this); });
+
+    function pintarCerca() {
+      var pines = document.getElementById('pines');
+      var lista = document.getElementById('lista-cerca');
+      pines.innerHTML = '';
+      lista.innerHTML = '';
+      coinciden().forEach(function (r) {
+        var p = document.createElement('button');
+        p.type = 'button';
+        p.className = 'pin';
+        p.style.left = r.x + '%';
+        p.style.top = r.y + '%';
+        p.setAttribute('aria-label', r.nombre);
+        p.innerHTML = '<span aria-hidden="true">' + r.id.toUpperCase() + '</span>';
+        p.addEventListener('click', function () { elegir(r.id); });
+        pines.appendChild(p);
+        lista.appendChild(tarjetaResto(r));
+      });
+      if (!lista.children.length) {
+        lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros.</p>';
+      }
+    }
+
+    // --- Pantalla 4 ---
+    function elegir(id) {
+      var r = RESTAURANTES.filter(function (x) { return x.id === id; })[0];
+      estado.elegido = r.id;
+      document.getElementById('p4-titulo').textContent = r.nombre;
+      document.getElementById('menu-dietas').textContent = 'Opciones: ' + r.dietas.map(function (d) { return NOMBRES_DIETA[d]; }).join(', ');
+      document.querySelectorAll('.nombre-resto').forEach(function (n) { n.textContent = r.nombre; });
+      document.getElementById('enlaces').hidden = true;
+      document.getElementById('b-enlaces').setAttribute('aria-expanded', 'false');
+      document.getElementById('voy-ok').hidden = true;
+      document.getElementById('b-voy').hidden = false;
+      medir('ver_restaurante', { restaurante: r.id });
+      ir('p4');
+    }
+
+    document.getElementById('b-enlaces').addEventListener('click', function () {
+      abrir(this);
+      if (this.getAttribute('aria-expanded') === 'true') medir('recomprobar_enlaces', { restaurante: estado.elegido });
+    });
+
+    document.getElementById('b-voy').addEventListener('click', function () {
+      medir('voy_a_ir', { restaurante: estado.elegido });
+      this.hidden = true;
+      var ok = document.getElementById('voy-ok');
+      ok.hidden = false;
+      ok.focus();
+    });
+
+    // --- Pantalla 6: visita confirmada (H1) ---
+    var formOpinion = document.getElementById('form-opinion');
+    formOpinion.addEventListener('change', function (e) {
+      if (e.target.name === 'fuiste') document.getElementById('recomprobaste').hidden = e.target.value !== 'si';
+    });
+    formOpinion.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fuiste = formOpinion.fuiste.value;
+      var error = document.getElementById('opinion-error');
+      if (!fuiste) {
+        error.textContent = 'Dinos si fuiste o no para poder enviar tu opinión.';
+        formOpinion.querySelector('input[name="fuiste"]').focus();
+        return;
+      }
+      error.textContent = '';
+      // El texto de la opinión no se envía al medidor: solo si fue y si volvió a comprobar.
+      medir(fuiste === 'si' ? 'visita_confirmada' : 'visita_no', {
+        restaurante: estado.elegido,
+        recomprobo: fuiste === 'si' ? (formOpinion.recomprobo.value || 'sin_respuesta') : '',
+        con_opinion: formOpinion.opinion.value.trim().length > 0
+      });
+      formOpinion.hidden = true;
+      var ok = document.getElementById('opinion-ok');
+      ok.hidden = false;
+      ok.focus();
+    });
+
+    // --- Instalación y service worker ---
+    var instalada = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    medir('abrir_app', { instalada: instalada });
+    window.addEventListener('appinstalled', function () { medir('app_instalada', {}); });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function (err) { console.warn('Service worker no registrado:', err); });
+      });
+    }
+
+    mostrar(location.hash.slice(1) || 'p1', true);
+  </script>
+</body>
+</html>

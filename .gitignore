@@ -17,6 +17,9 @@ datos/
 *password*
 *contrasen*
 
+# Configuración local de herramientas
+.claude/
+
 # Archivos del sistema
 .DS_Store
 Thumbs.db

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoodMatch · Come bien, ve a lo seguro</title>
+  <meta name="description" content="FoodMatch: encuentra restaurantes que encajan con lo que te apetece, con tu presupuesto y con tu dieta, con menú y precios contrastados.">
+  <meta name="theme-color" content="#1F5F8B">
+  <link rel="icon" type="image/png" href="app/icon-192.png">
+  <link rel="apple-touch-icon" href="app/icon-192.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --fondo: #FAF6EE;
+      --superficie: #FFFFFF;
+      --azul-claro: #D6EAF8;
+      --azul: #1F5F8B;
+      --azul-oscuro: #174A6C;
+      --texto: #1E2A36;
+      --texto-2: #4A5866;
+      --verde: #2E7D4F;
+      --borde: #E3DDD0;
+      --aviso-fondo: #FFF1C2;
+      --aviso-texto: #5C4300;
+      --radio: 12px;
+      --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font: 16px/1.55 var(--fuente);
+    }
+    img, svg { max-width: 100%; }
+    a { color: var(--azul); }
+    :focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 4px; }
+    .salto {
+      position: absolute; left: 16px; top: -48px;
+      background: var(--azul); color: #fff; padding: 8px 12px; border-radius: 8px; z-index: 10;
+    }
+    .salto:focus { top: 8px; }
+    .visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .contenedor { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+    /* Cabecera */
+    .cabecera { border-bottom: 1px solid var(--borde); background: var(--fondo); }
+    .cabecera .contenedor { display: flex; align-items: center; justify-content: space-between; min-height: 56px; gap: 12px; }
+    .marca { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.15rem; color: var(--texto); text-decoration: none; }
+    .marca img { width: 32px; height: 32px; border-radius: 8px; }
+    .cabecera nav a { font-weight: 600; text-decoration: none; padding: 8px 4px; }
+
+    /* Botones */
+    .boton {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 12px 22px; border-radius: 999px;
+      background: var(--azul); color: #fff; font: 600 1rem/1.2 var(--fuente);
+      text-decoration: none; border: 2px solid var(--azul); cursor: pointer;
+    }
+    .boton:hover { background: var(--azul-oscuro); border-color: var(--azul-oscuro); }
+    .boton.secundario { background: transparent; color: var(--azul); }
+    .boton.secundario:hover { background: var(--azul-claro); }
+
+    /* Marcas para el equipo */
+    .revisar, .pendiente {
+      display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .02em;
+      background: var(--aviso-fondo); color: var(--aviso-texto);
+      padding: 1px 6px; border-radius: 4px; vertical-align: middle;
+    }
+
+    /* Hero */
+    .hero { padding: 28px 0 32px; }
+    .hero .antetitulo { margin: 0 0 8px; color: var(--texto-2); font-weight: 600; font-size: .95rem; }
+    .hero h1 { margin: 0 0 12px; font-size: clamp(2rem, 8vw, 3.25rem); line-height: 1.1; letter-spacing: -.01em; }
+    .hero .propuesta { margin: 0 0 20px; font-size: 1.08rem; color: var(--texto-2); max-width: 36em; }
+    .cta-bloque { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .cta-bloque .cta-texto { margin: 0; font-weight: 700; color: var(--texto); }
+    .cta-bloque .botones { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    /* Secciones */
+    section { padding: 32px 0; }
+    section + section { border-top: 1px solid var(--borde); }
+    h2 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 8px; }
+    h3 { font-size: 1.1rem; margin: 0 0 6px; }
+    .intro { color: var(--texto-2); margin: 0 0 20px; max-width: 40em; }
+    .rejilla { display: grid; gap: 12px; grid-template-columns: 1fr; }
+    .tarjeta {
+      background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);
+      padding: 16px;
+    }
+    .tarjeta p { margin: 0; color: var(--texto-2); }
+    .tarjeta.azul { background: var(--azul-claro); border-color: transparent; }
+    .lista-dolores { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .lista-dolores li { background: var(--superficie); border-left: 4px solid var(--azul); border-radius: 8px; padding: 12px 14px; }
+
+    /* Comparación */
+    .tabla-envoltorio { overflow-x: auto; border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { text-align: left; padding: 12px; vertical-align: top; border-bottom: 1px solid var(--borde); }
+    thead th { background: var(--azul-claro); }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    tbody th { font-weight: 600; width: 30%; }
+
+    /* Precio */
+    .precio { text-align: left; }
+    .precio .cifra { font-size: 2.4rem; font-weight: 800; margin: 4px 0; color: var(--azul-oscuro); }
+
+    /* FAQ */
+    details { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 0 16px; }
+    details + details { margin-top: 8px; }
+    summary { cursor: pointer; font-weight: 600; padding: 14px 0; min-height: 48px; }
+    details p { margin: 0 0 14px; color: var(--texto-2); }
+
+    /* Instalar */
+    .pasos { margin: 0; padding-left: 1.3em; color: var(--texto-2); }
+    .pasos li + li { margin-top: 4px; }
+
+    /* Formulario */
+    form { display: grid; gap: 14px; max-width: 30em; }
+    label { font-weight: 600; display: block; margin-bottom: 4px; }
+    input[type="email"] {
+      width: 100%; min-height: 48px; padding: 10px 12px; font: inherit;
+      border: 2px solid #8A97A5; border-radius: 10px; background: #fff; color: var(--texto);
+    }
+    input[type="email"]:focus { border-color: var(--azul); }
+    .casilla { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
+    .casilla input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+    .ayuda { font-size: .9rem; color: var(--texto-2); margin: 0; }
+    .gracias { background: var(--azul-claro); border-radius: var(--radio); padding: 16px; }
+    .gracias h3 { margin-top: 0; }
+
+    /* Final y pie */
+    .final { background: var(--azul-claro); border-top: 0; }
+    .final h2 { margin-bottom: 12px; }
+    .pie { padding: 24px 0 40px; font-size: .9rem; color: var(--texto-2); }
+    .pie p { margin: 0 0 6px; }
+
+    @media (min-width: 720px) {
+      .hero { padding: 56px 0 48px; }
+      .rejilla.dos { grid-template-columns: repeat(2, 1fr); }
+      .rejilla.tres { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <a class="salto" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <div class="contenedor">
+      <a class="marca" href="./">
+        <img src="app/icon-192.png" alt="" width="32" height="32">
+        FoodMatch
+      </a>
+      <nav aria-label="Principal">
+        <a href="#lista-espera" data-medir="ir_lista_espera" data-origen="cabecera">Lista de espera</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- Titular y propuesta: de la propuesta única de valor -->
+    <section class="hero" aria-labelledby="titular">
+      <div class="contenedor">
+        <p class="antetitulo">Para estudiantes internacionales y viajeros en una ciudad nueva <span class="revisar">[REVISAR]</span></p>
+        <h1 id="titular">Come bien, ve a lo seguro</h1>
+        <p class="propuesta">
+          Un comparador de restaurantes verificado: buscas por lo que te apetece, lo que puedes pagar y lo que puedes comer, y ves menú y precios contrastados antes de moverte. <span class="revisar">[REVISAR]</span>
+        </p>
+        <div class="cta-bloque">
+          <p class="cta-texto">Encuentra tu restaurante ideal</p>
+          <div class="botones">
+            <a class="boton" href="app/" data-medir="cta_probar_app" data-origen="hero">Probar la app</a>
+            <a class="boton secundario" href="#lista-espera" data-medir="ir_lista_espera" data-origen="hero">Apuntarme a la lista de espera</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- El problema: de los dolores del cliente -->
+    <section aria-labelledby="t-problema">
+      <div class="contenedor">
+        <h2 id="t-problema">Lo que ves en el mapa no siempre es lo que te encuentras <span class="revisar">[REVISAR]</span></h2>
+        <p class="intro">El problema no es que falten sitios. Es que no te puedes fiar de la información que hay. <span class="revisar">[REVISAR]</span></p>
+        <ul class="lista-dolores">
+          <li>Buscas en el mapa, en redes y en la web del local, y aun así no sabes si acertarás.</li>
+          <li>Menús y precios que ya no son los de verdad.</li>
+          <li>Pides algo vegano y llega con carne. Toca levantarse e irse.</li>
+          <li>Un mal acierto te cuesta dinero de más y tiempo que querías pasar con tu gente.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Beneficios: de cómo aliviamos los dolores y creamos ganancias -->
+    <section aria-labelledby="t-beneficios">
+      <div class="contenedor">
+        <h2 id="t-beneficios">Qué cambia con FoodMatch <span class="revisar">[REVISAR]</span></h2>
+        <p class="intro">Menos pestañas abiertas, más tiempo para comer y disfrutar de la compañía.</p>
+        <div class="rejilla dos">
+          <article class="tarjeta">
+            <h3>Antojo, presupuesto y dieta a la vez</h3>
+            <p>Filtras por las tres cosas en una sola búsqueda, también con la dieta de cada persona del grupo.</p>
+          </article>
+          <article class="tarjeta">
+            <h3>Menú y precios con fecha y fuente</h3>
+            <p>Contrastamos la información con varias fuentes y te enseñamos cuándo y de dónde sale.</p>
+          </article>
+          <article class="tarjeta">
+            <h3>Sitios que no son para turistas</h3>
+            <p>Si quieres, ves solo locales que no son turísticos y que encajan con lo que te apetece hoy.</p>
+          </article>
+          <article class="tarjeta">
+            <h3>Datos que se mantienen al día</h3>
+            <p>Los restaurantes que mantienen sus datos actualizados ganan visibilidad en la app. Así todos salen ganando.</p>
+          </article>
+          <article class="tarjeta azul">
+            <h3>Y más ganancias</h3>
+            <p><span class="pendiente">[DATO PENDIENTE]</span> «Cómo creamos ganancias» está incompleto en CLAUDE.md.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparación: de las alternativas que usan hoy -->
+    <section aria-labelledby="t-comparacion">
+      <div class="contenedor">
+        <h2 id="t-comparacion">Hoy vs. con FoodMatch <span class="revisar">[REVISAR]</span></h2>
+        <p class="intro">Alternativas concretas que usa vuestro público: <span class="pendiente">[DATO PENDIENTE]</span></p>
+        <div class="tabla-envoltorio">
+          <table>
+            <caption class="intro" style="caption-side: bottom; text-align: left; padding: 10px 12px; margin: 0;">Comparación orientativa basada en lo que contaron las personas entrevistadas.</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visualmente-oculto">Aspecto</span></th>
+                <th scope="col">Hoy</th>
+                <th scope="col">Con FoodMatch</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Dónde buscas</th>
+                <td>Cruzas mapas, redes y webs</td>
+                <td>Una sola búsqueda</td>
+              </tr>
+              <tr>
+                <th scope="row">Menú y precio</th>
+                <td>Pueden estar desactualizados</td>
+                <td>Con fecha y fuente visibles</td>
+              </tr>
+              <tr>
+                <th scope="row">Tu dieta</th>
+                <td>La compruebas por tu cuenta</td>
+                <td>Filtro por persona del grupo</td>
+              </tr>
+              <tr>
+                <th scope="row">Sitios turísticos</th>
+                <td>Difícil de saber antes de ir</td>
+                <td>Puedes dejarlos fuera</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Precio: de ingresos y precio -->
+    <section aria-labelledby="t-precio">
+      <div class="contenedor">
+        <h2 id="t-precio">Precio</h2>
+        <div class="tarjeta precio">
+          <p class="cifra">Gratis</p>
+          <p>Para ti, siempre. La app se financia con los restaurantes, que pagan por mejor posicionamiento solo si mantienen sus datos al día. <span class="revisar">[REVISAR]</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preguntas frecuentes: de los dolores y dudas del cliente -->
+    <section aria-labelledby="t-faq">
+      <div class="contenedor">
+        <h2 id="t-faq">Preguntas frecuentes <span class="revisar">[REVISAR]</span></h2>
+        <details>
+          <summary>¿De dónde salen los menús y los precios?</summary>
+          <p>Los contrastamos con varias fuentes y en cada local te enseñamos la fecha de la última comprobación y de dónde sale el dato.</p>
+        </details>
+        <details>
+          <summary>¿Y si soy vegano o voy con alguien que lo es?</summary>
+          <p>Indicas la dieta de cada persona del grupo y solo ves sitios donde todos podéis comer.</p>
+        </details>
+        <details>
+          <summary>¿Cada cuánto se actualiza la información?</summary>
+          <p>Queremos revisar cada local cada 30 días. Ahora mismo lo estamos probando. <span class="pendiente">[DATO PENDIENTE]</span></p>
+        </details>
+        <details>
+          <summary>¿Me recomendáis sitios turísticos?</summary>
+          <p>Solo si quieres. Puedes pedir que te enseñemos únicamente locales que no son turísticos.</p>
+        </details>
+        <details>
+          <summary>¿Cuánto cuesta?</summary>
+          <p>Nada. Es gratis para quien busca dónde comer.</p>
+        </details>
+        <details>
+          <summary>¿Ya está disponible?</summary>
+          <p>Esto es un prototipo para validar la idea. Los restaurantes que verás en la app son ejemplos ficticios.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Cómo instalarla en el móvil -->
+    <section id="instalar" aria-labelledby="t-instalar">
+      <div class="contenedor">
+        <h2 id="t-instalar">Cómo instalarla en el móvil</h2>
+        <p class="intro">Abre la app desde el móvil y añádela a tu pantalla de inicio. No necesitas tienda de aplicaciones.</p>
+        <div class="rejilla dos">
+          <article class="tarjeta">
+            <h3>Android</h3>
+            <ol class="pasos">
+              <li>Abre la app en <strong>Chrome</strong>.</li>
+              <li>Toca el menú <strong>⋮</strong> (arriba a la derecha).</li>
+              <li>Elige <strong>Instalar aplicación</strong> o <strong>Añadir a pantalla de inicio</strong>.</li>
+            </ol>
+          </article>
+          <article class="tarjeta">
+            <h3>iPhone</h3>
+            <ol class="pasos">
+              <li>Abre la app en <strong>Safari</strong>.</li>
+              <li>Toca el botón <strong>Compartir</strong> (el cuadrado con la flecha).</li>
+              <li>Elige <strong>Añadir a pantalla de inicio</strong>.</li>
+            </ol>
+          </article>
+        </div>
+        <p style="margin-top: 16px;"><a class="boton secundario" href="app/" data-medir="cta_probar_app" data-origen="instalar">Probar la app</a></p>
+      </div>
+    </section>
+
+    <!-- Registro: lista de espera -->
+    <section id="lista-espera" aria-labelledby="t-lista">
+      <div class="contenedor">
+        <h2 id="t-lista">Apúntate a la lista de espera</h2>
+        <p class="intro">Te avisamos cuando FoodMatch esté disponible en tu ciudad. Solo te pedimos el correo.</p>
+        <form id="form-lista" novalidate>
+          <div>
+            <label for="correo">Correo electrónico</label>
+            <input id="correo" name="correo" type="email" autocomplete="email" required aria-describedby="correo-ayuda correo-error">
+            <p id="correo-ayuda" class="ayuda">Solo lo usaremos para avisarte del lanzamiento.</p>
+            <p id="correo-error" class="ayuda" role="alert" style="color:#9B1C1C;"></p>
+          </div>
+          <label class="casilla" for="acepto">
+            <input id="acepto" name="acepto" type="checkbox" required>
+            <span>Acepto que me escribáis solo para avisarme del lanzamiento.</span>
+          </label>
+          <div>
+            <button class="boton" type="submit">Apuntarme</button>
+          </div>
+          <p class="ayuda">Prototipo: de momento no se guarda ni se envía ningún dato.</p>
+        </form>
+        <div id="gracias-lista" class="gracias" hidden tabindex="-1">
+          <h3>¡Gracias por apuntarte!</h3>
+          <p>Te avisaremos cuando FoodMatch esté listo. Mientras tanto, prueba el prototipo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA final (repite el principal) -->
+    <section class="final" aria-labelledby="t-final">
+      <div class="contenedor">
+        <h2 id="t-final">Encuentra tu restaurante ideal</h2>
+        <p class="intro">Come bien, ve a lo seguro.</p>
+        <a class="boton" href="app/" data-medir="cta_probar_app" data-origen="final">Probar la app</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>FoodMatch · Prototipo del LAB (sesión 2) · Equipo 2 <span class="revisar">[REVISAR]</span></p>
+      <p>Esta web no usa cookies ni servicios de terceros. Los restaurantes de la app son ejemplos ficticios.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Medidor: [DATO PENDIENTE] el script del medidor del curso se pega aquí.
+       Mientras tanto, medir() guarda los eventos en window.medidorEventos y en la consola,
+       y se los pasará a window.medidorCurso(evento, datos) cuando exista. */
+    window.medidorEventos = window.medidorEventos || [];
+    function medir(evento, datos) {
+      var registro = { evento: evento, datos: datos || {}, pagina: location.pathname, hora: new Date().toISOString() };
+      window.medidorEventos.push(registro);
+      if (typeof window.medidorCurso === 'function') window.medidorCurso(evento, datos || {});
+      console.info('[medidor]', evento, datos || {});
+    }
+
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-medir]');
+      if (el) medir(el.dataset.medir, { origen: el.dataset.origen || '' });
+    });
+
+    medir('visita_landing', { referencia: document.referrer ? 'externa' : 'directa' });
+
+    // Lista de espera: en el Sprint B se conectará al medidor del curso.
+    var form = document.getElementById('form-lista');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var correo = document.getElementById('correo');
+      var acepto = document.getElementById('acepto');
+      var error = document.getElementById('correo-error');
+      if (!correo.checkValidity()) {
+        error.textContent = 'Escribe un correo válido, por ejemplo nombre@dominio.es.';
+        correo.setAttribute('aria-invalid', 'true');
+        correo.focus();
+        return;
+      }
+      if (!acepto.checked) {
+        error.textContent = 'Marca la casilla para que podamos avisarte.';
+        acepto.focus();
+        return;
+      }
+      error.textContent = '';
+      correo.removeAttribute('aria-invalid');
+      medir('registro_lista_espera', {}); // sin el correo: no enviamos datos personales al medidor
+      form.hidden = true;
+      var gracias = document.getElementById('gracias-lista');
+      gracias.hidden = false;
+      gracias.focus();
+    });
+  </script>
+</body>
+</html>
