@@ -209,6 +209,7 @@
     .ilustracion-resto { margin: 0; display: grid; gap: 6px; }
     .ilustracion-resto svg { display: block; width: 100%; height: auto; border-radius: var(--radio); border: 1px solid var(--borde); }
     .ficha-foto { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radio); background: var(--azul-claro); }
+    .ficha-foto.contener { object-fit: contain; background: #fff; border: 1px solid var(--borde); padding: 8px; }
     .carta {
       background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);
       padding: 16px; display: grid; gap: 12px;
@@ -628,6 +629,8 @@
         dietas: ['vegana', 'vegetariana'], turistico: false, toldo: '#B5651D',
         lat: 40.4309992, lng: -3.7103182, x: 66, y: 26,
         direccion: 'C. de Galileo, 12, 28015 Madrid (Chamberí)', precioMedio: '26 €',
+        // Logo aportado por el equipo: se muestra entero (contener), no recortado como las fotos.
+        foto: { src: 'fotos/hakuna-matata.jpg', alt: 'Logo de Hakuna Matata Veggie: el nombre dentro de una corona de ramas y hojas', credito: 'Logo: Hakuna Matata Veggie', contener: true },
         enlaces: [{ texto: 'Ficha, fotos y reservas en TheFork', url: 'https://www.thefork.es/restaurante/hakuna-matata-veggie-r827788' }],
         fuente: { nombre: 'TheFork', url: 'https://www.thefork.es/restaurante/hakuna-matata-veggie-r827788/menu', actualizada: '16 sept 2026' },
         platos: [
@@ -1029,6 +1032,7 @@
       var foto = document.getElementById('ficha-foto');
       foto.hidden = !r.foto;
       document.getElementById('ficha-ilustracion').style.display = r.foto ? 'none' : '';
+      foto.classList.toggle('contener', !!(r.foto && r.foto.contener));
       if (r.foto) {
         foto.src = r.foto.src;
         foto.alt = r.foto.alt;
