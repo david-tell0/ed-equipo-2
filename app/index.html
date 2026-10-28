@@ -539,7 +539,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana o vegetariana te enseñamos restaurantes reales de Madrid con datos de TheFork y de su web; con el resto, restaurantes de ejemplo.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana o halal te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -665,12 +665,51 @@
       }
     ];
 
-    // Con dieta vegana o vegetariana se enseñan los restaurantes reales; con el resto, los de ejemplo.
+    // Restaurantes reales para quien elige dieta halal (Madrid). Datos consultados el 28 oct 2026.
+    var HALAL = [
+      {
+        id: 'abu-taha', letra: '4', real: true, nombre: 'Abu Taha', tipo: 'Árabe y libanesa',
+        dietas: ['halal'], turistico: false, toldo: '#B71C1C',
+        lat: 40.4572919, lng: -3.7001774, x: 40, y: 22,
+        direccion: 'Calle de San Germán, 64, 28020 Madrid (Tetuán) · Cocina siria 100 % halal', precioMedio: null,
+        foto: { src: 'fotos/abu-taha.jpg', alt: 'Logo de Abu Taha: el nombre en árabe y en letras latinas con la frase «Comida siria» sobre fondo rojo', credito: 'Logo: Abu Taha', contener: true },
+        enlaces: [
+          { texto: 'Web y carta de Abu Taha', url: 'https://restauranteabutaha.com/' },
+          { texto: 'Instagram', url: 'https://www.instagram.com/restauranteabutaha/' },
+          { texto: 'Facebook', url: 'https://www.facebook.com/p/Restaurante-Abu-Taha-61558005002684/' }
+        ],
+        fuente: { nombre: 'restauranteabutaha.com', url: 'https://restauranteabutaha.com/#carta', actualizada: null },
+        platos: [
+          { nombre: 'Shawarma de pollo (bocadillo en pan árabe)', precio: '7,00 €', dietas: [] },
+          { nombre: 'Plato shawarma (con ensalada, arroz y patatas)', precio: '16,00 €', dietas: [] },
+          { nombre: 'Brochetas de pollo (con patatas, arroz y ensalada)', precio: '15,00 €', dietas: [] },
+          { nombre: 'Pollo al carbón entero', precio: '19,00 €', dietas: [] },
+          { nombre: 'Hummus clásico', precio: '6,00 €', dietas: [] },
+          { nombre: 'Falafel (bocadillo en pan árabe)', precio: '7,00 €', dietas: [] },
+          { nombre: 'Kunafeh', precio: '6,00 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'gram-bangla', letra: '5', real: true, nombre: 'Gram Bangla', tipo: 'Bangladesí',
+        dietas: ['halal'], turistico: false, toldo: '#2E7D32',
+        // Coordenadas de la calle Caravaca (el portal 12 no está en OpenStreetMap).
+        lat: 40.4090015, lng: -3.7026654, x: 60, y: 70,
+        direccion: 'Calle Caravaca, 12, 28012 Madrid (Lavapiés) · Cocina bangladesí halal', precioMedio: null,
+        foto: { src: 'fotos/gram-bangla.jpg', alt: 'Logo de Gram Bangla Restaurante: el nombre en bengalí dentro de un círculo verde y amarillo con unas hojas', credito: 'Logo: Gram Bangla', contener: true },
+        enlaces: [{ texto: 'Facebook de Gram Bangla', url: 'https://www.facebook.com/profile.php?id=61563752384442' }],
+        fuente: { nombre: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61563752384442', actualizada: null, sinCarta: true },
+        platos: []
+      }
+    ];
+
+    // Vegana o vegetariana → reales veganos/vegetarianos; halal → reales halal; resto → ejemplos.
     function restaurantesBase() {
-      return estado.dieta === 'vegana' || estado.dieta === 'vegetariana' ? REALES : RESTAURANTES;
+      if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
+      if (estado.dieta === 'halal') return HALAL;
+      return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -973,9 +1012,11 @@
       var usarReal = !!(estado.ubicacion && estado.ubicacion.lat != null && window.L);
       document.getElementById('mapa-real').hidden = !usarReal;
       document.getElementById('mapa-ilustrativo').hidden = usarReal;
-      var sonReales = restaurantesBase() === REALES;
+      var base = restaurantesBase();
+      var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
-        ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid con opciones veganas y vegetarianas. Datos consultados el ' + CONSULTADO + '.'
+        ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
+          (base === HALAL ? 'con cocina halal' : 'con opciones veganas y vegetarianas') + '. Datos consultados el ' + CONSULTADO + '.'
         : usarReal
           ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
           : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
@@ -1070,9 +1111,14 @@
           '<p class="nota" style="margin-top:6px;">Restaurante de ejemplo: no tiene enlaces reales.</p>';
       }
 
-      document.getElementById('carta-etiqueta').textContent = r.real ? 'Selección de su carta' : 'Platos de ejemplo';
+      document.getElementById('carta-etiqueta').textContent = !r.real ? 'Platos de ejemplo'
+        : ficha.platos.length ? 'Selección de su carta' : 'Carta no publicada';
       var lista = document.getElementById('carta-platos');
       lista.innerHTML = '';
+      if (!ficha.platos.length) {
+        lista.innerHTML = '<li><span class="plato">Carta y precios</span><span class="precio pendiente">[DATO PENDIENTE]</span>' +
+          '<span class="dietas">No están publicados en abierto: pregunta en el local o en su Facebook.</span></li>';
+      }
       ficha.platos.forEach(function (p) {
         var li = document.createElement('li');
         li.innerHTML = '<span class="plato"></span><span class="precio"></span><span class="dietas"></span>';
@@ -1093,7 +1139,10 @@
       sello.innerHTML = '';
       if (r.real) {
         sello.append('Fuente: ', enlaceExterno(r.fuente.nombre, r.fuente.url),
-          ' · carta actualizada el ' + r.fuente.actualizada + ' · consultada el ' + CONSULTADO + '. Los precios pueden cambiar.');
+          r.fuente.sinCarta
+            ? ' · dirección consultada el ' + CONSULTADO + '.'
+            : (r.fuente.actualizada ? ' · carta actualizada el ' + r.fuente.actualizada : '') +
+              ' · consultada el ' + CONSULTADO + '. Los precios pueden cambiar.');
       } else {
         sello.innerHTML = '<span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span>';
       }
