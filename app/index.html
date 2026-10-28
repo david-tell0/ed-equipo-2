@@ -221,6 +221,10 @@
     .carta-platos .precio { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
     .carta-platos .dietas { font-size: .85rem; color: var(--texto-2); }
     .carta-sello { font-size: .9rem; color: var(--texto-2); }
+    .carta-platos .precio.real { font-weight: 700; color: var(--azul-oscuro); }
+    .ficha-direccion { color: var(--texto-2); }
+    .enlaces-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    .enlaces-lista a { display: flex; align-items: center; min-height: 44px; font-weight: 600; }
     #mapa-real { height: 340px; z-index: 0; font: inherit; }
     .pin-mapa {
       width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
@@ -434,23 +438,21 @@
             <rect x="142" y="100" width="36" height="60" rx="3" fill="#174A6C"/>
             <circle cx="171" cy="132" r="2.5" fill="#FFF1C2"/>
           </svg>
-          <figcaption class="nota">Ilustración · Foto real: <span class="pendiente">[DATO PENDIENTE]</span></figcaption>
+          <figcaption class="nota" id="ilu-pie"></figcaption>
         </figure>
+        <p class="ficha-direccion" id="ficha-direccion" hidden></p>
 
         <button class="boton secundario" type="button" id="b-enlaces" aria-expanded="false" aria-controls="enlaces">Enlaces a redes sociales y web</button>
-        <div id="enlaces" class="tarjeta" hidden>
-          <p>Redes sociales y web del local: <span class="pendiente">[DATO PENDIENTE]</span></p>
-          <p class="nota" style="margin-top:6px;">En el prototipo no hay enlaces reales.</p>
-        </div>
+        <div id="enlaces" class="tarjeta" hidden></div>
 
-        <!-- Imagen «menú»: carta de ejemplo (platos ficticios, precios pendientes) -->
+        <!-- Imagen «menú»: carta del restaurante (real con fuente y fecha, o de ejemplo) -->
         <section class="carta" aria-labelledby="carta-titulo">
           <header class="carta-cabecera">
             <h2 id="carta-titulo">Menú</h2>
-            <span class="etiqueta">Platos de ejemplo</span>
+            <span class="etiqueta" id="carta-etiqueta">Platos de ejemplo</span>
           </header>
           <ul class="carta-platos" id="carta-platos"></ul>
-          <p class="carta-sello"><span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span></p>
+          <p class="carta-sello" id="carta-sello"></p>
           <p class="nota" id="menu-dietas"></p>
         </section>
 
@@ -534,7 +536,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Los restaurantes son ejemplos ficticios.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana o vegetariana te enseñamos restaurantes reales de Madrid con datos de TheFork y de su web; con el resto, restaurantes de ejemplo.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -592,10 +594,75 @@
     // Restaurantes ficticios: sin datos reales.
     // x, y: posición (%) en el mapa ilustrativo. dLat, dLng: desplazamiento respecto al centro en el mapa real (unos 200 m).
     var RESTAURANTES = [
-      { id: 'a', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 22, y: 72, dLat: -0.0016, dLng: -0.0022 },
-      { id: 'b', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 72, y: 30, dLat: 0.0015, dLng: 0.0018 },
-      { id: 'c', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana', 'comida-rapida'], turistico: true, x: 78, y: 82, dLat: -0.0018, dLng: 0.0020 }
+      { id: 'a', letra: 'A', nombre: 'Restaurante de ejemplo A', tipo: 'Mediterránea', dietas: ['vegetariana', 'vegana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 22, y: 72, dLat: -0.0016, dLng: -0.0022 },
+      { id: 'b', letra: 'B', nombre: 'Restaurante de ejemplo B', tipo: 'Asiática', dietas: ['vegetariana', 'pescetariana', 'halal', 'saludable'], turistico: false, x: 72, y: 30, dLat: 0.0015, dLng: 0.0018 },
+      { id: 'c', letra: 'C', nombre: 'Restaurante de ejemplo C', tipo: 'Tapas', dietas: ['vegetariana', 'vegana', 'comida-rapida'], turistico: true, x: 78, y: 82, dLat: -0.0018, dLng: 0.0020 }
     ];
+
+    // Restaurantes reales para quien elige dieta vegana o vegetariana (Madrid).
+    // Datos copiados de sus fichas públicas el 28 oct 2026: dirección, precio medio y una selección de la carta con sus precios.
+    var CONSULTADO = '28 oct 2026';
+    var REALES = [
+      {
+        id: 'santa-y-pura', letra: '1', real: true, nombre: 'Santa y Pura', tipo: 'Cocina 100 % vegetal',
+        dietas: ['vegana', 'vegetariana'], turistico: false, toldo: '#2E7D4F',
+        lat: 40.4102015, lng: -3.6972748, x: 30, y: 66,
+        direccion: 'C. de Santa Isabel, 27, 28012 Madrid (Antón Martín)', precioMedio: '40 €',
+        enlaces: [{ texto: 'Ficha, fotos y reservas en TheFork', url: 'https://www.thefork.es/restaurante/santa-y-pura-r831159' }],
+        fuente: { nombre: 'TheFork', url: 'https://www.thefork.es/restaurante/santa-y-pura-r831159/menu', actualizada: '30 nov 2025' },
+        platos: [
+          { nombre: 'Croquetas de setas (6 uds.)', precio: '11 €', dietas: ['vegana'] },
+          { nombre: 'Patatas bravas con ajonesa', precio: '9,50 €', dietas: ['vegana'] },
+          { nombre: 'Ensalada con aguacate', precio: '9 €', dietas: ['vegana'] },
+          { nombre: 'Burguer «Santuario dharma» de garbanzos y setas', precio: '14 €', dietas: ['vegana'] },
+          { nombre: 'Pizza margarita (20 cm)', precio: '10 €', dietas: ['vegana'] },
+          { nombre: 'Burrito', precio: '15,50 €', dietas: ['vegana'] }
+        ]
+      },
+      {
+        id: 'hakuna-matata', letra: '2', real: true, nombre: 'Hakuna Matata Veggie', tipo: 'Mediterránea',
+        dietas: ['vegana', 'vegetariana'], turistico: false, toldo: '#B5651D',
+        lat: 40.4309992, lng: -3.7103182, x: 66, y: 26,
+        direccion: 'C. de Galileo, 12, 28015 Madrid (Chamberí)', precioMedio: '26 €',
+        enlaces: [{ texto: 'Ficha, fotos y reservas en TheFork', url: 'https://www.thefork.es/restaurante/hakuna-matata-veggie-r827788' }],
+        fuente: { nombre: 'TheFork', url: 'https://www.thefork.es/restaurante/hakuna-matata-veggie-r827788/menu', actualizada: '16 sept 2026' },
+        platos: [
+          { nombre: 'Croquetas del chef (6 piezas)', precio: '11,90 €', dietas: [] },
+          { nombre: 'Patatas bravas receta artesana', precio: '9,60 €', dietas: [] },
+          { nombre: 'Berenjena mozárabe con hummus', precio: '13,20 €', dietas: [] },
+          { nombre: 'Hamburguesa de lentejas y shiitake', precio: '14,50 €', dietas: [] },
+          { nombre: 'Risotto de boletus y queso parmvegano', precio: '16,90 €', dietas: [] },
+          { nombre: 'Vegamisu (tiramisú vegano)', precio: '8 €', dietas: ['vegana'] }
+        ]
+      },
+      {
+        id: 'honest-greens', letra: '3', real: true, nombre: 'Honest Greens Gran Vía', tipo: 'Ensaladas',
+        dietas: ['vegana', 'vegetariana', 'saludable'], turistico: false, toldo: '#5B7F2B',
+        lat: 40.4193702, lng: -3.6988574, x: 48, y: 80,
+        direccion: 'Calle Gran Vía, 7, 28013 Madrid (Centro)', precioMedio: null,
+        enlaces: [
+          { texto: 'Web del local (Gran Vía 7)', url: 'https://www.honestgreens.com/es/restaurants/gv7-es' },
+          { texto: 'Carta y alérgenos de Honest Greens', url: 'https://www.honestgreens.com/es/menu' }
+        ],
+        fuente: { nombre: 'honestgreens.com', url: 'https://www.honestgreens.com/es/menu', actualizada: '15 sept 2026 (carta de otoño, común a la cadena)' },
+        platos: [
+          { nombre: 'Hummus para compartir', precio: '5,25 €', dietas: ['vegana'] },
+          { nombre: 'Falafel casero con salsa tahini', precio: '9,45 €', dietas: ['vegana'] },
+          { nombre: 'Truffle Mushroom Bowl', precio: '9,45 €', dietas: ['vegana'] },
+          { nombre: 'Latin Lover (bowl)', precio: '9,45 €', dietas: ['vegana'] },
+          { nombre: 'Avocado Supergreen (bowl)', precio: '9,45 €', dietas: ['vegana'] },
+          { nombre: 'Spicy Feta Bowl', precio: '9,45 €', dietas: ['vegetariana'] }
+        ]
+      }
+    ];
+
+    // Con dieta vegana o vegetariana se enseñan los restaurantes reales; con el resto, los de ejemplo.
+    function restaurantesBase() {
+      return estado.dieta === 'vegana' || estado.dieta === 'vegetariana' ? REALES : RESTAURANTES;
+    }
+    function buscarRestaurante(id) {
+      return RESTAURANTES.concat(REALES).filter(function (x) { return x.id === id; })[0];
+    }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
       a: { toldo: '#2E7D4F', platos: [
@@ -645,6 +712,7 @@
         titulo.setAttribute('tabindex', '-1');
         titulo.focus({ preventScroll: true });
       }
+      if (id !== 'p3') popupUbicacion.hidden = true; // el pop-up solo tiene sentido en la pantalla del mapa
       if (id === 'p3' && !estado.ubicacion && !estado.popupUbicacionVisto) abrirPopupUbicacion();
     }
     function ir(id) {
@@ -716,7 +784,7 @@
     });
 
     function coinciden() {
-      var base = RESTAURANTES.filter(function (r) {
+      var base = restaurantesBase().filter(function (r) {
         if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
         if (estado.noTuristico && r.turistico) return false;
         return true;
@@ -724,7 +792,7 @@
       estado.sinAntojo = false;
       if (!estado.antojo.length) return base;
       var porTipo = base.filter(function (r) { return estado.antojo.indexOf(r.tipo) !== -1; });
-      // Solo hay 3 restaurantes de ejemplo: si ninguno es del tipo elegido en el formulario, enseñamos el resto.
+      // Solo hay 3 restaurantes: si ninguno es del tipo elegido en el formulario, enseñamos el resto.
       if (!porTipo.length) { estado.sinAntojo = true; return base; }
       return porTipo;
     }
@@ -746,10 +814,14 @@
         '<span class="resto"><strong></strong>' +
         '<span class="fila"><span class="etiqueta"></span>' +
         r.dietas.map(function (d) { return '<span class="etiqueta">' + NOMBRES_DIETA[d] + '</span>'; }).join('') +
-        '<span class="etiqueta verificado">✓ Verificado</span></span>' +
-        '<span class="detalle">Precio medio: [DATO PENDIENTE]</span></span>';
+        '<span class="etiqueta verificado"></span></span>' +
+        '<span class="detalle"></span></span>';
       b.querySelector('strong').textContent = r.nombre;
       b.querySelector('.fila .etiqueta').textContent = r.tipo;
+      b.querySelector('.verificado').textContent = r.real ? 'Fuente: ' + r.fuente.nombre : '✓ Verificado';
+      b.querySelector('.detalle').textContent = r.real
+        ? (r.precioMedio ? 'Precio medio: ' + r.precioMedio : 'Precio medio no publicado: ver carta') + ' · ' + r.direccion
+        : 'Precio medio: [DATO PENDIENTE]';
       b.addEventListener('click', function () { elegir(r.id); });
       return b;
     }
@@ -857,17 +929,27 @@
       }
       mapa.invalidateSize();
       capaMarcas.clearLayers();
-      // Encuadra tu posición y todos los restaurantes, con margen para los pines.
-      var puntos = [centro].concat(rs.map(function (r) { return [u.lat + r.dLat, u.lng + r.dLng]; }));
+      // Los reales van en su dirección; los de ejemplo, alrededor de tu zona.
+      function posicion(r) { return r.real ? [r.lat, r.lng] : [u.lat + r.dLat, u.lng + r.dLng]; }
+      var sitios = rs.map(posicion);
+      // Si los restaurantes quedan lejos (otra ciudad), encuadramos solo los restaurantes.
+      var lejos = sitios.length && sitios.every(function (p) { return L.latLng(centro).distanceTo(p) > 30000; });
+      var puntos = lejos ? sitios : [centro].concat(sitios);
       mapa.fitBounds(L.latLngBounds(puntos), { padding: [48, 48], maxZoom: 17 });
+      if (lejos) {
+        var km = Math.round(L.latLng(centro).distanceTo(sitios[0]) / 1000);
+        avisoUbicacion('Estos restaurantes están en Madrid, a unos ' + km.toLocaleString('es-ES') + ' km de ti.');
+      } else {
+        avisoUbicacion('');
+      }
       var etiqueta = document.createElement('span'); // textContent: el nombre viene del buscador
       etiqueta.textContent = u.tipo === 'gps' ? 'Estás aquí' : u.texto;
       L.circleMarker(centro, { radius: 9, color: '#fff', weight: 3, fillColor: '#1F5F8B', fillOpacity: 1 })
         .bindTooltip(etiqueta, { permanent: true, direction: 'right', offset: [10, 0] })
         .addTo(capaMarcas);
       rs.forEach(function (r) {
-        L.marker([u.lat + r.dLat, u.lng + r.dLng], {
-          icon: L.divIcon({ className: '', html: '<div class="pin-mapa"><span>' + r.id.toUpperCase() + '</span></div>', iconSize: [40, 40], iconAnchor: [20, 48] }),
+        L.marker(posicion(r), {
+          icon: L.divIcon({ className: '', html: '<div class="pin-mapa"><span>' + r.letra + '</span></div>', iconSize: [40, 40], iconAnchor: [20, 48] }),
           title: r.nombre,
           alt: r.nombre,
           keyboard: true
@@ -882,9 +964,12 @@
       var usarReal = !!(estado.ubicacion && estado.ubicacion.lat != null && window.L);
       document.getElementById('mapa-real').hidden = !usarReal;
       document.getElementById('mapa-ilustrativo').hidden = usarReal;
-      document.getElementById('nota-mapa').textContent = usarReal
-        ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
-        : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
+      var sonReales = restaurantesBase() === REALES;
+      document.getElementById('nota-mapa').textContent = sonReales
+        ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid con opciones veganas y vegetarianas. Datos consultados el ' + CONSULTADO + '.'
+        : usarReal
+          ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
+          : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
       pines.innerHTML = '';
       lista.innerHTML = '';
       if (!estado.ubicacion) {
@@ -906,37 +991,93 @@
           p.style.left = r.x + '%';
           p.style.top = r.y + '%';
           p.setAttribute('aria-label', r.nombre);
-          p.innerHTML = '<span aria-hidden="true">' + r.id.toUpperCase() + '</span>';
+          p.innerHTML = '<span aria-hidden="true">' + r.letra + '</span>';
           p.addEventListener('click', function () { elegir(r.id); });
           pines.appendChild(p);
         });
       }
       rs.forEach(function (r) { lista.appendChild(tarjetaResto(r)); });
       if (!lista.children.length) {
-        lista.innerHTML = '<p class="nota">Ningún restaurante de ejemplo encaja con tus filtros. Prueba a cambiar la dieta o el tipo de comida.</p>';
+        lista.innerHTML = '<p class="nota">Ningún restaurante encaja con tus filtros. Prueba a cambiar la dieta o el tipo de comida.</p>';
       }
       avisoSinAntojo(lista);
     }
 
     // --- Pantalla 4 ---
+    function enlaceExterno(texto, url) {
+      var a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = texto;
+      return a;
+    }
+
     function pintarFicha(r) {
-      var ficha = FICHAS[r.id];
-      document.getElementById('ilu-letra').textContent = r.id.toUpperCase();
+      var ficha = r.real ? r : FICHAS[r.id];
+      document.getElementById('ilu-letra').textContent = r.letra;
       document.getElementById('ilu-toldo').setAttribute('fill', ficha.toldo);
-      document.getElementById('ilu-desc').textContent = 'Ilustración de la fachada del ' + r.nombre + ' (no es una foto real)';
+      document.getElementById('ilu-desc').textContent = 'Ilustración de la fachada de ' + r.nombre + ' (no es una foto real)';
+
+      // Pie de la ilustración: sin fotos copiadas; los reales enlazan a sus fotos en la fuente.
+      var pie = document.getElementById('ilu-pie');
+      pie.innerHTML = '';
+      if (r.real) {
+        pie.append('Ilustración · ', enlaceExterno('Ver fotos del local', r.enlaces[0].url));
+      } else {
+        pie.innerHTML = 'Ilustración · Foto real: <span class="pendiente">[DATO PENDIENTE]</span>';
+      }
+      var direccion = document.getElementById('ficha-direccion');
+      direccion.hidden = !r.real;
+      direccion.textContent = r.real ? '📍 ' + r.direccion + (r.precioMedio ? ' · Precio medio: ' + r.precioMedio : '') : '';
+
+      var enlaces = document.getElementById('enlaces');
+      enlaces.innerHTML = '';
+      if (r.real) {
+        var ul = document.createElement('ul');
+        ul.className = 'enlaces-lista';
+        r.enlaces.forEach(function (e) {
+          var li = document.createElement('li');
+          li.appendChild(enlaceExterno(e.texto + ' ↗', e.url));
+          ul.appendChild(li);
+        });
+        enlaces.appendChild(ul);
+      } else {
+        enlaces.innerHTML = '<p>Redes sociales y web del local: <span class="pendiente">[DATO PENDIENTE]</span></p>' +
+          '<p class="nota" style="margin-top:6px;">Restaurante de ejemplo: no tiene enlaces reales.</p>';
+      }
+
+      document.getElementById('carta-etiqueta').textContent = r.real ? 'Selección de su carta' : 'Platos de ejemplo';
       var lista = document.getElementById('carta-platos');
       lista.innerHTML = '';
       ficha.platos.forEach(function (p) {
         var li = document.createElement('li');
-        li.innerHTML = '<span class="plato"></span><span class="precio pendiente">[DATO PENDIENTE]</span><span class="dietas"></span>';
+        li.innerHTML = '<span class="plato"></span><span class="precio"></span><span class="dietas"></span>';
         li.querySelector('.plato').textContent = p.nombre;
+        var precio = li.querySelector('.precio');
+        if (p.precio) {
+          precio.textContent = p.precio;
+          precio.classList.add('real');
+        } else {
+          precio.textContent = '[DATO PENDIENTE]';
+          precio.classList.add('pendiente');
+        }
         li.querySelector('.dietas').textContent = p.dietas.map(function (d) { return NOMBRES_DIETA[d]; }).join(' · ');
         lista.appendChild(li);
       });
+
+      var sello = document.getElementById('carta-sello');
+      sello.innerHTML = '';
+      if (r.real) {
+        sello.append('Fuente: ', enlaceExterno(r.fuente.nombre, r.fuente.url),
+          ' · carta actualizada el ' + r.fuente.actualizada + ' · consultada el ' + CONSULTADO + '. Los precios pueden cambiar.');
+      } else {
+        sello.innerHTML = '<span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span>';
+      }
     }
 
     function elegir(id) {
-      var r = RESTAURANTES.filter(function (x) { return x.id === id; })[0];
+      var r = buscarRestaurante(id);
       estado.elegido = r.id;
       document.getElementById('p4-titulo').textContent = r.nombre;
       document.getElementById('menu-dietas').textContent = 'Opciones: ' + r.dietas.map(function (d) { return NOMBRES_DIETA[d]; }).join(', ');
