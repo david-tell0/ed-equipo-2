@@ -208,6 +208,7 @@
     /* Pantalla 4 — ilustración y carta de ejemplo */
     .ilustracion-resto { margin: 0; display: grid; gap: 6px; }
     .ilustracion-resto svg { display: block; width: 100%; height: auto; border-radius: var(--radio); border: 1px solid var(--borde); }
+    .ficha-foto { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radio); background: var(--azul-claro); }
     .carta {
       background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);
       padding: 16px; display: grid; gap: 12px;
@@ -421,7 +422,8 @@
       <div class="cuerpo">
         <!-- Imagen «restaurante»: ilustración genérica mientras no haya foto real -->
         <figure class="ilustracion-resto">
-          <svg viewBox="0 0 320 180" role="img" aria-labelledby="ilu-desc">
+          <img id="ficha-foto" class="ficha-foto" width="1920" height="1280" alt="" hidden>
+          <svg id="ficha-ilustracion" viewBox="0 0 320 180" role="img" aria-labelledby="ilu-desc">
             <title id="ilu-desc">Ilustración de la fachada del restaurante (no es una foto real)</title>
             <rect width="320" height="180" fill="#D6EAF8"/>
             <circle cx="268" cy="34" r="16" fill="#FFF1C2"/>
@@ -608,6 +610,8 @@
         dietas: ['vegana', 'vegetariana'], turistico: false, toldo: '#2E7D4F',
         lat: 40.4102015, lng: -3.6972748, x: 30, y: 66,
         direccion: 'C. de Santa Isabel, 27, 28012 Madrid (Antón Martín)', precioMedio: '40 €',
+        // Foto aportada por el equipo.
+        foto: { src: 'fotos/santa-y-pura.webp', alt: 'Tosta con rúcula sobre una pizarra en Santa y Pura, con el letrero luminoso del local al fondo', credito: 'Foto: Santa y Pura' },
         enlaces: [{ texto: 'Ficha, fotos y reservas en TheFork', url: 'https://www.thefork.es/restaurante/santa-y-pura-r831159' }],
         fuente: { nombre: 'TheFork', url: 'https://www.thefork.es/restaurante/santa-y-pura-r831159/menu', actualizada: '30 nov 2025' },
         platos: [
@@ -1019,10 +1023,23 @@
       document.getElementById('ilu-toldo').setAttribute('fill', ficha.toldo);
       document.getElementById('ilu-desc').textContent = 'Ilustración de la fachada de ' + r.nombre + ' (no es una foto real)';
 
-      // Pie de la ilustración: sin fotos copiadas; los reales enlazan a sus fotos en la fuente.
+      // Foto real si el equipo la ha aportado; si no, la ilustración.
+      var foto = document.getElementById('ficha-foto');
+      foto.hidden = !r.foto;
+      document.getElementById('ficha-ilustracion').style.display = r.foto ? 'none' : '';
+      if (r.foto) {
+        foto.src = r.foto.src;
+        foto.alt = r.foto.alt;
+      } else {
+        foto.removeAttribute('src');
+      }
+
+      // Pie: crédito de la foto o aviso de ilustración; los reales enlazan a más fotos en la fuente.
       var pie = document.getElementById('ilu-pie');
       pie.innerHTML = '';
-      if (r.real) {
+      if (r.foto) {
+        pie.append(r.foto.credito + ' · ', enlaceExterno('Ver más fotos', r.enlaces[0].url));
+      } else if (r.real) {
         pie.append('Ilustración · ', enlaceExterno('Ver fotos del local', r.enlaces[0].url));
       } else {
         pie.innerHTML = 'Ilustración · Foto real: <span class="pendiente">[DATO PENDIENTE]</span>';
