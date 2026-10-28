@@ -539,7 +539,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana o halal te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana, halal o kosher te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -715,14 +715,65 @@
       }
     ];
 
-    // Vegana o vegetariana → reales veganos/vegetarianos; halal → reales halal; resto → ejemplos.
+    // Restaurantes reales para quien elige dieta kosher (Madrid). Datos consultados el 28 oct 2026.
+    // posicion: encuadre de las fotos verticales para que se vea el letrero.
+    var KOSHER = [
+      {
+        id: 'la-escudilla', letra: '6', real: true, nombre: 'La Escudilla', tipo: 'Cocina sefardí',
+        dietas: ['kosher'], turistico: false, toldo: '#5D4037',
+        // Coordenadas de la calle Santísima Trinidad (el portal 16 no está en OpenStreetMap).
+        lat: 40.4371443, lng: -3.7011296, x: 35, y: 30,
+        direccion: 'Calle Santísima Trinidad, 16, 28010 Madrid (Chamberí) · Carne kosher · Cerrado en Shabat', precioMedio: null,
+        foto: { src: 'fotos/la-escudilla.jpg', alt: 'Entrada de La Escudilla: puerta blanca y letrero «La Escudilla Restaurante» en una fachada azul claro', credito: 'Foto: La Escudilla', posicion: 'center 25%' },
+        enlaces: [
+          { texto: 'Web de La Escudilla (madridkosher.com)', url: 'https://www.madridkosher.com/' },
+          { texto: 'Carta de La Escudilla', url: 'https://www.madridkosher.com/menu' }
+        ],
+        fuente: { nombre: 'madridkosher.com', url: 'https://www.madridkosher.com/menu', actualizada: null },
+        platos: [
+          { nombre: 'Ensaladas marroquíes', precio: '10,00 €', dietas: [] },
+          { nombre: 'Humus', precio: '12,00 €', dietas: [] },
+          { nombre: 'Cuscús vegetal', precio: '15,00 €', dietas: ['vegetariana'] },
+          { nombre: 'Brochetas de carne', precio: '15,00 €', dietas: [] },
+          { nombre: 'Pollo o ternera con almendras y ciruelas', precio: '18,00 €', dietas: [] },
+          { nombre: 'Shnitzel', precio: '18,00 €', dietas: [] },
+          { nombre: 'Chuletillas de cordero asadas', precio: '25,00 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'barganzo', letra: '7', real: true, nombre: 'Barganzo', tipo: 'Cocina judía e israelí',
+        dietas: ['kosher', 'vegetariana'], turistico: false, toldo: '#C9A227',
+        lat: 40.4210346, lng: -3.6967935, x: 62, y: 72,
+        direccion: 'Calle Colmenares, 13, 28004 Madrid (Chueca) · Kosher · Cerrado los sábados', precioMedio: null,
+        foto: { src: 'fotos/barganzo.webp', alt: 'Fachada de Barganzo con el nombre en grandes letras amarillas sobre un ventanal con mesas altas', credito: 'Foto: Barganzo', posicion: 'center 15%' },
+        enlaces: [
+          { texto: 'Web y carta de Barganzo', url: 'https://www.barganzo.es/' },
+          { texto: 'Opiniones en Tripadvisor', url: 'https://www.tripadvisor.es/Restaurant_Review-g187514-d19620384-Reviews-Barganzo-Madrid.html' },
+          { texto: 'Instagram', url: 'https://www.instagram.com/barganzomadrid/' }
+        ],
+        // Su web enlaza un «Menú de primavera»: es el que publican, aunque cambian la carta con la temporada.
+        fuente: { nombre: 'barganzo.es (menú de primavera)', url: 'https://www.barganzo.es/', actualizada: null },
+        platos: [
+          { nombre: 'Hummus clásico con pita', precio: '15 €', dietas: ['vegetariana'] },
+          { nombre: 'Hummus masabaha con pita', precio: '15 €', dietas: ['vegetariana'] },
+          { nombre: 'Ensalada Barganzo', precio: '18 €', dietas: ['vegetariana'] },
+          { nombre: 'Cigar de patata', precio: '18 €', dietas: ['vegetariana'] },
+          { nombre: 'Shishbarak de labneh y espinaca', precio: '21 €', dietas: ['vegetariana'] },
+          { nombre: 'Lubina sobre pita tostada con hummus', precio: '27 €', dietas: ['pescetariana'] },
+          { nombre: 'Malabi de rosas (postre)', precio: '12 €', dietas: ['vegetariana'] }
+        ]
+      }
+    ];
+
+    // Vegana o vegetariana → reales veganos/vegetarianos; halal y kosher → sus reales; resto → ejemplos.
     function restaurantesBase() {
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
+      if (estado.dieta === 'kosher') return KOSHER;
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1029,7 +1080,8 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HALAL ? 'con cocina halal' : 'con opciones veganas y vegetarianas') + '. Datos consultados el ' + CONSULTADO + '.'
+          (base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher' : 'con opciones veganas y vegetarianas') +
+          '. Datos consultados el ' + CONSULTADO + '.'
         : usarReal
           ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
           : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
@@ -1087,6 +1139,7 @@
       foto.hidden = !r.foto;
       document.getElementById('ficha-ilustracion').style.display = r.foto ? 'none' : '';
       foto.classList.toggle('contener', !!(r.foto && r.foto.contener));
+      foto.style.objectPosition = (r.foto && r.foto.posicion) || '';
       if (r.foto) {
         foto.src = r.foto.src;
         foto.alt = r.foto.alt;
