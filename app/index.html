@@ -1032,8 +1032,68 @@
       }
     ];
 
+    // Restaurantes japoneses reales para quien elige «Sushi y japonesa» (Madrid, 30 oct 2026).
+    var SUSHI = [
+      {
+        id: 'izakaya-han', letra: '20', real: true, nombre: 'Izakaya Han', tipo: 'Sushi y japonesa',
+        dietas: [], turistico: false, toldo: '#B71C1C',
+        lat: 40.4218315, lng: -3.6984451, x: 60, y: 45,
+        direccion: 'C. de San Bartolomé, 10, 28004 Madrid (Chueca) · Taberna coreana y japonesa · Lunes cerrado', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Izakaya Han', url: 'https://izakayahan.com/#carta' },
+          { texto: 'Instagram (@izakayahan)', url: 'https://www.instagram.com/izakayahan/' }
+        ],
+        fuente: { nombre: 'izakayahan.com', url: 'https://izakayahan.com/#carta', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Nigiri de salmón (sake)', precio: '6,00 €', dietas: [] },
+          { nombre: 'Maki nigiri set (12 piezas)', precio: '16,50 €', dietas: [] },
+          { nombre: 'Nigiri variado (10 piezas)', precio: '23,00 €', dietas: [] },
+          { nombre: 'California roll', precio: '13,00 €', dietas: [] },
+          { nombre: 'Vegan roll (aguacate, zanahoria, pepino y espárragos)', precio: '13,00 €', dietas: ['vegana'] },
+          { nombre: 'Sashimi variado (16 piezas)', precio: '27,50 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'konnichiwa', letra: '21', real: true, nombre: 'Konnichiwa Fuencarral', tipo: 'Sushi y japonesa',
+        dietas: [], turistico: false, toldo: '#D32F2F',
+        lat: 40.4278376, lng: -3.7017697, x: 40, y: 20,
+        direccion: 'C. de Fuencarral, 98, 28004 Madrid (Malasaña) · Izakaya, ramen y sushi', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Konnichiwa', url: 'https://konnichiwa.es/' },
+          { texto: 'Carta de Konnichiwa Fuencarral', url: 'https://konnichiwa.es/konnichiwa-menu-fuencarral-espanol/' },
+          { texto: 'Instagram (@konnichiwamadrid)', url: 'https://www.instagram.com/konnichiwamadrid/' }
+        ],
+        fuente: { nombre: 'konnichiwa.es', url: 'https://konnichiwa.es/konnichiwa-menu-fuencarral-espanol/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Nigiri variado (8 piezas)', precio: '16,95 €', dietas: [] },
+          { nombre: 'California roll (8 piezas)', precio: '15,50 €', dietas: [] },
+          { nombre: 'Yasai roll (4+4 piezas)', precio: '14,95 €', dietas: ['vegana'] },
+          { nombre: 'Sashimi de salmón', precio: '9,80 €', dietas: [] },
+          { nombre: 'Tonkotsu ramen', precio: '15,50 €', dietas: [] },
+          { nombre: 'Gyoza vegetal (6 uds.)', precio: '7,50 €', dietas: ['vegana'] }
+        ]
+      },
+      {
+        id: 'musashi', letra: '22', real: true, nombre: 'Musashi', tipo: 'Sushi y japonesa',
+        dietas: [], turistico: false, toldo: '#1A237E',
+        lat: 40.4190657, lng: -3.7075988, x: 25, y: 65,
+        direccion: 'Calle de las Conchas, 4, 28013 Madrid (Ópera / Callao) · Abierto desde 1991', precioMedio: null,
+        enlaces: [{ texto: 'Web y carta de Musashi', url: 'https://www.musashimadrid.es/' }, { texto: 'Instagram (@musashimadrid)', url: 'https://www.instagram.com/musashimadrid/' }],
+        fuente: { nombre: 'musashimadrid.es (carta en imágenes)', url: 'https://www.musashimadrid.es/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Nigiri de salmón (2 piezas)', precio: '4,20 €', dietas: [] },
+          { nombre: 'Sushi de salmón (bandeja)', precio: '16,70 €', dietas: [] },
+          { nombre: 'Sushi de lubina, atún y salmón (bandeja)', precio: '17,20 €', dietas: [] },
+          { nombre: 'Salmón y aguacate don', precio: '15,20 €', dietas: [] },
+          { nombre: 'Yakisoba con verdura', precio: '8,20 €', dietas: [] },
+          { nombre: 'Tempura de langostinos', precio: '13,90 €', dietas: [] },
+          { nombre: 'Edamame', precio: '5,20 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
-    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA };
+    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI };
 
     // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
@@ -1047,7 +1107,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1173,7 +1233,7 @@
       estado.sinAntojo = false;
       // Las listas por antojo (hamburgueserías, italianos) ya son la respuesta: no se filtran por dieta ni por tipo.
       var porAntojo = restaurantesBase();
-      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA) {
+      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI) {
         return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
@@ -1360,8 +1420,8 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HAMBURGUESAS || base === ITALIANA
-            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : 'de cocina italiana')
+          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI
+            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : base === ITALIANA ? 'de cocina italiana' : 'de sushi y cocina japonesa')
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
