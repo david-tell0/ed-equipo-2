@@ -1321,9 +1321,16 @@
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
+    // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB)
+      .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
+      .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
+
     // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
+    // «Me da igual» + «Sin restricciones» → todos los restaurantes reales.
     function restaurantesBase() {
+      if (estado.dieta === 'ninguna' && !estado.antojo.length) return TODOS;
       if (estado.dieta === 'ninguna' && estado.antojo.length && POR_ANTOJO[estado.antojo[0]]) return POR_ANTOJO[estado.antojo[0]];
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
@@ -1646,7 +1653,8 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (listaPorAntojo(base)
+          (base === TODOS ? 'de todas las cocinas y dietas (' + TODOS.length + ' restaurantes)'
+            : listaPorAntojo(base)
             ? NOTA_ANTOJO[estado.antojo[0]]
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
