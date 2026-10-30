@@ -538,7 +538,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana, halal, kosher o saludable te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana, halal, kosher, saludable o comida rápida te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -792,16 +792,83 @@
       }
     ];
 
-    // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher y saludable → sus reales; resto → ejemplos.
+    // Restaurantes reales para quien elige comida rápida: un local céntrico de cada cadena (Madrid, Sol y Gran Vía).
+    // Los locales salen de OpenStreetMap; las cartas, de la web de cada cadena (30 oct 2026).
+    var COMIDA_RAPIDA = [
+      {
+        id: 'taco-bell', letra: '9', real: true, nombre: 'Taco Bell Preciados', tipo: 'Mexicana',
+        dietas: ['comida-rapida'], turistico: false, toldo: '#702082',
+        lat: 40.4195685, lng: -3.7063386, x: 30, y: 40,
+        direccion: 'Calle Preciados, 29, 28013 Madrid (Sol)', precioMedio: null,
+        foto: { src: 'fotos/taco-bell.jpg', alt: 'Logo de Taco Bell: campana blanca sobre fondo morado', credito: 'Logo: Taco Bell', contener: true },
+        enlaces: [
+          { texto: 'Web y carta de Taco Bell', url: 'https://tacobell.es/es/inicio' },
+          { texto: 'Buscar restaurantes Taco Bell', url: 'https://tacobell.es/es/restaurantes' }
+        ],
+        fuente: { nombre: 'tacobell.es', url: 'https://tacobell.es/es/inicio', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Burrito XL', precio: '6,50 €', dietas: [] },
+          { nombre: 'Chicken Burrito', precio: '6,00 €', dietas: [] },
+          { nombre: 'Quesadilla', precio: '6,00 €', dietas: [] },
+          { nombre: 'Taco individual', precio: '2,25 €', dietas: [] },
+          { nombre: 'Nachos Bell', precio: '4,95 €', dietas: [] },
+          { nombre: 'Patatas Mexican', precio: '2,90 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'mcdonalds', letra: '10', real: true, nombre: "McDonald's Gran Vía 55", tipo: 'Hamburguesas',
+        dietas: ['comida-rapida'], turistico: false, toldo: '#DA291C',
+        lat: 40.4215899, lng: -3.7083974, x: 18, y: 25,
+        direccion: 'Gran Vía, 55, 28013 Madrid', precioMedio: null,
+        foto: { src: 'fotos/mcdonalds.jpg', alt: "Logo de McDonald's: la M amarilla sobre fondo rojo", credito: "Logo: McDonald's", contener: true },
+        enlaces: [
+          { texto: "Carta de McDonald's", url: 'https://mcdonalds.es/productos' },
+          { texto: "Buscar restaurantes McDonald's", url: 'https://mcdonalds.es/restaurantes' }
+        ],
+        // Su web enseña la carta, pero no los precios.
+        sinPrecios: true,
+        fuente: { nombre: 'mcdonalds.es', url: 'https://mcdonalds.es/productos', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Big Mac', dietas: [] },
+          { nombre: 'Cuarto de Libra', dietas: [] },
+          { nombre: 'McPollo', dietas: [] },
+          { nombre: 'McCrispy Original', dietas: [] },
+          { nombre: 'McWrap CBO', dietas: [] },
+          { nombre: 'Filete de Pescado', dietas: [] }
+        ]
+      },
+      {
+        id: 'burger-king', letra: '11', real: true, nombre: 'Burger King Gran Vía 40', tipo: 'Hamburguesas',
+        dietas: ['comida-rapida'], turistico: false, toldo: '#D62300',
+        lat: 40.4204138, lng: -3.7049789, x: 55, y: 30,
+        direccion: 'Gran Vía, 40, 28013 Madrid', precioMedio: null,
+        foto: { src: 'fotos/burger-king.jpg', alt: 'Logo de Burger King: el nombre en rojo entre dos mitades de pan naranjas', credito: 'Logo: Burger King', contener: true },
+        enlaces: [{ texto: 'Web de Burger King', url: 'https://www.burgerking.es/' }],
+        // Su web solo enseña carta y precios al elegir un local para pedir, y los precios cambian según el local.
+        sinPrecios: true,
+        notaPrecios: 'Burger King solo muestra los precios al elegir un local para pedir, y cambian según el local.',
+        fuente: { nombre: 'burgerking.es', url: 'https://www.burgerking.es/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Whopper', dietas: [] },
+          { nombre: 'Whopper Vegetal', dietas: [] },
+          { nombre: 'Long Chicken', dietas: [] },
+          { nombre: 'King Nuggets', dietas: [] },
+          { nombre: 'Patatas fritas', dietas: [] }
+        ]
+      }
+    ];
+
+    // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
     function restaurantesBase() {
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
       if (estado.dieta === 'saludable') return SALUDABLE;
+      if (estado.dieta === 'comida-rapida') return COMIDA_RAPIDA;
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1109,7 +1176,8 @@
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
           (base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
-            : base === SALUDABLE ? 'de comida saludable' : 'con opciones veganas y vegetarianas') +
+            : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
+            : 'con opciones veganas y vegetarianas') +
           '. Datos consultados en octubre de 2026.'
         : usarReal
           ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
@@ -1239,7 +1307,7 @@
             ? ' · dirección consultada el ' + (r.fuente.consultada || CONSULTADO) + '.'
             : (r.fuente.actualizada ? ' · carta actualizada el ' + r.fuente.actualizada : '') +
               ' · consultada el ' + (r.fuente.consultada || CONSULTADO) + '.' +
-              (r.sinPrecios ? ' El restaurante no publica los precios en su carta.' : ' Los precios pueden cambiar.'));
+              (r.sinPrecios ? ' ' + (r.notaPrecios || 'El restaurante no publica los precios en su carta.') : ' Los precios pueden cambiar.'));
       } else {
         sello.innerHTML = '<span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span>';
       }
