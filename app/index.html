@@ -1258,8 +1258,74 @@
       }
     ];
 
+    // Restaurantes de kebab y cocina turca reales para quien elige «Kebab y turca» (Madrid, 30 oct 2026).
+    var KEBAB = [
+      {
+        id: 'bosforos', letra: '31', real: true, nombre: 'Bósforos Turkish Hortaleza', tipo: 'Kebab y turca',
+        dietas: ['halal'], turistico: false, toldo: '#E8A317',
+        lat: 40.4206545, lng: -3.7006577, x: 45, y: 35,
+        direccion: 'C/ de Hortaleza, 6, 28004 Madrid (Gran Vía) · 100 % halal', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Bósforos', url: 'https://www.bosforosturkishrestaurants.com/' },
+          { texto: 'Carta de Bósforos', url: 'https://www.bosforosturkishrestaurants.com/blank-2' },
+          { texto: 'Instagram (@bosforosturkishmadrid)', url: 'https://www.instagram.com/bosforosturkishmadrid/' }
+        ],
+        fuente: { nombre: 'bosforosturkishrestaurants.com (carta en PDF)', url: 'https://www.bosforosturkishrestaurants.com/blank-2', actualizada: 'oct 2024', consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Döner kebab de ternera (pan de pita)', precio: '6,90 €', dietas: [] },
+          { nombre: 'Döner kebab de pollo', precio: '6,90 €', dietas: [] },
+          { nombre: 'Döner kebab de falafel', precio: '6,90 €', dietas: [] },
+          { nombre: 'Box kebab', precio: '8,90 €', dietas: [] },
+          { nombre: 'Dürüm de ternera o pollo', precio: '7,90 €', dietas: [] },
+          { nombre: 'Dürüm de falafel', precio: '7,90 €', dietas: [] },
+          { nombre: 'Dürüm de Adana', precio: '10,90 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'edessa', letra: '32', real: true, nombre: 'Edessa Döner Kebap', tipo: 'Kebab y turca',
+        dietas: [], turistico: false, toldo: '#B71C1C',
+        lat: 40.4146205, lng: -3.7031391, x: 40, y: 70,
+        direccion: 'Calle de Carretas, 33, 28012 Madrid (Plaza de Jacinto Benavente)', precioMedio: null,
+        enlaces: [{ texto: 'Instagram (@edessa__madrid)', url: 'https://www.instagram.com/edessa__madrid/' }],
+        // No tiene web: la dirección sale de OpenStreetMap y de directorios de restaurantes.
+        notaCarta: 'No tiene web ni carta publicada: consulta su Instagram o pregunta en el local.',
+        fuente: { nombre: 'OpenStreetMap', url: 'https://www.openstreetmap.org/search?query=Edessa%20Doner%20Kebap%20Madrid', actualizada: null, consultada: '30 oct 2026', sinCarta: true },
+        platos: []
+      },
+      {
+        id: 'shawarma-capital', letra: '33', real: true, nombre: 'Shawarma Capital', tipo: 'Kebab y turca',
+        dietas: [], turistico: false, toldo: '#1B5E20',
+        lat: 40.4116498, lng: -3.7051535, x: 30, y: 85,
+        direccion: 'Calle Mesón de Paredes, 5, 28012 Madrid (Lavapiés)', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Shawarma Capital', url: 'https://shawarmacapital.es/#manu' },
+          { texto: 'Instagram (@shawarma_capital)', url: 'https://www.instagram.com/shawarma_capital/' }
+        ],
+        fuente: { nombre: 'shawarmacapital.es', url: 'https://shawarmacapital.es/#manu', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Shawarma de pollo (tamaño M)', precio: '8 €', dietas: [] },
+          { nombre: 'Shawarma de ternera (tamaño M)', precio: '10 €', dietas: [] },
+          { nombre: 'Rice bowl de pollo', precio: '8 €', dietas: [] },
+          { nombre: 'Shawarma de pollo en plato', precio: '12 €', dietas: [] },
+          { nombre: 'Bocadillo de falafel', precio: '8 €', dietas: ['vegetariana'] },
+          { nombre: 'Kibbe (3 unidades)', precio: '7 €', dietas: [] },
+          { nombre: 'Baklawa de pistacho', precio: '4 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
-    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI, 'Tailandesa': TAILANDESA, 'India': INDIA };
+    var POR_ANTOJO = {
+      'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
+      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB
+    };
+    var NOTA_ANTOJO = {
+      'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
+      'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca'
+    };
+    function listaPorAntojo(lista) {
+      return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
+    }
 
     // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
@@ -1273,7 +1339,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1399,7 +1465,7 @@
       estado.sinAntojo = false;
       // Las listas por antojo (hamburgueserías, italianos) ya son la respuesta: no se filtran por dieta ni por tipo.
       var porAntojo = restaurantesBase();
-      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI || porAntojo === TAILANDESA || porAntojo === INDIA) {
+      if (listaPorAntojo(porAntojo)) {
         return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
@@ -1586,9 +1652,8 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI || base === TAILANDESA || base === INDIA
-            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : base === ITALIANA ? 'de cocina italiana'
-              : base === SUSHI ? 'de sushi y cocina japonesa' : base === TAILANDESA ? 'de cocina tailandesa' : 'de cocina india')
+          (listaPorAntojo(base)
+            ? NOTA_ANTOJO[estado.antojo[0]]
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
