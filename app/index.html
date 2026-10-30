@@ -858,8 +858,99 @@
       }
     ];
 
+    // Hamburgueserías reales para quien elige «Hamburguesas» en «¿Qué te apetece hoy?» (Madrid, 30 oct 2026).
+    var HAMBURGUESAS = [
+      {
+        id: 'junk-burger', letra: '12', real: true, nombre: 'Junk Burger', tipo: 'Hamburguesas',
+        dietas: [], turistico: false, toldo: '#1B1B1B',
+        lat: 40.4287675, lng: -3.7018971, x: 40, y: 20,
+        direccion: 'Junto a la glorieta de Bilbao (Calle de Sagasta), 28004 Madrid · Smash burgers', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Junk Burger', url: 'https://www.junkburger.com' },
+          { texto: 'Carta de Junk Burger', url: 'https://www.junkburger.com/index.php/menu/' },
+          { texto: 'Instagram (@junkburger)', url: 'https://www.instagram.com/junkburger/' }
+        ],
+        sinPrecios: true,
+        notaPrecios: 'Junk Burger no publica los precios en su web: solo en Glovo, donde pueden ser distintos a los del local.',
+        fuente: { nombre: 'junkburger.com', url: 'https://www.junkburger.com/index.php/menu/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Single (smash burger de vaca avileña)', dietas: [] },
+          { nombre: 'Doble smash burger', dietas: [] },
+          { nombre: 'Triple smash burger', dietas: [] },
+          { nombre: 'La Campeona (doble, cheddar y bacon)', dietas: [] },
+          { nombre: 'Loaded smash burger fries', dietas: [] },
+          { nombre: 'Cajun fries', dietas: [] }
+        ]
+      },
+      {
+        id: 'pinks', letra: '13', real: true, nombre: "Pink's Hortaleza", tipo: 'Hamburguesas',
+        dietas: [], turistico: false, toldo: '#E4007C',
+        lat: 40.4247573, lng: -3.6979022, x: 62, y: 35,
+        direccion: 'C. de Hortaleza, 98, 28004 Madrid (Chueca)', precioMedio: null,
+        enlaces: [
+          { texto: "Web y carta de Pink's", url: 'https://www.pinks.com' },
+          { texto: 'Instagram (@holapinks)', url: 'https://www.instagram.com/holapinks/' }
+        ],
+        fuente: { nombre: 'pinks.com', url: 'https://www.pinks.com', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'La clásica single (vaca madurada y queso americano)', precio: '8,90 €', dietas: [] },
+          { nombre: 'La clásica double', precio: '10,40 €', dietas: [] },
+          { nombre: 'La clásica triple', precio: '11,90 €', dietas: [] },
+          { nombre: 'El combo single (clásica, patatas, salsa y bebida)', precio: '13,90 €', dietas: [] },
+          { nombre: 'Las patatas con salsa', precio: '3,50 €', dietas: [] },
+          { nombre: 'El postre (brioche tostado con Nutella)', precio: '4,50 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'hundred', letra: '14', real: true, nombre: 'Hundred Burgers Pedro Zerolo', tipo: 'Hamburguesas',
+        dietas: [], turistico: false, toldo: '#2D2D2D',
+        lat: 40.4208927, lng: -3.6990698, x: 55, y: 75,
+        direccion: 'Plaza de Pedro Zerolo, 1, 28004 Madrid (Chueca) · Con reserva', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Hundred Burgers', url: 'https://hundredburgers.com' },
+          { texto: 'Carta de Hundred Burgers', url: 'https://hundredburgers.com/carta' },
+          { texto: 'Locales y reservas', url: 'https://hundredburgers.com/reserva' },
+          { texto: 'Instagram (@hundredburgers_)', url: 'https://www.instagram.com/hundredburgers_/' }
+        ],
+        sinPrecios: true,
+        notaPrecios: 'Hundred solo publica el precio de los extras (patatas +1,75 €, pan sin gluten +1,00 €), no el de las hamburguesas.',
+        fuente: { nombre: 'hundredburgers.com', url: 'https://hundredburgers.com/carta', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Singular (dry aged, cheddar, bacon y camembert)', dietas: [] },
+          { nombre: 'Satisfaction (doble, queso americano y bacon)', dietas: [] },
+          { nombre: 'Johnny Drama', dietas: [] },
+          { nombre: 'Loser', dietas: [] },
+          { nombre: 'Cheeseburger', dietas: [] },
+          { nombre: 'Veggie Burger', dietas: ['vegetariana'] }
+        ]
+      },
+      {
+        id: 'milwaukee', letra: '15', real: true, nombre: 'Milwaukee Butter Burger Malasaña', tipo: 'Hamburguesas',
+        dietas: [], turistico: false, toldo: '#00471B',
+        lat: 40.4285447, lng: -3.7030754, x: 25, y: 60,
+        direccion: 'C. de Manuela Malasaña, 9, 28004 Madrid (Malasaña) · Sin reservas', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Milwaukee', url: 'https://www.milwaukeeburger.com' },
+          { texto: 'Carta de Milwaukee', url: 'https://www.milwaukeeburger.com/menu' },
+          { texto: 'Instagram (@milwaukeebutterburger)', url: 'https://www.instagram.com/milwaukeebutterburger/' }
+        ],
+        fuente: { nombre: 'milwaukeeburger.com', url: 'https://www.milwaukeeburger.com/menu', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Milwaukee Butter Burger (doble, con mantequilla)', precio: '14,95 €', dietas: [] },
+          { nombre: 'Cheeseburger', precio: '13,45 €', dietas: [] },
+          { nombre: 'Bacon Cheeseburger', precio: '14,45 €', dietas: [] },
+          { nombre: 'Beyond Butter Burger (burger vegetal)', precio: '14,95 €', dietas: ['vegetariana'] },
+          { nombre: 'Fried chicken sandwich Spicy', precio: '12,95 €', dietas: [] },
+          { nombre: 'Batido', precio: '6,95 €', dietas: [] },
+          { nombre: 'Patatas', precio: '4,99 €', dietas: [] }
+        ]
+      }
+    ];
+
+    // «Hamburguesas» en «¿Qué te apetece hoy?» → hamburgueserías reales (manda sobre la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
     function restaurantesBase() {
+      if (estado.antojo.indexOf('Hamburguesas') !== -1) return HAMBURGUESAS;
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
@@ -868,7 +959,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -991,6 +1082,11 @@
     });
 
     function coinciden() {
+      estado.sinAntojo = false;
+      // Las hamburgueserías ya son la respuesta a «Hamburguesas»: no se filtran por dieta ni por tipo.
+      if (restaurantesBase() === HAMBURGUESAS) {
+        return HAMBURGUESAS.filter(function (r) { return !(estado.noTuristico && r.turistico); });
+      }
       var base = restaurantesBase().filter(function (r) {
         if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
         if (estado.noTuristico && r.turistico) return false;
@@ -1175,7 +1271,9 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
+          (base === HAMBURGUESAS
+            ? 'para comer hamburguesa' + (estado.dieta !== 'ninguna' ? ' (no están filtrados por tu dieta: revisa su carta)' : '')
+            : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
           '. Datos consultados en octubre de 2026.'
