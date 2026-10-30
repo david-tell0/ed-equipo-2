@@ -1035,13 +1035,13 @@
       }
     ];
 
-    // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios (mandan sobre la dieta).
+    // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA };
 
-    // Hamburguesas o Italiana → sus reales.
+    // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
     function restaurantesBase() {
-      if (estado.antojo.length && POR_ANTOJO[estado.antojo[0]]) return POR_ANTOJO[estado.antojo[0]];
+      if (estado.dieta === 'ninguna' && estado.antojo.length && POR_ANTOJO[estado.antojo[0]]) return POR_ANTOJO[estado.antojo[0]];
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
@@ -1364,8 +1364,7 @@
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
           (base === HAMBURGUESAS || base === ITALIANA
-            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : 'de cocina italiana') +
-              (estado.dieta !== 'ninguna' ? ' (no están filtrados por tu dieta: revisa su carta)' : '')
+            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : 'de cocina italiana')
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
