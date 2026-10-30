@@ -1179,8 +1179,87 @@
       }
     ];
 
+    // Restaurantes indios reales para quien elige «India» (Madrid, 30 oct 2026).
+    var INDIA = [
+      {
+        id: 'rajkot', letra: '27', real: true, nombre: 'Rajkot Indian Cuisine', tipo: 'India',
+        dietas: [], turistico: false, toldo: '#E65100',
+        lat: 40.4175851, lng: -3.7107589, x: 20, y: 60,
+        direccion: 'Calle de Vergara, 7, 28013 Madrid (Ópera) · Junto al Teatro Real', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Rajkot', url: 'https://rajkotindiancuisine.com/' },
+          { texto: 'Carta de Rajkot', url: 'https://rajkotindiancuisine.com/carta/' },
+          { texto: 'Instagram (@rajkot_restaurantmadrid)', url: 'https://www.instagram.com/rajkot_restaurantmadrid/' }
+        ],
+        fuente: { nombre: 'rajkotindiancuisine.com/carta', url: 'https://rajkotindiancuisine.com/carta/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Veg Samosa', precio: '5,95 €', dietas: ['vegetariana'] },
+          { nombre: 'Chicken Tikka Masala', precio: '14,95 €', dietas: [] },
+          { nombre: 'Butter Chicken', precio: '14,95 €', dietas: [] },
+          { nombre: 'Lamb Rogan Josh', precio: '16,95 €', dietas: [] },
+          { nombre: 'Palak Paneer', precio: '14,95 €', dietas: ['vegetariana'] },
+          { nombre: 'Chana Masala (garbanzos)', precio: '12,95 €', dietas: ['vegetariana'] },
+          { nombre: 'Garlic Naan', precio: '5,50 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'indian-aroma', letra: '28', real: true, nombre: 'Indian Aroma', tipo: 'India',
+        dietas: [], turistico: false, toldo: '#AD1457',
+        lat: 40.415904, lng: -3.6990757, x: 55, y: 75,
+        direccion: 'Calle de Ventura de la Vega, 6, 28014 Madrid (Barrio de las Letras) · Cocina del norte de India', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Indian Aroma', url: 'https://www.restauranteindianaroma.com/' },
+          { texto: 'Carta de Indian Aroma (PDF por secciones)', url: 'https://www.restauranteindianaroma.com/menus/' },
+          { texto: 'Instagram (@indian_aroma_madrid)', url: 'https://www.instagram.com/indian_aroma_madrid/' }
+        ],
+        sinPrecios: true,
+        notaPrecios: 'Indian Aroma publica su carta en PDF sin precios (la mayoría de los PDF son de 2018).',
+        fuente: { nombre: 'restauranteindianaroma.com', url: 'https://www.restauranteindianaroma.com/menus/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Chicken Samosa', dietas: [] },
+          { nombre: 'Chicken Tandoori', dietas: [] },
+          { nombre: 'Chicken Tikka Masala', dietas: [] },
+          { nombre: 'Butter Chicken', dietas: [] },
+          { nombre: 'Chicken Korma', dietas: [] },
+          { nombre: 'Menú degustación (mínimo 2 personas)', dietas: [] }
+        ]
+      },
+      {
+        id: 'curry-masala', letra: '29', real: true, nombre: 'Curry Masala', tipo: 'India',
+        dietas: [], turistico: false, toldo: '#F9A825',
+        lat: 40.4213704, lng: -3.7061958, x: 35, y: 40,
+        direccion: 'Calle de Silva, 16, 28004 Madrid (junto a Gran Vía) · Indian street food', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Curry Masala', url: 'https://www.currymasala.es/' },
+          { texto: 'Carta de Curry Masala', url: 'https://www.currymasala.es/mejor-cocina-india-madrid/a-la-carta/' },
+          { texto: 'Instagram (@currymasalamadrid)', url: 'https://www.instagram.com/currymasalamadrid/' }
+        ],
+        fuente: { nombre: 'currymasala.es', url: 'https://www.currymasala.es/mejor-cocina-india-madrid/a-la-carta/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Vegetable Samosa (2 piezas)', precio: '6,50 €', dietas: ['vegetariana'] },
+          { nombre: 'Butter Chicken', precio: '14,50 €', dietas: [] },
+          { nombre: 'Murg Tikka Masala', precio: '14,50 €', dietas: [] },
+          { nombre: 'Traditional Rogan Josh (cordero)', precio: '15,50 €', dietas: [] },
+          { nombre: 'Palak Paneer', precio: '12,50 €', dietas: ['vegetariana'] },
+          { nombre: 'Chicken Biryani', precio: '15,50 €', dietas: [] },
+          { nombre: 'Plain Nan', precio: '3,95 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'udaipur', letra: '30', real: true, nombre: 'Udaipur', tipo: 'India',
+        dietas: [], turistico: false, toldo: '#4A148C',
+        lat: 40.4386515, lng: -3.6904032, x: 70, y: 15,
+        direccion: 'Paseo de la Castellana, 74, 28046 Madrid (El Viso)', precioMedio: null,
+        enlaces: [{ texto: 'Instagram (@udaipurmadrid)', url: 'https://www.instagram.com/udaipurmadrid/' }],
+        // Su web (udaipurrestaurante.com) no responde: solo hay dirección por OpenStreetMap y guías.
+        notaCarta: 'Su web no funciona y no hay carta publicada: consulta su Instagram o pregunta en el local.',
+        fuente: { nombre: 'OpenStreetMap', url: 'https://www.openstreetmap.org/search?query=Udaipur%20Paseo%20de%20la%20Castellana%2074%20Madrid', actualizada: null, consultada: '30 oct 2026', sinCarta: true },
+        platos: []
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
-    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI, 'Tailandesa': TAILANDESA };
+    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI, 'Tailandesa': TAILANDESA, 'India': INDIA };
 
     // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
@@ -1194,7 +1273,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1320,7 +1399,7 @@
       estado.sinAntojo = false;
       // Las listas por antojo (hamburgueserías, italianos) ya son la respuesta: no se filtran por dieta ni por tipo.
       var porAntojo = restaurantesBase();
-      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI || porAntojo === TAILANDESA) {
+      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI || porAntojo === TAILANDESA || porAntojo === INDIA) {
         return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
@@ -1507,9 +1586,9 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI || base === TAILANDESA
+          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI || base === TAILANDESA || base === INDIA
             ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : base === ITALIANA ? 'de cocina italiana'
-              : base === SUSHI ? 'de sushi y cocina japonesa' : 'de cocina tailandesa')
+              : base === SUSHI ? 'de sushi y cocina japonesa' : base === TAILANDESA ? 'de cocina tailandesa' : 'de cocina india')
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
@@ -1615,7 +1694,8 @@
       lista.innerHTML = '';
       if (!ficha.platos.length) {
         lista.innerHTML = '<li><span class="plato">Carta y precios</span><span class="precio pendiente">[DATO PENDIENTE]</span>' +
-          '<span class="dietas">No están publicados en abierto: pregunta en el local o en su Facebook.</span></li>';
+          '<span class="dietas"></span></li>';
+        lista.querySelector('.dietas').textContent = ficha.notaCarta || 'No están publicados en abierto: pregunta en el local.';
       }
       ficha.platos.forEach(function (p) {
         var li = document.createElement('li');
