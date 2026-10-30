@@ -1474,8 +1474,8 @@
         if (estado.noTuristico && r.turistico) return false;
         return true;
       });
-      estado.sinAntojo = false;
-      if (!estado.antojo.length) return base;
+      // Con una dieta elegida manda la dieta: se enseñan todos sus restaurantes, sin filtrar por tipo de comida.
+      if (!estado.antojo.length || estado.dieta !== 'ninguna') return base;
       var porTipo = base.filter(function (r) { return estado.antojo.indexOf(r.tipo) !== -1; });
       // Solo hay 3 restaurantes: si ninguno es del tipo elegido en el formulario, enseñamos el resto.
       if (!porTipo.length) { estado.sinAntojo = true; return base; }
