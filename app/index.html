@@ -1092,8 +1092,95 @@
       }
     ];
 
+    // Restaurantes tailandeses reales para quien elige «Tailandesa» (Madrid, 30 oct 2026).
+    var TAILANDESA = [
+      {
+        id: 'kai-thai', letra: '23', real: true, nombre: 'Kai Thai', tipo: 'Tailandesa',
+        dietas: [], turistico: false, toldo: '#2E7D32',
+        lat: 40.4258151, lng: -3.7130199, x: 20, y: 35,
+        direccion: 'Calle de la Princesa, 13, 28008 Madrid (Plaza de España) · Certificación Thai Select', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Kai Thai', url: 'https://kaithaicomidas.com/' },
+          { texto: 'Carta y menús de Kai Thai', url: 'https://kaithaicomidas.com/carta-menus/' },
+          { texto: 'Instagram (@kaithaicomidas)', url: 'https://www.instagram.com/kaithaicomidas/' }
+        ],
+        fuente: { nombre: 'kaithaicomidas.com (carta en PDF)', url: 'https://kaithaicomidas.com/carta-menus/', actualizada: 'dic 2025', consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Satay (brochetas de pollo o tofu)', precio: '12,50 €', dietas: [] },
+          { nombre: 'Poh Pia (rollitos de primavera vegetales)', precio: '10,50 €', dietas: ['vegana'] },
+          { nombre: 'Tom Kha de pollo (pequeña)', precio: '9,20 €', dietas: [] },
+          { nombre: 'Curry verde con pollo', precio: '16,50 €', dietas: [] },
+          { nombre: 'Curry Panang con pollo', precio: '16,50 €', dietas: [] },
+          { nombre: 'Pad Thai con pollo', precio: '15,50 €', dietas: [] },
+          { nombre: 'Pad Thai con tofu', precio: '14,50 €', dietas: ['vegana'] }
+        ]
+      },
+      {
+        id: 'thai-retiro', letra: '24', real: true, nombre: 'Thai Retiro', tipo: 'Tailandesa',
+        dietas: [], turistico: false, toldo: '#6A1B9A',
+        lat: 40.4223327, lng: -3.6827552, x: 75, y: 50,
+        direccion: 'C. de Villanueva, 33, 28001 Madrid (Salamanca) · Lunes cerrado', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Thai Retiro', url: 'https://thairetiro.com/' },
+          { texto: 'Carta de Thai Retiro', url: 'https://thairetiro.com/platos/' },
+          { texto: 'Instagram (@thairetiro)', url: 'https://www.instagram.com/thairetiro/' }
+        ],
+        fuente: { nombre: 'thairetiro.com', url: 'https://thairetiro.com/platos/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Poh Pia (4 rollitos de primavera)', precio: '9,50 €', dietas: [] },
+          { nombre: 'Kai Satee (4 brochetas de pollo)', precio: '9,80 €', dietas: [] },
+          { nombre: 'Tom Kaa Kai (sopa de pollo y coco)', precio: '15,50 €', dietas: [] },
+          { nombre: 'Curry thai de calabaza o verduras', precio: '21,50 €', dietas: ['vegetariana'] },
+          { nombre: 'Kai Pad Ka Praw (pollo salteado con albahaca)', precio: '21,95 €', dietas: [] },
+          { nombre: 'Massaman Thai (ternera al curry)', precio: '23,50 €', dietas: [] },
+          { nombre: 'Curry thai de pollo', precio: '23,50 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'krachai', letra: '25', real: true, nombre: 'Krachai', tipo: 'Tailandesa',
+        dietas: [], turistico: false, toldo: '#8D6E63',
+        lat: 40.4253096, lng: -3.6961658, x: 55, y: 30,
+        direccion: 'Calle de Fernando VI, 11, 28004 Madrid (Chueca) · Certificación Thai Select', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Krachai', url: 'https://www.krachai.es/' },
+          { texto: 'Carta de Krachai', url: 'https://www.krachai.es/menu-krachai/' },
+          { texto: 'Instagram (@krachaimadrid)', url: 'https://www.instagram.com/krachaimadrid/' }
+        ],
+        fuente: { nombre: 'krachai.es (carta en PDF)', url: 'https://www.krachai.es/menu-krachai/', actualizada: 'ene 2026', consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Poh Pia (rollito de primavera)', precio: '11,00 €', dietas: [] },
+          { nombre: 'Tom Kha Kai (sopa de pollo y coco)', precio: '10,00 €', dietas: [] },
+          { nombre: 'Curry rojo de verduras', precio: '14,50 €', dietas: ['vegetariana'] },
+          { nombre: 'Curry verde con pollo de corral', precio: '17,00 €', dietas: [] },
+          { nombre: 'Pad Thai de verduras', precio: '14,50 €', dietas: [] },
+          { nombre: 'Pad Thai con pollo', precio: '15,50 €', dietas: [] },
+          { nombre: 'Menú degustación (por persona, mínimo 2)', precio: '39,90 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'baan-pad-thai', letra: '26', real: true, nombre: 'Baan Pad Thai', tipo: 'Tailandesa',
+        dietas: [], turistico: false, toldo: '#F57C00',
+        lat: 40.4599147, lng: -3.6951751, x: 60, y: 10,
+        direccion: 'C. de Sor Ángela de la Cruz, 22, 28020 Madrid (Tetuán) · Comida callejera tailandesa', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Baan Pad Thai', url: 'https://baanpadthai.es/#menu' },
+          { texto: 'Instagram (@baanpadthai.madrid)', url: 'https://www.instagram.com/baanpadthai.madrid/' }
+        ],
+        fuente: { nombre: 'baanpadthai.es', url: 'https://baanpadthai.es/#menu', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Pohpia Tod (rollitos de vermicelli y verduras)', precio: '9,90 €', dietas: [] },
+          { nombre: 'Kai Satay (brochetas de pollo)', precio: '11,90 €', dietas: [] },
+          { nombre: 'Pad Thai con pollo', precio: '16,90 €', dietas: [] },
+          { nombre: 'Curry verde con pollo', precio: '16,90 €', dietas: [] },
+          { nombre: 'Massaman', precio: '23,90 €', dietas: [] },
+          { nombre: 'Khaoniaw Mamuang (arroz glutinoso con mango)', precio: '9,90 €', dietas: [] },
+          { nombre: 'Menú del día (lunes a viernes, sin festivos)', precio: '16,90 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
-    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI };
+    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI, 'Tailandesa': TAILANDESA };
 
     // Dieta «Sin restricciones» + Hamburguesas o Italiana → sus reales (con cualquier otra dieta manda la dieta).
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
@@ -1107,7 +1194,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1233,7 +1320,7 @@
       estado.sinAntojo = false;
       // Las listas por antojo (hamburgueserías, italianos) ya son la respuesta: no se filtran por dieta ni por tipo.
       var porAntojo = restaurantesBase();
-      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI) {
+      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA || porAntojo === SUSHI || porAntojo === TAILANDESA) {
         return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
@@ -1420,8 +1507,9 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI
-            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : base === ITALIANA ? 'de cocina italiana' : 'de sushi y cocina japonesa')
+          (base === HAMBURGUESAS || base === ITALIANA || base === SUSHI || base === TAILANDESA
+            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : base === ITALIANA ? 'de cocina italiana'
+              : base === SUSHI ? 'de sushi y cocina japonesa' : 'de cocina tailandesa')
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
@@ -1552,7 +1640,8 @@
         sello.append('Fuente: ', enlaceExterno(r.fuente.nombre, r.fuente.url),
           r.fuente.sinCarta
             ? ' · dirección consultada el ' + (r.fuente.consultada || CONSULTADO) + '.'
-            : (r.fuente.actualizada ? ' · carta actualizada el ' + r.fuente.actualizada : '') +
+            // «el 30 nov 2025» si es una fecha; «en dic 2025» si solo se sabe el mes.
+            : (r.fuente.actualizada ? ' · carta actualizada ' + (/^\d/.test(r.fuente.actualizada) ? 'el ' : 'en ') + r.fuente.actualizada : '') +
               ' · consultada el ' + (r.fuente.consultada || CONSULTADO) + '.' +
               (r.sinPrecios ? ' ' + (r.notaPrecios || 'El restaurante no publica los precios en su carta.') : ' Los precios pueden cambiar.'));
       } else {
