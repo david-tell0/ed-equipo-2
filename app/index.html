@@ -539,7 +539,7 @@
           <details class="tarjeta">
             <summary>Datos y privacidad</summary>
             <div>
-              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana, halal o kosher te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
+              <p>Este prototipo no usa cookies. Con el medidor del curso contamos de forma anónima las visitas, los clics y las opciones que eliges. El texto de tu opinión, tu ubicación y las zonas que buscas no se envían al medidor. El mapa es de OpenStreetMap: para dibujarlo, OpenStreetMap recibe qué zona del mapa se carga y, si usas el buscador, el texto que buscas. Con dieta vegana, vegetariana, halal, kosher o saludable te enseñamos restaurantes reales de Madrid con datos de sus webs y de TheFork; con el resto, restaurantes de ejemplo.</p>
             </div>
           </details>
           <details class="tarjeta">
@@ -765,15 +765,44 @@
       }
     ];
 
-    // Vegana o vegetariana → reales veganos/vegetarianos; halal y kosher → sus reales; resto → ejemplos.
+    // Restaurantes reales para quien elige dieta saludable (Madrid): Honest Greens (la misma ficha) y Naked & Sated.
+    var SALUDABLE = [
+      REALES.filter(function (r) { return r.id === 'honest-greens'; })[0],
+      {
+        id: 'naked-and-sated', letra: '8', real: true, nombre: 'Naked & Sated Preciados', tipo: 'Ensaladas',
+        dietas: ['saludable'], turistico: false, toldo: '#E07A3F',
+        lat: 40.4184766, lng: -3.7053497, x: 45, y: 55,
+        direccion: 'C/ Maestro Victoria, 5, 28013 Madrid (Sol) · Sin azúcares añadidos ni harinas refinadas', precioMedio: null,
+        foto: { src: 'fotos/naked-and-sated.jpg', alt: 'Mesa con varios platos de Naked & Sated: bowls con huevo y aguacate, una hamburguesa con guacamole y bastones de boniato', credito: 'Foto: Naked & Sated' },
+        enlaces: [
+          { texto: 'Web de Naked & Sated', url: 'https://nakedandsated.com/' },
+          { texto: 'Carta de Naked & Sated', url: 'https://smartmenu.agorapos.com/?id=7jmlp6ws' },
+          { texto: 'Instagram', url: 'https://www.instagram.com/nakedandsated/' }
+        ],
+        // Su carta oficial no publica precios: cada plato dice «Consultar».
+        sinPrecios: true,
+        fuente: { nombre: 'carta oficial (Ágora SmartMenu)', url: 'https://smartmenu.agorapos.com/?id=7jmlp6ws', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Ensalada de pollo crujiente con aguacate y pesto de almendras', dietas: [] },
+          { nombre: 'Poké bowl de salmón marinado', dietas: ['pescetariana'] },
+          { nombre: 'Ensalada de pollo mechado con boniato y huevo', dietas: [] },
+          { nombre: 'Burger clásica de ternera ecológica', dietas: [] },
+          { nombre: 'Burger de pollo con brie y aguacate', dietas: [] },
+          { nombre: 'Guarnición de bastones de boniato', dietas: [] }
+        ]
+      }
+    ];
+
+    // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher y saludable → sus reales; resto → ejemplos.
     function restaurantesBase() {
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
+      if (estado.dieta === 'saludable') return SALUDABLE;
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1080,8 +1109,9 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher' : 'con opciones veganas y vegetarianas') +
-          '. Datos consultados el ' + CONSULTADO + '.'
+          (base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
+            : base === SALUDABLE ? 'de comida saludable' : 'con opciones veganas y vegetarianas') +
+          '. Datos consultados en octubre de 2026.'
         : usarReal
           ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
           : 'Mapa ilustrativo: los restaurantes son ejemplos ficticios.';
@@ -1194,7 +1224,8 @@
           precio.textContent = p.precio;
           precio.classList.add('real');
         } else {
-          precio.textContent = '[DATO PENDIENTE]';
+          // «Consultar» cuando el restaurante no publica precios; si no, falta el dato.
+          precio.textContent = ficha.sinPrecios ? 'Consultar' : '[DATO PENDIENTE]';
           precio.classList.add('pendiente');
         }
         li.querySelector('.dietas').textContent = p.dietas.map(function (d) { return NOMBRES_DIETA[d]; }).join(' · ');
@@ -1206,9 +1237,10 @@
       if (r.real) {
         sello.append('Fuente: ', enlaceExterno(r.fuente.nombre, r.fuente.url),
           r.fuente.sinCarta
-            ? ' · dirección consultada el ' + CONSULTADO + '.'
+            ? ' · dirección consultada el ' + (r.fuente.consultada || CONSULTADO) + '.'
             : (r.fuente.actualizada ? ' · carta actualizada el ' + r.fuente.actualizada : '') +
-              ' · consultada el ' + CONSULTADO + '. Los precios pueden cambiar.');
+              ' · consultada el ' + (r.fuente.consultada || CONSULTADO) + '.' +
+              (r.sinPrecios ? ' El restaurante no publica los precios en su carta.' : ' Los precios pueden cambiar.'));
       } else {
         sello.innerHTML = '<span class="etiqueta verificado">✓ Verificado</span> el <span class="pendiente">[DATO PENDIENTE]</span> · Fuente: <span class="pendiente">[DATO PENDIENTE]</span>';
       }
