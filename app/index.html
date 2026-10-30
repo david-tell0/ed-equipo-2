@@ -947,10 +947,101 @@
       }
     ];
 
-    // «Hamburguesas» en «¿Qué te apetece hoy?» → hamburgueserías reales (manda sobre la dieta).
+    // Restaurantes italianos reales para quien elige «Italiana» en «¿Qué te apetece hoy?» (Madrid, 30 oct 2026).
+    var ITALIANA = [
+      {
+        id: 'beata-pasta', letra: '16', real: true, nombre: 'Beata Pasta Gran Vía', tipo: 'Italiana',
+        dietas: [], turistico: false, toldo: '#E8A33D',
+        lat: 40.4201195, lng: -3.700246, x: 45, y: 55,
+        direccion: 'C/ Gran Vía, 22, 28013 Madrid · Pasta fresca artesanal', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Beata Pasta Gran Vía', url: 'https://beata-pasta.com/gran-via/' },
+          { texto: 'Carta de Gran Vía', url: 'https://beata-pasta.com/carta/carta-es-granvia/' },
+          { texto: 'Instagram (@beata_pasta)', url: 'https://www.instagram.com/beata_pasta/' }
+        ],
+        fuente: { nombre: 'beata-pasta.com', url: 'https://beata-pasta.com/carta/carta-es-granvia/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Burrata Puttanesca', precio: '9,50 €', dietas: [] },
+          { nombre: 'Pacchero alla Vittorio (tres tomates y Parmigiano)', precio: '9,50 €', dietas: [] },
+          { nombre: 'Pistacho Love (mafaldine, pesto de pistacho y stracciatella)', precio: '12,50 €', dietas: [] },
+          { nombre: 'Tonnarelli alla carbonara', precio: '13,90 €', dietas: [] },
+          { nombre: 'Lasagna, te quiero! (ragú a la bolognese)', precio: '13,90 €', dietas: [] },
+          { nombre: 'Tartufo Fest (en rueda de Pecorino, con trufa)', precio: '15,90 €', dietas: [] },
+          { nombre: 'Tiramisú Classico', precio: '6,50 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'bel-mondo', letra: '17', real: true, nombre: 'Bel Mondo (Big Mamma)', tipo: 'Italiana',
+        dietas: [], turistico: false, toldo: '#C62828',
+        lat: 40.426088, lng: -3.6842561, x: 70, y: 30,
+        direccion: 'Calle de Velázquez, 39, 28001 Madrid (Salamanca) · Trattoria y pizzería napolitana', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Bel Mondo', url: 'https://www.bigmammagroup.com/es/trattorias/bel-mondo' },
+          { texto: 'Carta de Bel Mondo', url: 'https://menu.bigmammagroup.com/belmondo?service=all' },
+          { texto: 'Instagram (@bigmamma.es)', url: 'https://www.instagram.com/bigmamma.es/' }
+        ],
+        fuente: { nombre: 'menu.bigmammagroup.com', url: 'https://menu.bigmammagroup.com/belmondo?service=all', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Pizza Mammargherita', precio: '13 €', dietas: ['vegetariana'] },
+          { nombre: 'Pomodori e stracciatella (mezzi rigatoni)', precio: '14 €', dietas: ['vegetariana'] },
+          { nombre: 'Burrata e pappa al pomodoro', precio: '15 €', dietas: ['vegetariana'] },
+          { nombre: 'Spaghetti alla carbonara', precio: '17,50 €', dietas: [] },
+          { nombre: 'Le nostre mafaldine al tartufo', precio: '20 €', dietas: ['vegetariana'] },
+          { nombre: 'Tigramisù', precio: '8 €', dietas: ['vegetariana'] },
+          { nombre: 'Menú de mediodía (lunes a viernes, sin festivos)', precio: 'desde 15 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'peppe-fusco', letra: '18', real: true, nombre: 'Peppe Fusco La Moraleja', tipo: 'Italiana',
+        dietas: [], turistico: false, toldo: '#1E4D8C',
+        // Coordenadas de la Plaza de La Moraleja (el local no está en OpenStreetMap).
+        lat: 40.5156751, lng: -3.6508461, x: 80, y: 15,
+        direccion: 'C. de la Estafeta, 2, 28109 Alcobendas (Plaza de La Moraleja) · Pinsa romana y pasta fresca', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Peppe Fusco', url: 'https://gruppopulcinella.com/restaurantes/peppe-fusco-moraleja/' },
+          { texto: 'Instagram (@peppefuscotheitalian)', url: 'https://www.instagram.com/peppefuscotheitalian/' }
+        ],
+        fuente: { nombre: 'gruppopulcinella.com', url: 'https://gruppopulcinella.com/restaurantes/peppe-fusco-moraleja/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Spaghetti pomodoro e basilico', precio: '11,90 €', dietas: [] },
+          { nombre: 'Pinsa Quattro Formaggi', precio: '14,50 €', dietas: [] },
+          { nombre: 'Pinsa Diavola', precio: '15,50 €', dietas: [] },
+          { nombre: 'Spaghetti Brontesi (pesto de pistacho y stracciatella)', precio: '15,50 €', dietas: [] },
+          { nombre: 'La Lasagna di Zia Lidia', precio: '15,90 €', dietas: [] },
+          { nombre: 'La Vera Carbonara', precio: '17,00 €', dietas: [] },
+          { nombre: 'Pan, focaccia y grissini (por persona; lo sirven sin pedirlo)', precio: '2,75 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'baldoria', letra: '19', real: true, nombre: 'Baldoria', tipo: 'Italiana',
+        dietas: [], turistico: false, toldo: '#E8505B',
+        lat: 40.4294985, lng: -3.6707425, x: 75, y: 45,
+        direccion: 'C. de José Ortega y Gasset, 100, 28006 Madrid (Salamanca) · Música en directo cada noche', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Baldoria', url: 'https://baldoriamadrid.com/' },
+          { texto: 'Carta de Baldoria', url: 'https://baldoriamadrid.com/carta-online/carta-es/' },
+          { texto: 'Instagram (@baldoria.madrid)', url: 'https://www.instagram.com/baldoria.madrid/' }
+        ],
+        fuente: { nombre: 'baldoriamadrid.com', url: 'https://baldoriamadrid.com/carta-online/carta-es/', actualizada: null, consultada: '30 oct 2026' },
+        platos: [
+          { nombre: 'Pizza Margherita', precio: '14 €', dietas: ['vegetariana'] },
+          { nombre: 'Pizza Búfala Fest', precio: '17 €', dietas: ['vegetariana'] },
+          { nombre: 'Pizza Burrata tartufo', precio: '20 €', dietas: [] },
+          { nombre: 'Carbonara auténtica', precio: '16 €', dietas: [] },
+          { nombre: 'Paccheri alla Baldoria', precio: '17 €', dietas: [] },
+          { nombre: "A far l'amore Tiramisù", precio: '8 €', dietas: ['vegetariana'] },
+          { nombre: 'Aperitivo y pan artesanal (por persona; avisa si no lo quieres)', precio: '2,40 €', dietas: [] }
+        ]
+      }
+    ];
+
+    // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios (mandan sobre la dieta).
+    var POR_ANTOJO = { 'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA };
+
+    // Hamburguesas o Italiana → sus reales.
     // Vegana o vegetariana → reales veganos/vegetarianos; halal, kosher, saludable y comida rápida → sus reales; resto → ejemplos.
     function restaurantesBase() {
-      if (estado.antojo.indexOf('Hamburguesas') !== -1) return HAMBURGUESAS;
+      if (estado.antojo.length && POR_ANTOJO[estado.antojo[0]]) return POR_ANTOJO[estado.antojo[0]];
       if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
@@ -959,7 +1050,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
@@ -1083,9 +1174,10 @@
 
     function coinciden() {
       estado.sinAntojo = false;
-      // Las hamburgueserías ya son la respuesta a «Hamburguesas»: no se filtran por dieta ni por tipo.
-      if (restaurantesBase() === HAMBURGUESAS) {
-        return HAMBURGUESAS.filter(function (r) { return !(estado.noTuristico && r.turistico); });
+      // Las listas por antojo (hamburgueserías, italianos) ya son la respuesta: no se filtran por dieta ni por tipo.
+      var porAntojo = restaurantesBase();
+      if (porAntojo === HAMBURGUESAS || porAntojo === ITALIANA) {
+        return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
         if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
@@ -1271,8 +1363,9 @@
       var sonReales = base !== RESTAURANTES;
       document.getElementById('nota-mapa').textContent = sonReales
         ? (usarReal ? '' : 'Mapa ilustrativo. ') + 'Restaurantes reales de Madrid ' +
-          (base === HAMBURGUESAS
-            ? 'para comer hamburguesa' + (estado.dieta !== 'ninguna' ? ' (no están filtrados por tu dieta: revisa su carta)' : '')
+          (base === HAMBURGUESAS || base === ITALIANA
+            ? (base === HAMBURGUESAS ? 'para comer hamburguesa' : 'de cocina italiana') +
+              (estado.dieta !== 'ninguna' ? ' (no están filtrados por tu dieta: revisa su carta)' : '')
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
             : 'con opciones veganas y vegetarianas') +
