@@ -32,6 +32,13 @@
       --aviso-texto: #5C4300;
       --radio: 12px;
       --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      /* Escala de letra única para todas las pantallas */
+      --t-lema: 1.9rem;        /* lema de la pantalla de inicio */
+      --t-titulo: 1.3rem;      /* títulos de sección y de ventanas */
+      --t-subtitulo: 1.1rem;   /* cabeceras, menú, nombres de restaurante y subtítulos */
+      --t-texto: 1rem;         /* texto, etiquetas de formulario, opciones y botones */
+      --t-secundario: .9rem;   /* notas, detalles y fuentes */
+      --t-mini: .8rem;         /* etiquetas pequeñas */
     }
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
@@ -59,7 +66,7 @@
       min-height: 56px; padding: env(safe-area-inset-top) 4px 0;
       background: var(--primario); color: #fff;
     }
-    .barra h1 { flex: 1; margin: 0; font-size: 1.1rem; line-height: 1.2; padding: 0 4px; }
+    .barra h1 { flex: 1; margin: 0; font-size: var(--t-subtitulo); line-height: 1.2; padding: 0 4px; }
     .icono {
       width: 48px; height: 48px; flex: none; border: 0; border-radius: 999px;
       background: transparent; color: #fff; font-size: 1.4rem; cursor: pointer;
@@ -74,40 +81,43 @@
       display: flex; justify-content: center; align-items: flex-start;
     }
     .menu-panel {
-      width: 100%; max-width: 430px; background: var(--fondo);
-      border-radius: 0 0 var(--radio) var(--radio); padding: 8px 16px 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      width: 100%; max-width: 430px; max-height: 100vh; max-height: 100dvh; overflow-y: auto;
+      background: var(--fondo); border-radius: 0 0 var(--radio) var(--radio);
+      padding: env(safe-area-inset-top) 16px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.2);
     }
-    .menu-panel header { display: flex; align-items: center; justify-content: space-between; }
-    .menu-panel h2 { margin: 0; font-size: 1.1rem; }
+    /* Misma altura que la cabecera de las pantallas, con el aspa alineada a la derecha */
+    .menu-panel header { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; margin-right: -12px; }
+    .menu-panel h2 { margin: 0; font-size: var(--t-subtitulo); }
     .menu-panel .icono { color: var(--texto); }
-    .menu-panel ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
-    .menu-panel button {
+    .menu-panel .icono:hover { background: var(--primario-claro); }
+    .menu-panel ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    /* Solo los botones de la lista: el aspa de cerrar mantiene su estilo de icono */
+    .menu-panel nav button {
       width: 100%; text-align: left; min-height: 48px; padding: 10px 12px;
       border: 1px solid var(--borde); border-radius: 10px; background: var(--superficie);
-      font: 600 1rem var(--fuente); color: var(--texto); cursor: pointer;
+      font: 600 var(--t-texto)/1.3 var(--fuente); color: var(--texto); cursor: pointer;
     }
-    .menu-panel button[aria-current="page"] { background: var(--primario-claro); border-color: var(--primario); }
+    .menu-panel nav button[aria-current="page"] { background: var(--primario-claro); border-color: var(--primario); }
 
     /* Botones */
     .boton {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       width: 100%; min-height: 52px; padding: 12px 20px; border-radius: 999px;
       background: var(--primario); color: #fff; border: 2px solid var(--primario);
-      font: 600 1rem/1.2 var(--fuente); cursor: pointer; text-decoration: none;
+      font: 600 var(--t-texto)/1.2 var(--fuente); cursor: pointer; text-decoration: none;
     }
     .boton:hover { background: var(--primario-oscuro); border-color: var(--primario-oscuro); }
     .boton.secundario { background: var(--superficie); color: var(--primario); }
     .boton.secundario:hover { background: var(--primario-claro); }
 
     .revisar, .pendiente {
-      display: inline-block; font-size: .75rem; font-weight: 700;
+      display: inline-block; font-size: var(--t-mini); font-weight: 700;
       background: var(--aviso-fondo); color: var(--aviso-texto);
       padding: 1px 6px; border-radius: 4px; vertical-align: middle;
     }
-    .nota { font-size: .9rem; color: var(--texto-2); margin: 0; }
-    h2 { font-size: 1.3rem; margin: 0; line-height: 1.25; }
-    h3 { font-size: 1.05rem; margin: 0 0 4px; }
+    .nota { font-size: var(--t-secundario); color: var(--texto-2); margin: 0; }
+    h2 { font-size: var(--t-titulo); margin: 0; line-height: 1.25; }
+    h3 { font-size: var(--t-subtitulo); margin: 0 0 4px; }
     p { margin: 0; }
 
     /* Marcadores de imagen */
@@ -120,7 +130,7 @@
     /* Pantalla 1 — Inicio */
     #p1 .cuerpo { justify-content: center; align-items: center; text-align: center; gap: 24px; padding: 32px 24px; }
     #p1 .logo { width: 220px; height: 220px; border-radius: 48px; box-shadow: 0 6px 18px rgba(193,68,14,.25); }
-    #p1 .lema { font-size: 1.9rem; font-weight: 800; line-height: 1.15; margin: 0; }
+    #p1 .lema { font-size: var(--t-lema); font-weight: 800; line-height: 1.15; margin: 0; }
     #p1 .acciones { width: 100%; display: grid; gap: 10px; margin-top: 8px; }
 
     /* Tarjetas */
@@ -135,10 +145,10 @@
     }
     .tarjeta-boton:hover { border-color: var(--primario); }
     .tarjeta-boton .simbolo { font-size: 1.6rem; width: 40px; text-align: center; flex: none; }
-    .tarjeta-boton strong { display: block; font-size: 1.05rem; }
-    .tarjeta-boton span.detalle { color: var(--texto-2); font-size: .92rem; }
+    .tarjeta-boton strong { display: block; font-size: var(--t-subtitulo); }
+    .tarjeta-boton span.detalle { color: var(--texto-2); font-size: var(--t-secundario); }
     .etiqueta {
-      display: inline-block; font-size: .8rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+      display: inline-block; font-size: var(--t-mini); font-weight: 600; padding: 2px 8px; border-radius: 999px;
       background: var(--primario-claro); color: var(--primario-oscuro);
     }
     .etiqueta.verificado { background: #DCEFE3; color: #1F5A38; }
@@ -170,7 +180,7 @@
     .opcion input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: var(--primario); }
     .opciones.en-fila { grid-template-columns: repeat(3, 1fr); }
     .opciones.en-fila .opcion { justify-content: center; text-align: center; padding: 8px 6px; gap: 8px; }
-    .opcion small { display: block; font-size: .8rem; font-weight: 400; color: var(--texto-2); white-space: nowrap; }
+    .opcion small { display: block; font-size: var(--t-mini); font-weight: 400; color: var(--texto-2); white-space: nowrap; }
     select, textarea, input[type="number"] {
       width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; color: var(--texto);
       border: 2px solid #A08868; border-radius: 10px; background: #fff;
@@ -182,14 +192,14 @@
     blockquote.ejemplo {
       margin: 0; background: var(--superficie); border-left: 4px solid var(--primario); border-radius: 8px; padding: 12px 14px;
     }
-    blockquote.ejemplo p { font-size: 1.05rem; }
-    blockquote.ejemplo footer { font-size: .85rem; color: var(--texto-2); margin-top: 6px; }
+    blockquote.ejemplo p { font-size: var(--t-texto); }
+    blockquote.ejemplo footer { font-size: var(--t-secundario); color: var(--texto-2); margin-top: 6px; }
 
     /* About us */
     details.tarjeta { padding: 0 16px; }
     details.tarjeta summary { cursor: pointer; font-weight: 700; min-height: 56px; display: flex; align-items: center; }
     details.tarjeta > div { padding-bottom: 16px; display: grid; gap: 10px; color: var(--texto-2); }
-    details.tarjeta h4 { margin: 0; color: var(--texto); font-size: 1rem; }
+    details.tarjeta h4 { margin: 0; color: var(--texto); font-size: var(--t-texto); }
 
     .pie-pantalla { padding: 0 16px 16px; display: grid; gap: 10px; }
 
@@ -216,14 +226,14 @@
       padding: 16px; display: grid; gap: 12px;
     }
     .carta-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .carta-cabecera h2 { font-size: 1.15rem; }
+    .carta-cabecera h2 { font-size: var(--t-subtitulo); }
     .carta-platos { list-style: none; margin: 0; padding: 0; display: grid; }
     .carta-platos li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px dashed var(--borde); }
     .carta-platos li:last-child { border-bottom: 0; }
     .carta-platos .plato { font-weight: 600; }
     .carta-platos .precio { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
-    .carta-platos .dietas { font-size: .85rem; color: var(--texto-2); }
-    .carta-sello { font-size: .9rem; color: var(--texto-2); }
+    .carta-platos .dietas { font-size: var(--t-secundario); color: var(--texto-2); }
+    .carta-sello { font-size: var(--t-secundario); color: var(--texto-2); }
     .carta-platos .precio.real { font-weight: 700; color: var(--primario-oscuro); }
     .ficha-direccion { color: var(--texto-2); }
     .enlaces-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -242,7 +252,7 @@
       padding: 24px 20px 20px; display: grid; gap: 12px; text-align: center;
       box-shadow: 0 12px 32px rgba(0,0,0,.25);
     }
-    .popup-panel h2 { font-size: 1.25rem; }
+    .popup-panel h2 { font-size: var(--t-titulo); }
     .popup-panel p { color: var(--texto-2); }
     .popup-icono { font-size: 2.2rem; line-height: 1; }
   </style>
