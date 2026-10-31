@@ -1396,22 +1396,78 @@
       }
     ];
 
+    var ARABE = [
+      {
+        id: 'shawarma-alnabil', letra: '38', real: true, nombre: 'Shawarma AlNabil', tipo: 'Árabe y libanesa',
+        dietas: ['halal'], turistico: false, toldo: '#6D4C41',
+        lat: 40.4227414, lng: -3.7035608, x: 40, y: 30,
+        direccion: 'Corredera Baja de San Pablo, 33, 28004 Madrid (Malasaña) · 100 % halal', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Shawarma AlNabil', url: 'https://shawarmaalnabil.es/es#menu' },
+          { texto: 'Instagram (@shawarma_alnabil)', url: 'https://www.instagram.com/shawarma_alnabil/' }
+        ],
+        fuente: { nombre: 'shawarmaalnabil.es', url: 'https://shawarmaalnabil.es/es#menu', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Shawarma de pollo (pita o laffa)', precio: '9,90 €', dietas: [] },
+          { nombre: 'Shawarma mixto (pita o laffa)', precio: '10,90 €', dietas: [] },
+          { nombre: 'Shawarma de ternera (pita o laffa)', precio: '11,90 €', dietas: [] },
+          { nombre: 'Falafel (pita o laffa)', precio: '7,50 €', dietas: [] },
+          { nombre: 'Combo plato de pollo', precio: '12,90 €', dietas: [] },
+          { nombre: 'Combo plato de falafel', precio: '12,90 €', dietas: [] },
+          { nombre: 'Combo shawarma de ternera', precio: '14,90 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'salwa', letra: '39', real: true, nombre: 'Salwa Cocina Libanesa', tipo: 'Árabe y libanesa',
+        dietas: [], turistico: false, toldo: '#00796B',
+        lat: 40.4212128, lng: -3.7036501, x: 38, y: 40,
+        direccion: 'Calle de la Ballesta, 1, 28004 Madrid (Malasaña, junto a Gran Vía)', precioMedio: null,
+        enlaces: [{ texto: 'Instagram (@salwalibanes.madrid)', url: 'https://www.instagram.com/salwalibanes.madrid/' }],
+        // No tiene web: la dirección sale de TripAligner y Spinach (que la enlazan a este Instagram) y se ha comprobado en OpenStreetMap.
+        notaCarta: 'No tiene web ni carta publicada: consulta su Instagram o pregunta en el local. Los directorios dicen que tiene platos veganos marcados en la carta.',
+        fuente: { nombre: 'TripAligner', url: 'https://tripaligner.com/countries/spain-39/destinations/madrid-4760/places/salwa-restaurante-libanes-25383218', actualizada: null, consultada: '31 oct 2026', sinCarta: true },
+        platos: []
+      },
+      {
+        id: 'la-hummuseria', letra: '40', real: true, nombre: 'La Hummuseria', tipo: 'Árabe y libanesa',
+        dietas: [], turistico: false, toldo: '#F2C14E',
+        lat: 40.4233434, lng: -3.6999968, x: 52, y: 25,
+        direccion: 'Calle de Hernán Cortés, 8, 28004 Madrid (Chueca) · abierto todos los días de 13:00 a 23:00', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de La Hummuseria', url: 'https://www.lahummuseria.es/' },
+          { texto: 'Carta de La Hummuseria', url: 'https://www.lahummuseria.es/menu-es' },
+          { texto: 'Instagram (@lahummuseria)', url: 'https://www.instagram.com/lahummuseria/' }
+        ],
+        fuente: { nombre: 'lahummuseria.es', url: 'https://www.lahummuseria.es/menu-es', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Hummus clásico', precio: '9,90 €', dietas: ['vegana'] },
+          { nombre: 'Hummus con piñones y almendras', precio: '11,90 €', dietas: ['vegana'] },
+          { nombre: 'Berenjena asada', precio: '9,90 €', dietas: ['vegana'] },
+          { nombre: 'Maklouba', precio: '15,90 €', dietas: ['vegana'] },
+          { nombre: 'Shakshuka clásica', precio: '13,50 €', dietas: ['vegetariana'] },
+          { nombre: 'Ensalada griega', precio: '13,90 €', dietas: [] },
+          { nombre: 'Menú del día (lunes a viernes hasta las 16:30)', precio: '14,90 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = {
       'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
-      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA, 'Mexicana': MEXICANA
+      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA, 'Mexicana': MEXICANA,
+      'Árabe y libanesa': ARABE
     };
     var NOTA_ANTOJO = {
       'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
       'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca',
-      'China': 'de cocina china', 'Mexicana': 'de cocina mexicana'
+      'China': 'de cocina china', 'Mexicana': 'de cocina mexicana', 'Árabe y libanesa': 'de cocina árabe y libanesa'
     };
     function listaPorAntojo(lista) {
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
     // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
-    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA)
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE)
       .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
       .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
 
@@ -1429,7 +1485,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
