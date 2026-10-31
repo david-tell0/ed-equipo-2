@@ -1,6 +1,6 @@
 // Service worker mínimo en modo «red primero»:
 // siempre descarga la última versión publicada y solo usa la copia guardada si no hay conexión.
-const CACHE = 'foodmatch-v4';
+const CACHE = 'foodmatch-v5';
 const ARCHIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './logo.png'];
 
 self.addEventListener('install', (event) => {

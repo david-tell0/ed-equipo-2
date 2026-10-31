@@ -1308,21 +1308,59 @@
       }
     ];
 
+    var CHINA = [
+      {
+        id: 'biang-biang', letra: '34', real: true, nombre: 'Biáng Biáng Bar', tipo: 'China',
+        dietas: [], turistico: false, toldo: '#212121',
+        lat: 40.4220946, lng: -3.6989021, x: 50, y: 30,
+        direccion: 'Calle de Pelayo, 8, 28004 Madrid (Chueca) · otro local en el Mercado de Vallehermoso, puestos 37-39', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Biáng Biáng Bar', url: 'https://biangbiangbar.com/' },
+          { texto: 'Carta de Biáng Biáng Bar', url: 'https://biangbiangbar.com/carta/' },
+          { texto: 'Instagram (@biangbiangbar)', url: 'https://www.instagram.com/biangbiangbar/' }
+        ],
+        fuente: { nombre: 'biangbiangbar.com (carta de Chueca)', url: 'https://biangbiangbar.com/carta/', actualizada: 'jul 2026', consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Coliflor frita con mayo picante', precio: '7,80 €', dietas: ['vegetariana'] },
+          { nombre: 'Rollito de pato travieso', precio: '4,80 € / ud.', dietas: [] },
+          { nombre: 'Jiaozis de ternera y tomate (6 uds.)', precio: '7,60 €', dietas: [] },
+          { nombre: 'Jiaozis de calabaza, zanahoria y huevo (6 uds.)', precio: '6,80 €', dietas: ['vegetariana'] },
+          { nombre: 'Los auténticos Biang Biang (cerdo duroc)', precio: '13,90 €', dietas: [] },
+          { nombre: 'Biang Biang combo triple de setas', precio: '13,90 €', dietas: ['vegetariana'] },
+          { nombre: 'Biang Biang con gambón y ternera', precio: '16,80 €', dietas: [] },
+          { nombre: 'Helado de caramelo salado y pimienta de Sichuan', precio: '6,90 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'baoyilong', letra: '35', real: true, nombre: 'Baoyilong', tipo: 'China',
+        dietas: [], turistico: false, toldo: '#C62828',
+        lat: 40.4294678, lng: -3.6823042, x: 70, y: 25,
+        direccion: 'Calle de Núñez de Balboa, 64, 28001 Madrid (Salamanca) · otro local en Calle de López de Hoyos, 327 (Hortaleza)', precioMedio: null,
+        enlaces: [{ texto: 'Instagram (@baoyilong.madrid)', url: 'https://www.instagram.com/baoyilong.madrid/' }],
+        // No tiene web ni carta publicada: direcciones de Guía del Ocio y OpenStreetMap; el único precio sale de un artículo de El Español.
+        fuente: { nombre: 'El Español (artículo del 7 mar 2026)', url: 'https://www.elespanol.com/madrid/ocio/20260307/diego-song-chino-anos-trae-restaurante-madrid-bao-viral-bebe-pajita-solo/1003744153981_0.html', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Bao imperial de huevas de cangrejo (local de López de Hoyos; no publica más precios)', precio: '6,80 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = {
       'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
-      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB
+      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA
     };
     var NOTA_ANTOJO = {
       'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
-      'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca'
+      'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca',
+      'China': 'de cocina china'
     };
     function listaPorAntojo(lista) {
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
     // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
-    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB)
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA)
       .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
       .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
 
@@ -1340,7 +1378,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
