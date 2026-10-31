@@ -1448,24 +1448,74 @@
         ]
       }
     ];
+    var TAPAS = [
+      {
+        id: 'bar-trafalgar', letra: '41', real: true, nombre: 'Bar Trafalgar', tipo: 'Tapas',
+        dietas: [], turistico: false, toldo: '#1A237E',
+        lat: 40.4311104, lng: -3.7009938, x: 45, y: 15,
+        direccion: 'Calle de Alburquerque, 14 (entrada por Calle de Palafox), 28010 Madrid (Chamberí)', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Bar Trafalgar', url: 'https://www.bartrafalgar.es/' },
+          { texto: 'Carta de Bar Trafalgar (PDF)', url: 'https://www.bartrafalgar.es/wp-content/uploads/CARTA-COMIDA-TRAFALGAR-1103.pdf' },
+          { texto: 'Instagram (@bar_trafalgar)', url: 'https://www.instagram.com/bar_trafalgar/' }
+        ],
+        // Fecha tomada de los datos del PDF (creado el 11 de marzo de 2026).
+        fuente: { nombre: 'bartrafalgar.es (carta en PDF)', url: 'https://www.bartrafalgar.es/wp-content/uploads/CARTA-COMIDA-TRAFALGAR-1103.pdf', actualizada: '11 mar 2026', consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Gilda', precio: '3 €', dietas: [] },
+          { nombre: 'Croquetas de jamón ibérico (media / ración)', precio: '8,50 € / 14,50 €', dietas: [] },
+          { nombre: 'Ensaladilla (media / ración)', precio: '8,50 € / 14,50 €', dietas: [] },
+          { nombre: 'Bravas amilhojadas', precio: '13,50 €', dietas: [] },
+          { nombre: 'Torreznos melosos', precio: '14 €', dietas: [] },
+          { nombre: 'Bocatín de calamares', precio: '9,50 €', dietas: [] },
+          { nombre: 'La Fina, su cheeseburger (tiene opción vegana)', precio: '10,50 €', dietas: [] },
+          { nombre: 'Tarta de queso', precio: '7 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'canas-y-tapas', letra: '42', real: true, nombre: 'Cañas y Tapas Santa Ana', tipo: 'Tapas',
+        dietas: [], turistico: false, toldo: '#4A6FB0',
+        lat: 40.4142720, lng: -3.7006971, x: 45, y: 75,
+        direccion: 'Plaza de Santa Ana, 9, 28012 Madrid (Barrio de las Letras) · más locales en Celenque, Huertas, Olavide, Goya, Fuencarral y otros', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Cañas y Tapas', url: 'https://canasytapas.es/' },
+          { texto: 'Carta de Cañas y Tapas', url: 'https://canasytapas.es/carta-canasytapas/' },
+          { texto: 'Instagram (@canasytapas)', url: 'https://www.instagram.com/canasytapas/' }
+        ],
+        sinPrecios: true,
+        notaPrecios: 'La carta de su web no muestra precios; solo anuncia la promoción de cañas dobles a 4,50 €.',
+        // Carta en imagen subida a la web en mayo de 2026.
+        fuente: { nombre: 'canasytapas.es (carta en imagen)', url: 'https://canasytapas.es/carta-canasytapas/', actualizada: 'may 2026', consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Patatas bravas Cañas y Tapas', dietas: [] },
+          { nombre: 'Mix de croquetas (9 uds.)', dietas: [] },
+          { nombre: 'Calamares a la andaluza', dietas: [] },
+          { nombre: 'Pincho de tortilla', dietas: [] },
+          { nombre: 'Huevos rotos trufados', dietas: [] },
+          { nombre: 'Paella mixta (mínimo 2 personas)', dietas: [] },
+          { nombre: 'Churros con chocolate', dietas: [] }
+        ]
+      }
+    ];
 
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = {
       'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
       'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA, 'Mexicana': MEXICANA,
-      'Árabe y libanesa': ARABE
+      'Árabe y libanesa': ARABE, 'Tapas': TAPAS
     };
     var NOTA_ANTOJO = {
       'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
       'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca',
-      'China': 'de cocina china', 'Mexicana': 'de cocina mexicana', 'Árabe y libanesa': 'de cocina árabe y libanesa'
+      'China': 'de cocina china', 'Mexicana': 'de cocina mexicana', 'Árabe y libanesa': 'de cocina árabe y libanesa',
+      'Tapas': 'para ir de tapas'
     };
     function listaPorAntojo(lista) {
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
     // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
-    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE)
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS)
       .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
       .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
 
@@ -1483,7 +1533,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
