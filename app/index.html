@@ -81,26 +81,25 @@
       display: flex; justify-content: center; align-items: flex-start;
     }
 
-    /* Menú de navegación: barra fija abajo, en forma de píldora */
-    .app { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+    /* Menú de navegación: panel fijo abajo (el contenido hace scroll por detrás), beige como la pantalla */
+    .app { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+    .app.sin-barra { padding-bottom: env(safe-area-inset-bottom); } /* pantalla del logo: sin barra */
     .barra-nav {
-      position: fixed; z-index: 15; left: 50%; transform: translateX(-50%);
-      bottom: calc(12px + env(safe-area-inset-bottom));
-      width: calc(100% - 24px); max-width: 406px;
+      position: fixed; z-index: 15; left: 50%; bottom: 0; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      background: var(--fondo); border-top: 1px solid var(--borde);
+      box-shadow: 0 -6px 18px rgba(154,54,11,.12);
     }
-    .barra-nav ul {
-      list-style: none; margin: 0; padding: 6px; display: flex; gap: 4px;
-      background: var(--texto); border: 1px solid rgba(255,255,255,.12); border-radius: 999px;
-      box-shadow: 0 8px 24px rgba(2,56,32,.35);
-    }
+    .barra-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
     .barra-nav li { flex: 1; }
     .barra-nav button {
       width: 100%; height: 56px; border: 0; border-radius: 999px; background: transparent;
-      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: var(--primario); display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .barra-nav button:hover { background: rgba(255,255,255,.1); }
-    .barra-nav button[aria-current="page"] { background: rgba(255,255,255,.2); }
-    .barra-nav button:focus-visible { outline: 3px solid var(--fondo); outline-offset: -3px; border-radius: 999px; }
+    .barra-nav button:hover { background: var(--superficie); }
+    .barra-nav button[aria-current="page"] { background: var(--primario-claro); color: var(--primario-oscuro); }
+    .barra-nav button:focus-visible { outline: 3px solid var(--primario); outline-offset: -3px; border-radius: 999px; }
     .barra-nav svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .barra-nav button[aria-current="page"] svg { stroke-width: 2.4; }
 
@@ -1669,6 +1668,9 @@
       if (!document.getElementById(id)) id = 'p1';
       if (id === 'p4' && !estado.elegido) id = 'p3';
       document.querySelectorAll('.pantalla').forEach(function (s) { s.hidden = s.id !== id; });
+      // La pantalla del logo va sin barra de navegación.
+      document.getElementById('barra-nav').hidden = id === 'p1';
+      document.querySelector('.app').classList.toggle('sin-barra', id === 'p1');
       document.querySelectorAll('#barra-nav [data-ir]').forEach(function (b) {
         if (b.dataset.ir === id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
       });
