@@ -207,6 +207,7 @@
 
     /* Pantalla 4 — ilustración y carta de ejemplo */
     .ilustracion-resto { margin: 0; display: grid; gap: 6px; }
+    .ilustracion-resto figcaption .boton { display: flex; margin-top: 8px; text-decoration: none; }
     .ilustracion-resto svg { display: block; width: 100%; height: auto; border-radius: var(--radio); border: 1px solid var(--borde); }
     .ficha-foto { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radio); background: var(--primario-claro); }
     .ficha-foto.contener { object-fit: contain; background: #fff; border: 1px solid var(--borde); padding: 8px; }
@@ -279,6 +280,7 @@
       <header class="barra">
         <button class="icono" type="button" data-atras aria-label="Volver">←</button>
         <h1 id="p5-titulo">Formulario de gustos y alergias</h1>
+        <button class="icono" type="button" data-ir="p1" aria-label="Ir al inicio" title="Inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5.5 9.5V20h5v-6h3v6h5V9.5"/></svg></button>
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
@@ -304,10 +306,11 @@
 
           <fieldset>
             <legend>Presupuesto por persona</legend>
-            <div class="opciones en-fila">
-              <label class="opcion"><input type="radio" name="presupuesto" value="bajo" checked> <span>Bajo<small>5-10 €</small></span></label>
-              <label class="opcion"><input type="radio" name="presupuesto" value="medio"> <span>Medio<small>10-25 €</small></span></label>
-              <label class="opcion"><input type="radio" name="presupuesto" value="alto"> <span>Alto<small>+25 €</small></span></label>
+            <div class="opciones en-fila" style="grid-template-columns: repeat(2, 1fr);">
+              <label class="opcion"><input type="radio" name="presupuesto" value="igual" checked> <span>Me da igual<small>Cualquier precio</small></span></label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="bajo"> <span>Bajo<small>Hasta 15 €</small></span></label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="medio"> <span>Medio<small>15-30 €</small></span></label>
+              <label class="opcion"><input type="radio" name="presupuesto" value="alto"> <span>Alto<small>Más de 30 €</small></span></label>
             </div>
           </fieldset>
 
@@ -364,6 +367,7 @@
       <header class="barra">
         <button class="icono" type="button" data-atras aria-label="Volver">←</button>
         <h1 id="p3-titulo">Restaurantes cerca de ti</h1>
+        <button class="icono" type="button" data-ir="p1" aria-label="Ir al inicio" title="Inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5.5 9.5V20h5v-6h3v6h5V9.5"/></svg></button>
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
@@ -406,6 +410,7 @@
       <header class="barra">
         <button class="icono" type="button" data-atras aria-label="Volver">←</button>
         <h1 id="p4-titulo">Nombre del restaurante elegido</h1>
+        <button class="icono" type="button" data-ir="p1" aria-label="Ir al inicio" title="Inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5.5 9.5V20h5v-6h3v6h5V9.5"/></svg></button>
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
@@ -432,6 +437,7 @@
           <figcaption class="nota" id="ilu-pie"></figcaption>
         </figure>
         <p class="ficha-direccion" id="ficha-direccion" hidden></p>
+        <p id="ficha-comprobado" hidden><span class="etiqueta verificado"></span></p>
 
         <button class="boton secundario" type="button" id="b-enlaces" aria-expanded="false" aria-controls="enlaces">Enlaces a redes sociales y web</button>
         <div id="enlaces" class="tarjeta" hidden></div>
@@ -463,6 +469,7 @@
       <header class="barra">
         <button class="icono" type="button" data-atras aria-label="Volver">←</button>
         <h1 id="p6-titulo">Cuéntanos tu opinión</h1>
+        <button class="icono" type="button" data-ir="p1" aria-label="Ir al inicio" title="Inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5.5 9.5V20h5v-6h3v6h5V9.5"/></svg></button>
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
@@ -508,6 +515,7 @@
       <header class="barra">
         <button class="icono" type="button" data-atras aria-label="Volver">←</button>
         <h1 id="p7-titulo">About us</h1>
+        <button class="icono" type="button" data-ir="p1" aria-label="Ir al inicio" title="Inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 3l9 8M5.5 9.5V20h5v-6h3v6h5V9.5"/></svg></button>
         <button class="icono" type="button" data-menu aria-label="Abrir menú" aria-haspopup="dialog">☰</button>
       </header>
       <div class="cuerpo">
@@ -1600,12 +1608,29 @@
     function restaurantesBase() {
       if (estado.dieta === 'ninguna' && !estado.antojo.length) return TODOS;
       if (estado.dieta === 'ninguna' && estado.antojo.length && POR_ANTOJO[estado.antojo[0]]) return POR_ANTOJO[estado.antojo[0]];
-      if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES;
+      // 100 % vegetarianos primero y, detrás, locales mixtos con platos marcados para esa dieta en su carta.
+      if (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') return REALES.concat(mixtos(estado.dieta));
       if (estado.dieta === 'halal') return HALAL;
       if (estado.dieta === 'kosher') return KOSHER;
       if (estado.dieta === 'saludable') return SALUDABLE;
       if (estado.dieta === 'comida-rapida') return COMIDA_RAPIDA;
       return RESTAURANTES;
+    }
+    // ¿Tiene en su carta algún plato apto para esa dieta? (lo vegano también vale para vegetarianos)
+    function tienePlatos(r, dieta) {
+      return (r.platos || []).some(function (p) {
+        return p.dietas.indexOf(dieta) !== -1 || (dieta === 'vegetariana' && p.dietas.indexOf('vegana') !== -1);
+      });
+    }
+    // Locales mixtos: no son 100 % vegetarianos o veganos, pero tienen platos para esa dieta.
+    function esVegetariano(r) {
+      return REALES.some(function (x) { return x.id === r.id; });
+    }
+    function mixtos(dieta) {
+      return TODOS.filter(function (r) { return !esVegetariano(r) && r.dietas.indexOf(dieta) === -1 && tienePlatos(r, dieta); });
+    }
+    function esMixto(r) {
+      return (estado.dieta === 'vegana' || estado.dieta === 'vegetariana') && r.real && !esVegetariano(r);
     }
     function buscarRestaurante(id) {
       return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS, GRIEGA).filter(function (x) { return x.id === id; })[0];
@@ -1738,7 +1763,7 @@
         return porAntojo.filter(function (r) { return !(estado.noTuristico && r.turistico); });
       }
       var base = restaurantesBase().filter(function (r) {
-        if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1) return false;
+        if (estado.dieta !== 'ninguna' && r.dietas.indexOf(estado.dieta) === -1 && !esMixto(r)) return false;
         if (estado.noTuristico && r.turistico) return false;
         return true;
       });
@@ -1767,6 +1792,7 @@
         '<span class="resto"><strong></strong>' +
         '<span class="fila"><span class="etiqueta"></span>' +
         r.dietas.map(function (d) { return '<span class="etiqueta">' + NOMBRES_DIETA[d] + '</span>'; }).join('') +
+        (esMixto(r) ? '<span class="etiqueta">Mixto: tiene platos ' + (estado.dieta === 'vegana' ? 'veganos' : 'vegetarianos') + '</span>' : '') +
         '<span class="etiqueta verificado"></span></span>' +
         '<span class="detalle"></span></span>';
       b.querySelector('strong').textContent = r.nombre;
@@ -1926,7 +1952,7 @@
             ? NOTA_ANTOJO[estado.antojo[0]]
             : base === HALAL ? 'con cocina halal' : base === KOSHER ? 'con cocina kosher'
             : base === SALUDABLE ? 'de comida saludable' : base === COMIDA_RAPIDA ? 'de comida rápida'
-            : 'con opciones veganas y vegetarianas') +
+            : 'con opciones veganas y vegetarianas: primero los 100 % vegetarianos y después locales mixtos con platos aptos') +
           '. Datos consultados en octubre de 2026.'
         : usarReal
           ? 'Los restaurantes son ejemplos ficticios colocados cerca de esta zona.'
@@ -1999,13 +2025,25 @@
       if (r.foto) {
         pie.append(r.foto.credito + ' · ', enlaceExterno('Ver más fotos', r.enlaces[0].url));
       } else if (r.real) {
-        pie.append('Ilustración · ', enlaceExterno('Ver fotos del local', r.enlaces[0].url));
+        // Sin foto propia: lo decimos claro y llevamos a las fotos reales del local (y sus reseñas) en Google Maps.
+        var maps = enlaceExterno('📷 Ver fotos y reseñas reales en Google Maps',
+          'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(r.nombre + ', ' + r.direccion.split(' · ')[0]));
+        maps.className = 'boton secundario';
+        maps.dataset.medir = 'recomprobar_fotos';
+        pie.append('Aún no tenemos foto propia de este local: la imagen es una ilustración. ', maps);
       } else {
         pie.innerHTML = 'Ilustración · Foto real: <span class="pendiente">[DATO PENDIENTE]</span>';
       }
       var direccion = document.getElementById('ficha-direccion');
       direccion.hidden = !r.real;
       direccion.textContent = r.real ? '📍 ' + r.direccion + (r.precioMedio ? ' · Precio medio: ' + r.precioMedio : '') : '';
+      // Sello de verificación arriba, a la vista sin bajar hasta la carta.
+      var comprobado = document.getElementById('ficha-comprobado');
+      comprobado.hidden = !r.real;
+      if (r.real) {
+        comprobado.firstChild.textContent = '✓ ' + (r.fuente.sinCarta ? 'Dirección comprobada' : 'Carta y precios comprobados') +
+          ' el ' + (r.fuente.consultada || CONSULTADO) + ' · Fuente: ' + r.fuente.nombre;
+      }
 
       var enlaces = document.getElementById('enlaces');
       enlaces.innerHTML = '';
