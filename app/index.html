@@ -1345,22 +1345,73 @@
       }
     ];
 
+    var MEXICANA = [
+      {
+        id: 'tko-tacos', letra: '36', real: true, nombre: 'TKO Tacos', tipo: 'Mexicana',
+        dietas: [], turistico: false, toldo: '#F9D30A',
+        lat: 40.4203031, lng: -3.6995004, x: 48, y: 40,
+        direccion: 'Calle del Clavel, 5, 28004 Madrid (Chueca) · más locales en Evaristo San Miguel 2, Martínez Campos 1, Guzmán el Bueno 69, Valencia 8, Santa Isabel 5 e IFEMA', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de TKO Tacos', url: 'https://tkotacos.com/' },
+          { texto: 'Carta de TKO Tacos', url: 'https://tkotacos.com/taqueria-mexicana/restaurantes/carta-precios/' },
+          { texto: 'Instagram (@tkotacos_)', url: 'https://www.instagram.com/tkotacos_/' }
+        ],
+        // La carta es una imagen subida a la web en junio de 2024 (Menu-TKO.jpg); no indica fecha propia.
+        fuente: { nombre: 'tkotacos.com (carta en imagen)', url: 'https://tkotacos.com/wp-content/uploads/2024/06/Menu-TKO.jpg', actualizada: 'jun 2024', consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Taco al pastor', precio: '1 €', dietas: [] },
+          { nombre: 'Taco de cochinita pibil', precio: '1 €', dietas: [] },
+          { nombre: 'Taco de calabacín ranchero', precio: '1 €', dietas: ['vegetariana'] },
+          { nombre: 'Taco de champiñón', precio: '1,80 €', dietas: ['vegetariana'] },
+          { nombre: 'Taco de nopales', precio: '1,80 €', dietas: ['vegetariana'] },
+          { nombre: 'Taco de arrachera', precio: '1,90 €', dietas: [] },
+          { nombre: 'Guacamole TKO con totopos', precio: '8,75 €', dietas: [] },
+          { nombre: 'Costra TKO (también de champiñones)', precio: '5,85 €', dietas: [] },
+          { nombre: 'Agua de jamaica', precio: '2,60 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'don-diego', letra: '37', real: true, nombre: 'Taquería Don Diego', tipo: 'Mexicana',
+        dietas: [], turistico: false, toldo: '#2E7D32',
+        // OpenStreetMap no tiene el número 13: coordenadas de la calle.
+        lat: 40.4393796, lng: -3.6946126, x: 55, y: 15,
+        direccion: 'Calle de Bretón de los Herreros, 13, 28003 Madrid (Chamberí, zona Ponzano) · cierra lunes y martes', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Taquería Don Diego', url: 'https://taqueriadondiego.es/' },
+          { texto: 'Carta de Taquería Don Diego', url: 'https://taqueriadondiego.es/menu.html' },
+          { texto: 'Pedir en Uber Eats', url: 'https://www.ubereats.com/es/store/taqueria-mexicana-don-diego-ponzano/gg_PKAWXWuyrWNvCJxlFvg' },
+          { texto: 'Instagram (@taqueriadondiego)', url: 'https://www.instagram.com/taqueriadondiego/' }
+        ],
+        fuente: { nombre: 'taqueriadondiego.es', url: 'https://taqueriadondiego.es/menu.html', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Taco de pollo', precio: '2,50 €', dietas: [] },
+          { nombre: 'Taco al pastor', precio: '3,50 €', dietas: [] },
+          { nombre: 'Taco vegetariano', precio: '2,30 €', dietas: ['vegetariana'] },
+          { nombre: 'Quesadilla vegetariana', precio: '2,30 €', dietas: ['vegetariana'] },
+          { nombre: 'Costra al pastor', precio: '3,80 €', dietas: [] },
+          { nombre: 'Totopos con guacamole', precio: '6,50 €', dietas: [] },
+          { nombre: 'Burrito de pollo', precio: '10,95 €', dietas: [] },
+          { nombre: 'Coulant de chocolate con helado', precio: '6,50 €', dietas: [] }
+        ]
+      }
+    ];
+
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = {
       'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
-      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA
+      'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA, 'Mexicana': MEXICANA
     };
     var NOTA_ANTOJO = {
       'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
       'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca',
-      'China': 'de cocina china'
+      'China': 'de cocina china', 'Mexicana': 'de cocina mexicana'
     };
     function listaPorAntojo(lista) {
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
     // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
-    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA)
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA)
       .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
       .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
 
@@ -1378,7 +1429,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
