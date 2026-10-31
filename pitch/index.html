@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoodMatch · Pitch Demo Day</title>
+  <meta name="description" content="Slides del pitch de FoodMatch para el Demo Day: Come bien, ve a lo seguro.">
+  <meta name="theme-color" content="#C1440E">
+  <link rel="icon" type="image/png" href="../app/icon-192.png">
+  <style>
+    /* Identidad visual de la app (app/index.html): mismos tokens, tipografía, botones, etiquetas y tarjetas */
+    :root {
+      color-scheme: light;
+      --fondo: #FFF1C9;
+      --superficie: #FFFAEB;
+      --primario-claro: #F9DCC8;
+      --primario: #C1440E;
+      --primario-oscuro: #9A360B;
+      --texto: #023820;
+      --texto-2: #5A4A3A;
+      --verde: #2E7D4F;
+      --borde: #EDD9A8;
+      --aviso-fondo: #FFDE99;
+      --aviso-texto: #5C4300;
+      --radio: 12px;
+      --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --escala: 1;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: #F2E1B3; color: var(--texto); font: 16px/1.5 var(--fuente); overflow: hidden; }
+    :focus-visible { outline: 3px solid var(--primario); outline-offset: 2px; border-radius: 4px; }
+    p { margin: 0; }
+    .visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* Lienzo 16:9 (1280 × 720) escalado a la ventana */
+    .lienzo {
+      position: absolute; top: 50%; left: 50%; width: 1280px; height: 720px;
+      transform: translate(-50%, -50%) scale(var(--escala)); transform-origin: center;
+    }
+    .slide {
+      display: none; position: absolute; inset: 0; flex-direction: column;
+      background: var(--fondo); border-radius: 16px; overflow: hidden;
+      box-shadow: 0 12px 40px rgba(154,54,11,.18);
+    }
+    .slide.activa { display: flex; }
+
+    /* Cabecera como la barra naranja de la app */
+    .barra {
+      display: flex; align-items: center; gap: 14px; height: 60px; padding: 0 28px; flex: none;
+      background: var(--primario); color: #fff; font-weight: 700; font-size: 1.1rem;
+    }
+    .barra img { width: 40px; height: 40px; border-radius: 10px; background: var(--fondo); }
+    .barra .contador { margin-left: auto; font-weight: 600; opacity: .9; font-variant-numeric: tabular-nums; }
+
+    .cuerpo { flex: 1; display: flex; flex-direction: column; gap: 28px; padding: 44px 64px 40px; min-height: 0; }
+    .titulo { font-size: 56px; font-weight: 800; line-height: 1.1; margin: 0; letter-spacing: -.01em; max-width: 1100px; }
+    .titulo.grande { font-size: 96px; }
+    .subtitulo { font-size: 26px; color: var(--texto-2); font-weight: 500; max-width: 1000px; }
+    .centro { justify-content: center; }
+    .fila { display: flex; align-items: center; gap: 20px; }
+    .pie { margin-top: auto; font-size: 15px; color: var(--texto-2); }
+
+    /* Botones, etiquetas y tarjetas de la app */
+    .boton {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 56px; padding: 12px 28px; border-radius: 999px;
+      background: var(--primario); color: #fff; border: 2px solid var(--primario);
+      font: 700 1.2rem/1.2 var(--fuente); cursor: pointer; text-decoration: none; white-space: nowrap;
+    }
+    .boton:hover { background: var(--primario-oscuro); border-color: var(--primario-oscuro); }
+    .etiqueta {
+      display: inline-block; font-size: 20px; font-weight: 600; padding: 6px 18px; border-radius: 999px;
+      background: var(--primario-claro); color: var(--primario-oscuro);
+    }
+    .etiqueta.verificado { background: #DCEFE3; color: #1F5A38; }
+    .etiqueta.aviso { background: var(--aviso-fondo); color: var(--aviso-texto); }
+    .tarjeta {
+      background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 24px 28px;
+    }
+    .tarjeta h3 { margin: 0 0 6px; font-size: 26px; line-height: 1.2; }
+    .tarjeta p { font-size: 20px; color: var(--texto-2); }
+
+    /* Slide 1 — gancho */
+    .tres { display: flex; gap: 20px; align-items: center; }
+    .tres .etiqueta { font-size: 30px; padding: 12px 30px; }
+    .tres .mas { font-size: 34px; font-weight: 800; color: var(--primario); }
+    .tres .interrogante { font-size: 72px; font-weight: 800; color: var(--primario); line-height: 1; margin-left: 12px; }
+
+    /* Slide 2 — fuentes dispersas */
+    .fuentes { position: relative; flex: 1; }
+    .fuentes .tarjeta { position: absolute; display: flex; align-items: center; gap: 14px; font-size: 26px; font-weight: 700; padding: 18px 26px; box-shadow: 0 6px 16px rgba(154,54,11,.12); }
+    .fuentes .tarjeta span { font-size: 32px; }
+
+    /* Slide 3 — insight */
+    .contraste { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 28px; }
+    .contraste .tarjeta { min-height: 180px; display: flex; flex-direction: column; justify-content: center; }
+    .distinto { font-size: 110px; font-weight: 800; color: var(--primario); line-height: 1; }
+
+    /* Slide 4 — marcos de móvil con capturas reales */
+    .demo { display: flex; align-items: flex-end; justify-content: center; gap: 22px; flex: 1; min-height: 0; }
+    .paso { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .movil {
+      width: 164px; aspect-ratio: 390 / 844; padding: 9px; border-radius: 34px; background: var(--texto);
+      box-shadow: 0 14px 30px rgba(2,56,32,.25); position: relative;
+    }
+    .movil img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 26px; }
+    .movil.valor { width: 190px; background: var(--primario); box-shadow: 0 16px 36px rgba(193,68,14,.35); }
+    .flecha { align-self: center; font-size: 40px; font-weight: 800; color: var(--primario); margin-bottom: 40px; }
+
+    /* Slide 5 — gráfico */
+    .grafico { display: grid; grid-template-columns: 760px 1fr; gap: 40px; align-items: center; flex: 1; min-height: 0; }
+    .grafico svg { width: 760px; height: auto; display: block; }
+    .veredictos { display: grid; gap: 16px; }
+    .veredictos .tarjeta { padding: 18px 22px; }
+    .veredictos .tarjeta h3 { font-size: 22px; }
+    .veredictos .tarjeta p { font-size: 18px; }
+
+    /* Slide 6 — modelo */
+    .modelo { display: grid; grid-template-columns: 1fr auto 1.15fr; gap: 24px; align-items: center; flex: 1; }
+    .modelo .grande { font-size: 84px; font-weight: 800; color: var(--primario); line-height: 1; }
+    .modelo .flecha { margin: 0; font-size: 54px; }
+
+    /* Slide 7 — decisión */
+    .decision { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .decision .tarjeta { border-top: 6px solid var(--borde); }
+    .decision .si { border-top-color: var(--verde); }
+    .decision .no { border-top-color: var(--primario); }
+    .decision .sig { border-top-color: var(--texto); }
+    .decision .marca { font-size: 40px; font-weight: 800; line-height: 1; margin-bottom: 10px; }
+
+    /* Slide 8 — QR */
+    .peticion { display: grid; grid-template-columns: auto 1fr; gap: 56px; align-items: center; flex: 1; }
+    .qr { width: 400px; height: 400px; padding: 16px; background: #fff; border-radius: 24px; border: 1px solid var(--borde); box-shadow: 0 12px 30px rgba(154,54,11,.15); }
+    .qr img { display: block; width: 100%; height: 100%; }
+    .lema { font-size: 64px; font-weight: 800; line-height: 1.1; margin: 0; }
+    .url { font-size: 22px; font-weight: 600; color: var(--primario-oscuro); word-break: break-all; }
+    .logo-grande { width: 140px; height: 140px; border-radius: 32px; box-shadow: 0 6px 18px rgba(193,68,14,.25); }
+
+    /* Controles en pantalla y notas del orador */
+    .controles { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 8px; z-index: 10; }
+    .controles button {
+      width: 48px; height: 48px; border-radius: 999px; border: 1px solid var(--borde);
+      background: var(--superficie); color: var(--primario); font: 700 1.3rem var(--fuente); cursor: pointer;
+    }
+    .controles button:hover { background: var(--primario-claro); }
+    .notas-orador {
+      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 9;
+      width: min(960px, calc(100% - 140px)); max-height: 40vh; overflow-y: auto;
+      background: var(--texto); color: #fff; border-radius: 16px; padding: 18px 22px;
+      font-size: 18px; line-height: 1.5; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .notas-orador h2 { margin: 0 0 6px; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--primario-claro); }
+    .notas-orador p + p { margin-top: 8px; }
+    .notas { display: none; }
+    .controles { opacity: .35; transition: opacity .2s; }
+    .controles:hover, .controles:focus-within { opacity: 1; }
+    .ayuda { position: fixed; left: 16px; bottom: 16px; font-size: 13px; color: var(--texto-2); z-index: 8; transition: opacity .6s; }
+    .ayuda.oculta { opacity: 0; }
+
+    /* Imprimir / Guardar como PDF: una slide por página */
+    @page { size: 1280px 720px; margin: 0; }
+    @media print {
+      html, body { height: auto; overflow: visible; background: var(--fondo); }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .lienzo { position: static; transform: none; width: 1280px; height: auto; }
+      .slide { display: flex !important; position: relative; width: 1280px; height: 720px; border-radius: 0; box-shadow: none; break-after: page; page-break-after: always; }
+      .slide:last-child { break-after: auto; page-break-after: auto; }
+      .controles, .notas-orador, .ayuda { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="lienzo" id="lienzo" aria-roledescription="presentación" aria-label="Pitch de FoodMatch">
+
+    <!-- 1. Gancho -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo centro">
+        <h1 class="titulo">No sé dónde comer según mis gustos, presupuesto y alergias… y pierdo mucho tiempo</h1>
+        <div class="tres" aria-hidden="true">
+          <span class="etiqueta">Gustos</span><span class="mas">+</span>
+          <span class="etiqueta">Presupuesto</span><span class="mas">+</span>
+          <span class="etiqueta">Alergias</span><span class="interrogante">?</span>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Os contamos algo que nos pasó: somos estudiantes, viajamos mucho y desconocemos todas las posibilidades para comer según nuestras necesidades.</p>
+        <p>(pausa) ¿A cuántos os ha pasado?</p>
+      </div>
+    </section>
+
+    <!-- 2. Problema con evidencia -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo">
+        <h1 class="titulo">Información dispersa en muchas fuentes y un proceso largo</h1>
+        <div class="fuentes" aria-label="Fuentes que cruzan hoy: Google Maps, TheFork, Google e Instagram">
+          <div class="tarjeta" style="left: 40px; top: 30px; rotate: -4deg;"><span aria-hidden="true">🗺️</span>Google Maps</div>
+          <div class="tarjeta" style="left: 360px; top: 120px; rotate: 3deg;"><span aria-hidden="true">🍴</span>TheFork</div>
+          <div class="tarjeta" style="left: 660px; top: 20px; rotate: -2deg;"><span aria-hidden="true">🔎</span>Google</div>
+          <div class="tarjeta" style="left: 860px; top: 150px; rotate: 5deg;"><span aria-hidden="true">📷</span>Instagram</div>
+          <div class="tarjeta" style="left: 130px; top: 200px; rotate: 2deg;"><span aria-hidden="true">💬</span>Reseñas</div>
+        </div>
+        <p class="pie">Fuente: 3 entrevistas a estudiantes y viajeros (D01–D03).</p>
+      </div>
+      <div class="notas">
+        <p>Lo que nos contaron: información dispersa en muchas fuentes y un proceso largo; menús y precios desactualizados o distintos a la realidad.</p>
+        <p>Hoy lo resuelven con aplicaciones como TheFork, Google Maps o Google, y no les basta.</p>
+      </div>
+    </section>
+
+    <!-- 3. Insight -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo centro">
+        <h1 class="titulo">No les faltan opciones: les falta confianza en la información</h1>
+        <div class="contraste">
+          <div class="tarjeta"><h3>Lo que ven en mapas y redes</h3><p>Menús, precios y fotos que no siempre están al día</p></div>
+          <div class="distinto" aria-label="no coincide con">≠</div>
+          <div class="tarjeta"><h3>Lo que encuentran en el local</h3><p>Otra carta, otros precios… y a cruzar fuentes otra vez</p></div>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Nuestro insight: su problema no es tanto la falta de opciones como la falta de confianza en la información disponible.</p>
+        <p>Lo que ven en mapas y redes no siempre coincide con lo que encuentran en el local (menús y precios desactualizados), y por eso acaban cruzando varias fuentes y verificando por su cuenta, y aun así a veces fallan.</p>
+      </div>
+    </section>
+
+    <!-- 4. Solución + demo -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo" style="gap: 20px;">
+        <div class="fila" style="justify-content: space-between;">
+          <h1 class="titulo">FoodMatch · demo en vivo</h1>
+          <a class="boton" href="https://david-tell0.github.io/ed-equipo-2/app/" target="_blank" rel="noopener">Demo en vivo ↗</a>
+        </div>
+        <div class="demo">
+          <figure class="paso" style="margin: 0;">
+            <div class="movil"><img src="img/01-inicio.png" width="780" height="1688" alt="Captura de la app: pantalla de inicio con el logo y el lema Come bien, ve a lo seguro"></div>
+            <figcaption class="etiqueta">Inicio</figcaption>
+          </figure>
+          <span class="flecha" aria-hidden="true">→</span>
+          <figure class="paso" style="margin: 0;">
+            <div class="movil"><img src="img/02-gustos.png" width="780" height="1688" alt="Captura de la app: formulario con lo que te apetece, presupuesto, dieta y alergias"></div>
+            <figcaption class="etiqueta">1 · Tus gustos</figcaption>
+          </figure>
+          <span class="flecha" aria-hidden="true">→</span>
+          <figure class="paso" style="margin: 0;">
+            <div class="movil"><img src="img/03-mapa.png" width="780" height="1688" alt="Captura de la app: mapa de Madrid con los restaurantes que encajan"></div>
+            <figcaption class="etiqueta">2 · Cerca de ti</figcaption>
+          </figure>
+          <span class="flecha" aria-hidden="true">→</span>
+          <figure class="paso" style="margin: 0;">
+            <div class="movil valor"><img src="img/05-ficha.png" width="780" height="1688" alt="Captura de la app: ficha del restaurante con carta y precios comprobados, fecha y fuente"></div>
+            <figcaption class="etiqueta verificado">3 · Carta y precios comprobados</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="notas">
+        <p>FoodMatch: Come bien, ve a lo seguro. Os lo enseñamos en directo.</p>
+        <p>(DEMO) Plan B si falla la conexión: recorred estas cuatro capturas.</p>
+      </div>
+    </section>
+
+    <!-- 5. Evidencia de validación -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo" style="gap: 20px;">
+        <h1 class="titulo">Lo que nos dicen los datos</h1>
+        <div class="grafico">
+          <figure style="margin: 0;">
+            <svg id="grafico-encuesta" viewBox="0 0 760 400" role="img" aria-labelledby="grafico-titulo grafico-desc">
+              <title id="grafico-titulo">Encuesta de clase (n = 12): intención frente al umbral de H1</title>
+              <desc id="grafico-desc"></desc>
+            </svg>
+            <figcaption class="pie" id="grafico-pie" style="margin-top: 6px;"></figcaption>
+          </figure>
+          <div class="veredictos">
+            <div class="tarjeta"><span class="etiqueta aviso" style="font-size: 16px;">No concluyente</span><h3 style="margin-top: 10px;">H1 · Ir al local sin volver a comprobar</h3><p>Creíble sobre el papel, pero no es prueba de conducta.</p></div>
+            <div class="tarjeta"><span class="etiqueta aviso" style="font-size: 16px;">No concluyente</span><h3 style="margin-top: 10px;">H2 · Verificar y actualizar cada 30 días</h3><p>La encuesta no lo mide.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Encuesta (n = 12, datos de práctica). H1: la promesa de confianza resulta creíble sobre el papel, pero eso no es una prueba de conducta.</p>
+        <p>H2: habla de si podemos hacer la verificación, no de si alguien la paga, así que esta encuesta no la mide. El dato de pago sí nos avisa de algo serio para el modelo de negocio: hoy casi nadie pagaría.</p>
+        <p>En el test con usuarios vimos 5 problemas de uso; los más graves los hemos corregido en esta versión.</p>
+        <p>H1 · Quien pide una recomendación verificada acaba yendo al local sin volver a comprobarlo → no concluyente. H2 · Podemos verificar menú, precio y opción dietética de un local en poco tiempo y mantenerlo al día cada 30 días → no concluyente.</p>
+      </div>
+    </section>
+
+    <!-- 6. Modelo de negocio -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo">
+        <h1 class="titulo">Gratis para el usuario</h1>
+        <div class="modelo">
+          <div class="tarjeta" style="text-align: center;">
+            <p class="grande">0 €</p>
+            <h3 style="margin-top: 12px;">Estudiantes y viajeros</h3>
+            <p>Ya decidido</p>
+          </div>
+          <span class="flecha" aria-hidden="true">←</span>
+          <div class="tarjeta">
+            <span class="etiqueta aviso" style="font-size: 16px;">Por validar</span>
+            <h3 style="margin-top: 12px;">Pagan los restaurantes</h3>
+            <p>Mejor posicionamiento si mantienen sus datos al día, y promociones para estudiantes patrocinadas por los locales.</p>
+          </div>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Cómo ganamos dinero: gratis para el usuario (ya decidido); pago de los restaurantes por mejor posicionamiento si mantienen sus datos al día; promociones para estudiantes patrocinadas por los locales.</p>
+      </div>
+    </section>
+
+    <!-- 7. Decisión y siguiente experimento -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo centro">
+        <h1 class="titulo grande">Iteramos</h1>
+        <p class="subtitulo">Creíble sobre el papel no es lo mismo que una prueba de conducta.</p>
+        <div class="decision">
+          <div class="tarjeta si"><p class="marca" style="color: var(--verde);" aria-hidden="true">✓</p><h3>Seguimos</h3><p>FoodMatch, gratis para el usuario.</p></div>
+          <div class="tarjeta no"><p class="marca" style="color: var(--primario);" aria-hidden="true">✕</p><h3>Descartamos</h3><p>Cobrar una suscripción al usuario.</p></div>
+          <div class="tarjeta sig"><p class="marca" aria-hidden="true">→</p><h3>Siguiente experimento</h3><p>Explorar que paguen los locales y medir visitas reales desde la app.</p></div>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Iteramos. Seguimos adelante con FoodMatch como app gratuita para el usuario. El problema existe y el concepto se entiende y genera confianza en una muestra pequeña.</p>
+        <p>Descartamos cobrar una suscripción al usuario como primera opción y exploraremos que paguen los locales.</p>
+      </div>
+    </section>
+
+    <!-- 8. Petición -->
+    <section class="slide" aria-roledescription="diapositiva">
+      <header class="barra"><img src="../app/logo.png" alt=""><span>FoodMatch</span><span class="contador"></span></header>
+      <div class="cuerpo">
+        <h1 class="titulo">Escanead el QR y probadlo</h1>
+        <div class="peticion">
+          <div class="qr"><img src="img/qr.svg" width="41" height="41" alt="Código QR a https://david-tell0.github.io/ed-equipo-2/app/"></div>
+          <div style="display: grid; gap: 22px; justify-items: start;">
+            <img class="logo-grande" src="../app/logo.png" width="140" height="140" alt="Logo de FoodMatch">
+            <p class="lema">Come bien, ve a lo seguro</p>
+            <p class="url">david-tell0.github.io/ed-equipo-2/app/</p>
+          </div>
+        </div>
+      </div>
+      <div class="notas">
+        <p>Probad FoodMatch ahora: escanead el QR.</p>
+        <p>Come bien, ve a lo seguro.</p>
+      </div>
+    </section>
+  </main>
+
+  <aside class="notas-orador" id="notas-orador" aria-live="polite" hidden>
+    <h2>Notas del orador</h2>
+    <div id="notas-texto"></div>
+  </aside>
+  <div class="controles">
+    <button type="button" id="anterior" aria-label="Slide anterior">←</button>
+    <button type="button" id="siguiente" aria-label="Slide siguiente">→</button>
+  </div>
+  <p class="ayuda">← → o espacio: navegar · N: notas · F: pantalla completa</p>
+
+  <script>
+    // Datos de la encuesta de clase (práctica). Poned el porcentaje (0–100) cuando lo tengáis; null = [DATO PENDIENTE].
+    var DATOS = {
+      n: 12,
+      fuente: 'Encuesta de clase',
+      umbralH1: 33, // H1: acertamos si 1 de cada 3 peticiones termina en visita
+      barras: [
+        { etiqueta: ['H1 · Iría al local sin', 'volver a comprobar'], valor: null, conUmbral: true },
+        { etiqueta: ['Pagaría una suscripción', 'como usuario'], valor: null, conUmbral: false }
+      ]
+    };
+
+    // --- Gráfico de barras en SVG: eje desde 0 y línea con el umbral de H1 ---
+    (function pintarGrafico() {
+      var svg = document.getElementById('grafico-encuesta');
+      var ns = 'http://www.w3.org/2000/svg';
+      var x0 = 70, x1 = 740, y0 = 320, y1 = 24;
+      function y(v) { return y0 - (v / 100) * (y0 - y1); }
+      function el(tag, atr, texto) {
+        var e = document.createElementNS(ns, tag);
+        for (var k in atr) e.setAttribute(k, atr[k]);
+        if (texto != null) e.textContent = texto;
+        svg.appendChild(e);
+        return e;
+      }
+      [0, 25, 50, 75, 100].forEach(function (v) {
+        el('line', { x1: x0, x2: x1, y1: y(v), y2: y(v), stroke: v === 0 ? '#5A4A3A' : '#EDD9A8', 'stroke-width': v === 0 ? 2 : 1 });
+        el('text', { x: x0 - 12, y: y(v) + 6, 'text-anchor': 'end', 'font-size': 16, fill: '#5A4A3A' }, v + ' %');
+      });
+      var ancho = 170, paso = (x1 - x0) / DATOS.barras.length, desc = [];
+      DATOS.barras.forEach(function (b, i) {
+        var cx = x0 + paso * (i + .5);
+        if (b.valor == null) {
+          el('rect', { x: cx - ancho / 2, y: y(0) - 44, width: ancho, height: 44, rx: 8, fill: '#FFDE99' });
+          el('text', { x: cx, y: y(0) - 16, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#5C4300' }, '[DATO PENDIENTE]');
+          desc.push(b.etiqueta.join(' ') + ': dato pendiente');
+        } else {
+          el('rect', { x: cx - ancho / 2, y: y(b.valor), width: ancho, height: y(0) - y(b.valor), rx: 8, fill: '#C1440E' });
+          el('text', { x: cx, y: y(b.valor) - 10, 'text-anchor': 'middle', 'font-size': 24, 'font-weight': 800, fill: '#023820' }, b.valor + ' %');
+          desc.push(b.etiqueta.join(' ') + ': ' + b.valor + ' %');
+        }
+        b.etiqueta.forEach(function (linea, j) {
+          el('text', { x: cx, y: y0 + 30 + j * 22, 'text-anchor': 'middle', 'font-size': 18, 'font-weight': j ? 500 : 700, fill: '#023820' }, linea);
+        });
+        if (b.conUmbral) {
+          el('line', { x1: cx - ancho / 2 - 30, x2: cx + ancho / 2 + 30, y1: y(DATOS.umbralH1), y2: y(DATOS.umbralH1), stroke: '#9A360B', 'stroke-width': 3, 'stroke-dasharray': '10 7' });
+          el('text', { x: cx + ancho / 2 + 38, y: y(DATOS.umbralH1) + 6, 'font-size': 16, 'font-weight': 700, fill: '#9A360B' }, 'Umbral H1: 1 de cada 3 (' + DATOS.umbralH1 + ' %)');
+        }
+      });
+      document.getElementById('grafico-desc').textContent = desc.join('. ') + '. Umbral de H1: ' + DATOS.umbralH1 + ' %.';
+      document.getElementById('grafico-pie').textContent =
+        'n = ' + DATOS.n + ' · Fuente: ' + DATOS.fuente + ' · Datos de práctica de clase, no representativos.';
+    })();
+
+    // --- Navegación ---
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var actual = 0;
+    var notas = document.getElementById('notas-orador');
+    function mostrar(n) {
+      actual = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, i) {
+        s.classList.toggle('activa', i === actual);
+        s.setAttribute('aria-label', (i + 1) + ' de ' + slides.length);
+        s.querySelector('.contador').textContent = (i + 1) + ' / ' + slides.length;
+      });
+      document.getElementById('notas-texto').innerHTML = slides[actual].querySelector('.notas').innerHTML;
+      if (location.hash !== '#' + (actual + 1)) history.replaceState(null, '', '#' + (actual + 1));
+    }
+    function ajustar() {
+      var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.96;
+      document.documentElement.style.setProperty('--escala', s);
+    }
+    function pantallaCompleta() {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      var k = e.key;
+      if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); mostrar(actual + 1); }
+      else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); mostrar(actual - 1); }
+      else if (k === 'Home') mostrar(0);
+      else if (k === 'End') mostrar(slides.length - 1);
+      else if (k === 'n' || k === 'N') notas.hidden = !notas.hidden;
+      else if (k === 'f' || k === 'F') pantallaCompleta();
+    });
+    document.getElementById('anterior').addEventListener('click', function () { mostrar(actual - 1); });
+    document.getElementById('siguiente').addEventListener('click', function () { mostrar(actual + 1); });
+    window.addEventListener('resize', ajustar);
+    window.addEventListener('hashchange', function () { mostrar(parseInt(location.hash.slice(1), 10) - 1 || 0); });
+    ajustar();
+    mostrar(parseInt(location.hash.slice(1), 10) - 1 || 0);
+    // La ayuda de teclas se ve al abrir y luego se desvanece para no tapar la slide.
+    setTimeout(function () { document.querySelector('.ayuda').classList.add('oculta'); }, 6000);
+  </script>
+</body>
+</html>
