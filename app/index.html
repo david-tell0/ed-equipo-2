@@ -1497,25 +1497,100 @@
         ]
       }
     ];
+    var GRIEGA = [
+      {
+        id: 'kritikos', letra: '43', real: true, nombre: 'Kritikos', tipo: 'Griega',
+        dietas: [], turistico: false, toldo: '#1565C0',
+        lat: 40.4236876, lng: -3.6973330, x: 55, y: 25,
+        direccion: 'Calle de San Gregorio, 11, 28004 Madrid (Chueca)', precioMedio: '20-35 € según IFEMA (feb 2023)',
+        enlaces: [
+          { texto: 'Web de Kritikos (no responde)', url: 'https://www.restaurantekritikos.es/' },
+          { texto: 'Instagram (@madridkritikos)', url: 'https://www.instagram.com/madridkritikos/' }
+        ],
+        // Su web no responde (31 oct 2026): dirección de la guía de IFEMA, comprobada en OpenStreetMap.
+        notaCarta: 'Su web no responde y no hemos encontrado la carta publicada: consulta su Instagram o pregunta en el local.',
+        fuente: { nombre: 'IFEMA, guía de restaurantes griegos', url: 'https://www.ifema.es/visita-madrid/gastronomia/restaurantes-griegos-madrid', actualizada: null, consultada: '31 oct 2026', sinCarta: true },
+        platos: []
+      },
+      {
+        id: 'dionisos', letra: '44', real: true, nombre: 'Dionisos', tipo: 'Griega',
+        dietas: [], turistico: false, toldo: '#6A1B9A',
+        lat: 40.4137577, lng: -3.6988349, x: 50, y: 75,
+        direccion: 'Calle del León, 17, 28014 Madrid (Barrio de las Letras, Huertas)', precioMedio: '25 € según IFEMA (feb 2023)',
+        enlaces: [
+          { texto: 'Web de Dionisos (no funciona)', url: 'https://dionisosrestaurants.com/' },
+          { texto: 'Instagram (@dionisos_restaurant)', url: 'https://www.instagram.com/dionisos_restaurant/' }
+        ],
+        // Su web solo muestra la página por defecto del alojamiento (31 oct 2026): dirección de la guía de IFEMA.
+        notaCarta: 'Su web no funciona y no hemos encontrado la carta publicada: consulta su Instagram o pregunta en el local.',
+        fuente: { nombre: 'IFEMA, guía de restaurantes griegos', url: 'https://www.ifema.es/visita-madrid/gastronomia/restaurantes-griegos-madrid', actualizada: null, consultada: '31 oct 2026', sinCarta: true },
+        platos: []
+      },
+      {
+        id: 'greek-and-shop', letra: '45', real: true, nombre: 'Greek&Shop', tipo: 'Griega',
+        dietas: [], turistico: false, toldo: '#0277BD',
+        lat: 40.4248768, lng: -3.7020918, x: 40, y: 20,
+        direccion: 'Corredera Alta de San Pablo, 9, 28004 Madrid (Malasaña)', precioMedio: null,
+        enlaces: [
+          { texto: 'Web de Greek&Shop', url: 'https://greekandshop.es/' },
+          { texto: 'Carta de Greek&Shop (PDF)', url: 'https://greekandshop.es/GREEKANDSHOP_MENU.pdf' },
+          { texto: 'Instagram (@greekandshop)', url: 'https://www.instagram.com/greekandshop/' }
+        ],
+        fuente: { nombre: 'greekandshop.es (carta en PDF)', url: 'https://greekandshop.es/GREEKANDSHOP_MENU.pdf', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Pita gyros + patatas asadas o bebida', precio: '11,50 €', dietas: [] },
+          { nombre: 'Musaka de carne o vegetal', precio: '9,90 €', dietas: ['vegetariana'] },
+          { nombre: 'Pollo en salsa de yogur griego', precio: '9,90 €', dietas: [] },
+          { nombre: 'Hummus', precio: '8,50 €', dietas: [] },
+          { nombre: 'Dolmadakia con tzatziki', precio: '9,50 €', dietas: [] },
+          { nombre: 'Ensalada griega', precio: '8,50 €', dietas: [] },
+          { nombre: 'Menú completo para llevar (lunes a viernes)', precio: '10,90 €', dietas: [] },
+          { nombre: 'Baklava tradicional', precio: '2 €', dietas: [] }
+        ]
+      },
+      {
+        id: 'taberna-griega', letra: '46', real: true, nombre: 'Taberna Griega', tipo: 'Griega',
+        dietas: [], turistico: false, toldo: '#00838F',
+        lat: 40.4035579, lng: -3.6780981, x: 75, y: 85,
+        direccion: 'Calle de Juan de Urbieta, 4, 28007 Madrid (Pacífico)', precioMedio: null,
+        enlaces: [
+          { texto: 'Web y carta de Taberna Griega', url: 'https://www.tabernagriega-pacifico.com/' },
+          { texto: 'Instagram (@tabernagriegapacifico)', url: 'https://www.instagram.com/tabernagriegapacifico/' }
+        ],
+        // Solo se ha podido leer el PDF de ensaladas y entrantes; el de raciones devuelve «acceso denegado».
+        fuente: { nombre: 'tabernagriega-pacifico.com (carta de entrantes en PDF)', url: 'https://www.tabernagriega-pacifico.com/ensaladas-y-entrantes', actualizada: null, consultada: '31 oct 2026' },
+        platos: [
+          { nombre: 'Ensalada griega', precio: '8,90 €', dietas: [] },
+          { nombre: 'Ensalada joriatiki', precio: '9,90 €', dietas: [] },
+          { nombre: 'Dakos (tosta cretense con tomate y feta)', precio: '7,50 €', dietas: [] },
+          { nombre: 'Empanadas griegas de espinacas o feta', precio: '7,90 €', dietas: [] },
+          { nombre: 'Dolmadakia', precio: '8,50 €', dietas: [] },
+          { nombre: 'Saganaki de langostinos', precio: '11,90 €', dietas: [] },
+          { nombre: 'Tzatziki', precio: '5,90 €', dietas: [] },
+          { nombre: 'Pikilía de cremas y dolmadakia', precio: '12,90 €', dietas: [] },
+          { nombre: 'Pan de pita (no va incluido en las raciones)', precio: '0,90 €', dietas: [] }
+        ]
+      }
+    ];
 
     // Opciones de «¿Qué te apetece hoy?» con restaurantes reales propios.
     var POR_ANTOJO = {
       'Hamburguesas': HAMBURGUESAS, 'Italiana': ITALIANA, 'Sushi y japonesa': SUSHI,
       'Tailandesa': TAILANDESA, 'India': INDIA, 'Kebab y turca': KEBAB, 'China': CHINA, 'Mexicana': MEXICANA,
-      'Árabe y libanesa': ARABE, 'Tapas': TAPAS
+      'Árabe y libanesa': ARABE, 'Tapas': TAPAS, 'Griega': GRIEGA
     };
     var NOTA_ANTOJO = {
       'Hamburguesas': 'para comer hamburguesa', 'Italiana': 'de cocina italiana', 'Sushi y japonesa': 'de sushi y cocina japonesa',
       'Tailandesa': 'de cocina tailandesa', 'India': 'de cocina india', 'Kebab y turca': 'de kebab y cocina turca',
       'China': 'de cocina china', 'Mexicana': 'de cocina mexicana', 'Árabe y libanesa': 'de cocina árabe y libanesa',
-      'Tapas': 'para ir de tapas'
+      'Tapas': 'para ir de tapas', 'Griega': 'de cocina griega'
     };
     function listaPorAntojo(lista) {
       return Object.keys(POR_ANTOJO).some(function (k) { return POR_ANTOJO[k] === lista; });
     }
 
     // Todos los restaurantes reales, sin repetir (Honest Greens está en vegana/vegetariana y en saludable), por número de pin.
-    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS)
+    var TODOS = [].concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS, GRIEGA)
       .filter(function (r, i, lista) { return lista.findIndex(function (x) { return x.id === r.id; }) === i; })
       .sort(function (a, b) { return Number(a.letra) - Number(b.letra); });
 
@@ -1533,7 +1608,7 @@
       return RESTAURANTES;
     }
     function buscarRestaurante(id) {
-      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS).filter(function (x) { return x.id === id; })[0];
+      return RESTAURANTES.concat(REALES, HALAL, KOSHER, SALUDABLE, COMIDA_RAPIDA, HAMBURGUESAS, ITALIANA, SUSHI, TAILANDESA, INDIA, KEBAB, CHINA, MEXICANA, ARABE, TAPAS, GRIEGA).filter(function (x) { return x.id === id; })[0];
     }
     // Ficha de cada restaurante ficticio: color del toldo de la ilustración y platos de ejemplo (precios pendientes).
     var FICHAS = {
